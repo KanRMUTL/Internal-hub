@@ -1,0 +1,1 @@
+export {LOGO} from './web'
