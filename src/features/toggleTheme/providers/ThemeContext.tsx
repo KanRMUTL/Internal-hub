@@ -1,4 +1,3 @@
-// src/context/ThemeContext.tsx
 import React, { createContext, useState, useContext } from 'react'
 import { ThemeProvider as StyledProvider } from 'styled-components'
 import { lightTheme, darkTheme, THEME_MODE_KEYS } from 'shared/styles'
@@ -10,7 +9,7 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue>({
   toggleTheme: () => {},
-  mode: 'DARK',
+  mode: 'LIGHT',
 })
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

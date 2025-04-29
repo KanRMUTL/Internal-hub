@@ -1,1 +1,1 @@
-export {LOGO} from './web'
+export { LOGO } from './web'

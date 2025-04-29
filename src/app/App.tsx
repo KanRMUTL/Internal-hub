@@ -1,5 +1,5 @@
-import { ThemeProvider } from './providers'
-import { Layout } from 'shared/ui'
+import { ThemeProvider } from 'features/toggleTheme'
+import { Layout } from 'widgets/Layout'
 import { GlobalStyle } from 'shared/styles'
 import { LOGO } from 'shared/config'
 
