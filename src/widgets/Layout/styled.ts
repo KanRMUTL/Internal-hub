@@ -16,6 +16,6 @@ export const Nav = styled.div<{ $light: boolean }>`
 `
 
 export const Main = styled.div`
-  display: flex;
-  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
 `
