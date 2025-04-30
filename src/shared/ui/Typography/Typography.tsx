@@ -8,7 +8,7 @@ export default styled.p<{
   $weight?: FontWeightKeys
 }>`
   font-size: ${({ theme, $size = 'base' }) => theme.fontSizes[$size]};
-  font-weight: ${({ theme, $weight = 'medium' }) => $weight || theme.fontWeight[$weight]};
+  font-weight: ${({ theme, $weight = 'normal' }) => $weight || theme.fontWeight[$weight]};
   color: ${({ theme, $color }) => ($color ? theme.colors[$color] : theme.text)};
   text-align: ${({ $align }) => $align || 'left'};
   margin: 0;
