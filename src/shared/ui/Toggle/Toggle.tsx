@@ -1,5 +1,3 @@
-'use client'
-
 import * as motion from 'motion/react-client'
 
 interface ToggleProps {

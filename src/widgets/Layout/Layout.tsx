@@ -1,17 +1,15 @@
-import { ReactNode } from 'react'
-import { Wrapper, Nav, Content } from './styled'
+import { Wrapper, Nav, Main } from './styled'
 import ToggleThemeButton, { useTheme } from 'features/toggleTheme'
-
+import { Outlet } from 'react-router-dom'
 interface LayoutProps {
-  children: ReactNode
   logoPath: string
 }
 
-const Layout = ({ children, logoPath }: LayoutProps) => {
+const Layout = ({ logoPath }: LayoutProps) => {
   const { mode } = useTheme()
   return (
     <Wrapper>
-      <Nav light={mode == 'LIGHT'}>
+      <Nav $light={mode == 'LIGHT'}>
         <div>
           <img src={logoPath} />
         </div>
@@ -19,7 +17,7 @@ const Layout = ({ children, logoPath }: LayoutProps) => {
           <ToggleThemeButton />
         </div>
       </Nav>
-      <Content>{children}</Content>
+      <Main>{<Outlet />}</Main>
     </Wrapper>
   )
 }

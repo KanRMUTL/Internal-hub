@@ -6,16 +6,16 @@ export const Wrapper = styled.div`
   padding: 0;
 `
 
-export const Nav = styled.div<{ light: boolean }>`
+export const Nav = styled.div<{ $light: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: ${({ theme }) => theme.spacing.xs};
   box-shadow: ${({ theme }) => theme.shadow.md};
-  background: ${({ theme, light }) => (light ? theme.colors.info : theme.colors.black)};
+  background: ${({ theme, $light }) => ($light ? theme.colors.info : theme.colors.black)};
 `
 
-export const Content = styled.div`
+export const Main = styled.div`
   display: flex;
   flex-direction: column;
 `
