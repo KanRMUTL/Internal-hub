@@ -3,6 +3,7 @@ import { colors } from './colors'
 import { breakpoints } from './breakpoints'
 import { spacing } from './spacing'
 import { fontSizes } from './fontSizes'
+import { fontWeight } from './fontWeight'
 import { borderRadius } from './borderRadius'
 
 export const darkTheme: Theme = {
@@ -13,6 +14,7 @@ export const darkTheme: Theme = {
   breakpoints,
   spacing,
   fontSizes,
+  fontWeight,
   borderRadius,
   shadow: {
     sm: '0 1px 2px rgba(255, 255, 255, 0.05)',

@@ -46,6 +46,17 @@ export interface FontSize {
 
 export type FontSizeKeys = keyof FontSize
 
+export interface FontWeight {
+  light: number
+  normal: number
+  medium: number
+  semibold: number
+  bold: number
+  extrabold: number
+}
+
+export type FontWeightKeys = keyof FontWeight
+
 export interface Shadow {
   sm: string
   md: string
@@ -75,6 +86,7 @@ export interface Theme {
   breakpoints: Breakpoints
   spacing: Spacing
   fontSizes: FontSize
+  fontWeight: FontWeight
   shadow: Shadow
   borderRadius: BorderRadius
 }

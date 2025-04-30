@@ -8,6 +8,7 @@ export {
   type Breakpoints,
   type Spacing,
   type FontSize,
+  type FontWeight,
   type Shadow,
   type BorderRadius,
   type Theme,
@@ -16,6 +17,7 @@ export {
   type BreakpointsKeys,
   type SpacingKeys,
   type FontSizeKeys,
+  type FontWeightKeys,
   type ShadowKeys,
   type BorderRadiusKeys,
 } from './types'
