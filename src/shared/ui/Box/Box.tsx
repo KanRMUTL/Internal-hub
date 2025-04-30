@@ -1,10 +1,10 @@
 import styled from 'styled-components'
-import { ColorKeys, SpacingKeys, ShadowKeys, BorderRadiusKeys } from 'shared/styles'
+import { SpacingKeys, ShadowKeys, BorderRadiusKeys, BackgroundKeys } from 'shared/styles'
 
 export default styled.div<{
   $p?: SpacingKeys
   $m?: SpacingKeys
-  $bg?: ColorKeys
+  $bg?: BackgroundKeys
   $radius?: BorderRadiusKeys
   $shadow?: ShadowKeys
   $flex?: boolean
@@ -12,12 +12,14 @@ export default styled.div<{
   $align?: 'flex-start' | 'center' | 'flex-end'
   $justify?: 'flex-start' | 'center' | 'flex-end' | 'space-between'
   $gap?: SpacingKeys
+  $pointer?: boolean
 }>`
   padding: ${({ theme, $p }) => $p && theme.spacing[$p]};
   margin: ${({ theme, $m }) => $m && theme.spacing[$m]};
-  background: ${({ theme, $bg }) => $bg && theme.colors[$bg]};
+  background: ${({ theme, $bg }) => $bg && theme.background[$bg]};
   border-radius: ${({ theme, $radius }) => $radius && theme.borderRadius[$radius]};
   box-shadow: ${({ theme, $shadow }) => $shadow && theme.shadow[$shadow]};
+  cursor: ${({ $pointer }) => ($pointer ? 'pointer' : 'auto')};
 
   ${({ $flex }) => $flex && 'display: flex;'}
   ${({ $direction }) => $direction && `flex-direction: ${$direction};`}

@@ -78,9 +78,18 @@ export interface BorderRadius {
 
 export type BorderRadiusKeys = keyof BorderRadius
 
+export interface Background {
+  primary: string
+  secondary: string
+  surface: string
+  elevated: string
+  overlay: string
+}
+
+export type BackgroundKeys = keyof Background
+
 export interface Theme {
   mode: string
-  background: string
   text: string
   colors: Color
   breakpoints: Breakpoints
@@ -89,4 +98,5 @@ export interface Theme {
   fontWeight: FontWeight
   shadow: Shadow
   borderRadius: BorderRadius
+  background: Background
 }

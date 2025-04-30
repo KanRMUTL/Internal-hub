@@ -11,6 +11,7 @@ export {
   type FontWeight,
   type Shadow,
   type BorderRadius,
+  type Background,
   type Theme,
   type THEME_MODE_KEYS,
   type ColorKeys,
@@ -20,4 +21,5 @@ export {
   type FontWeightKeys,
   type ShadowKeys,
   type BorderRadiusKeys,
+  type BackgroundKeys,
 } from './types'

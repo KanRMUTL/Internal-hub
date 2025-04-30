@@ -8,8 +8,7 @@ import { borderRadius } from './borderRadius'
 
 export const lightTheme: Theme = {
   mode: 'light',
-  background: '#F5F6F8',
-  text: '#0a0a0a',
+  text: '#1a1a1a',
   colors,
   breakpoints,
   spacing,
@@ -22,5 +21,12 @@ export const lightTheme: Theme = {
     lg: '0 10px 15px rgba(0, 0, 0, 0.15)',
     xl: '0 20px 25px rgba(0, 0, 0, 0.2)',
     inner: 'inset 0 2px 4px rgba(0, 0, 0, 0.06)',
+  },
+  background: {
+    primary: '#F5F6F8',
+    secondary: '#ffffff',
+    surface: '#ffffff',
+    elevated: '#f0f1f3',
+    overlay: 'rgba(0, 0, 0, 0.3)',
   },
 }

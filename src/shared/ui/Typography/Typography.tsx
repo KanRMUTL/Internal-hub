@@ -9,7 +9,7 @@ export default styled.p<{
 }>`
   font-size: ${({ theme, $size = 'base' }) => theme.fontSizes[$size]};
   font-weight: ${({ theme, $weight = 'medium' }) => $weight || theme.fontWeight[$weight]};
-  color: ${({ theme, $color = 'black' }) => theme.colors[$color]};
+  color: ${({ theme, $color }) => ($color ? theme.colors[$color] : theme.text)};
   text-align: ${({ $align }) => $align || 'left'};
   margin: 0;
 `
