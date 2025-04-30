@@ -1,4 +1,6 @@
-export const colors = {
+import { Color } from 'shared/styles'
+
+export const colors: Color = {
   primary: '#00d1b2',
   info: '#209cee',
   success: '#23d160',

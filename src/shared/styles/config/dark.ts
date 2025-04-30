@@ -1,9 +1,11 @@
+import { Theme } from 'shared/styles'
 import { colors } from './colors'
 import { breakpoints } from './breakpoints'
 import { spacing } from './spacing'
 import { fontSizes } from './fontSizes'
+import { borderRadius } from './borderRadius'
 
-export const darkTheme = {
+export const darkTheme: Theme = {
   mode: 'dark',
   background: '#0a0a0a',
   text: '#ffffff',
@@ -11,6 +13,7 @@ export const darkTheme = {
   breakpoints,
   spacing,
   fontSizes,
+  borderRadius,
   shadow: {
     sm: '0 1px 2px rgba(255, 255, 255, 0.05)',
     md: '0 4px 6px rgba(255, 255, 255, 0.1)',

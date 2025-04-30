@@ -1,5 +1,3 @@
-import { lightTheme } from './config/light'
-
 export enum THEME_MODE {
   LIGHT = 'LIGHT',
   DARK = 'DARK',
@@ -7,4 +5,76 @@ export enum THEME_MODE {
 
 export type THEME_MODE_KEYS = keyof typeof THEME_MODE
 
-export type Theme = typeof lightTheme
+export interface Color {
+  primary: string
+  info: string
+  success: string
+  warning: string
+  danger: string
+  white: string
+  black: string
+  grey: string
+}
+
+export type ColorKeys = keyof Color
+
+export interface Breakpoints {
+  mobile: string
+  tablet: string
+  desktop: string
+  widescreen: string
+}
+
+export type BreakpointsKeys = keyof Breakpoints
+
+export interface Spacing {
+  xs: string
+  sm: string
+  md: string
+  lg: string
+  xl: string
+}
+
+export type SpacingKeys = keyof Spacing
+
+export interface FontSize {
+  sm: string
+  base: string
+  lg: string
+  xl: string
+}
+
+export type FontSizeKeys = keyof FontSize
+
+export interface Shadow {
+  sm: string
+  md: string
+  lg: string
+  xl: string
+  inner: string
+}
+
+export type ShadowKeys = keyof Shadow
+
+export interface BorderRadius {
+  none: string
+  sm: string
+  md: string
+  lg: string
+  xl: string
+  full: string
+}
+
+export type BorderRadiusKeys = keyof BorderRadius
+
+export interface Theme {
+  mode: string
+  background: string
+  text: string
+  colors: Color
+  breakpoints: Breakpoints
+  spacing: Spacing
+  fontSizes: FontSize
+  shadow: Shadow
+  borderRadius: BorderRadius
+}

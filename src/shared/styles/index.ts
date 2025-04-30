@@ -2,4 +2,20 @@ export { lightTheme } from './config/light'
 export { darkTheme } from './config/dark'
 export { GlobalStyle } from './globalStyle'
 
-export { THEME_MODE, type THEME_MODE_KEYS } from './types'
+export {
+  THEME_MODE,
+  type Color,
+  type Breakpoints,
+  type Spacing,
+  type FontSize,
+  type Shadow,
+  type BorderRadius,
+  type Theme,
+  type THEME_MODE_KEYS,
+  type ColorKeys,
+  type BreakpointsKeys,
+  type SpacingKeys,
+  type FontSizeKeys,
+  type ShadowKeys,
+  type BorderRadiusKeys,
+} from './types'

@@ -1,4 +1,6 @@
-export const spacing = {
+import { Spacing } from 'shared/styles'
+
+export const spacing: Spacing = {
   xs: '0.25rem',
   sm: '0.5rem',
   md: '1rem',

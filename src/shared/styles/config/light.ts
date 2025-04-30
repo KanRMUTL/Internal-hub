@@ -1,9 +1,11 @@
+import { Theme } from 'shared/styles'
 import { colors } from './colors'
 import { breakpoints } from './breakpoints'
 import { spacing } from './spacing'
 import { fontSizes } from './fontSizes'
+import { borderRadius } from './borderRadius'
 
-export const lightTheme = {
+export const lightTheme: Theme = {
   mode: 'light',
   background: '#F5F6F8',
   text: '#0a0a0a',
@@ -11,6 +13,7 @@ export const lightTheme = {
   breakpoints,
   spacing,
   fontSizes,
+  borderRadius,
   shadow: {
     sm: '0 1px 2px rgba(0, 0, 0, 0.05)',
     md: '0 4px 6px rgba(0, 0, 0, 0.1)',
