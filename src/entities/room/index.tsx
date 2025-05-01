@@ -1,1 +1,2 @@
-export { default as Room } from './ui/Room'
+export { RoomItem } from './ui/'
+export { type Room, type RoomMember } from './model'
