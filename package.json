@@ -12,12 +12,12 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "dayjs": "^1.11.13",
     "firebase": "^11.6.1",
     "lint-staged": "13",
     "motion": "^12.9.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-redux": "^9.2.0",
     "react-router-dom": "6.30.0",
     "styled-components": "^6.1.17"
   },
