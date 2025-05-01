@@ -1,0 +1,54 @@
+import { ReactNode, MouseEvent } from 'react'
+import styled from 'styled-components'
+import { motion, AnimatePresence } from 'motion/react'
+
+interface ModalProps {
+  isOpen: boolean
+  onClose: () => void
+  children: ReactNode
+}
+
+const Modal = ({ isOpen, onClose, children }: ModalProps) => {
+  const handleBackdropClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) onClose()
+  }
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <Backdrop onClick={handleBackdropClick} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <ModalContainer
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 0.3 }}
+          >
+            {children}
+          </ModalContainer>
+        </Backdrop>
+      )}
+    </AnimatePresence>
+  )
+}
+
+export default Modal
+
+const Backdrop = styled(motion.div)`
+  position: fixed;
+  inset: 0;
+  background: ${({ theme }) => theme.background.overlay};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+`
+
+const ModalContainer = styled(motion.div)`
+  background: ${({ theme }) => theme.background.surface};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  padding: ${({ theme }) => theme.spacing.lg};
+  box-shadow: ${({ theme }) => theme.shadow.lg};
+  position: relative;
+  max-width: 500px;
+  width: 100%;
+`
