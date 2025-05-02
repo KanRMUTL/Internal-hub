@@ -16,12 +16,19 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <Backdrop onClick={handleBackdropClick} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <Backdrop
+          onClick={handleBackdropClick}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        >
           <ModalContainer
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0 }}
+            whileHover={{ scale: 1.06 }}
+            transition={{ duration: 0.2 }}
           >
             {children}
           </ModalContainer>
@@ -45,6 +52,7 @@ const Backdrop = styled(motion.div)`
 
 const ModalContainer = styled(motion.div)`
   background: ${({ theme }) => theme.background.surface};
+  border: 1px solid ${({ theme }) => theme.colors.primary};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   padding: ${({ theme }) => theme.spacing.lg};
   box-shadow: ${({ theme }) => theme.shadow.lg};

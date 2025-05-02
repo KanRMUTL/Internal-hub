@@ -27,6 +27,6 @@ export const darkTheme: Theme = {
     secondary: '#2a2a2a',
     surface: '#2e2e2e',
     elevated: '#3a3a3a',
-    overlay: 'rgba(255, 255, 255, 0.1)',
+    overlay: 'rgba(0, 0, 0, 0.5)',
   },
 }

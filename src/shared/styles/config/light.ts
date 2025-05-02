@@ -27,6 +27,6 @@ export const lightTheme: Theme = {
     secondary: '#ffffff',
     surface: '#ffffff',
     elevated: '#f0f1f3',
-    overlay: 'rgba(0, 0, 0, 0.3)',
+    overlay: 'rgba(0, 0, 0, 0.5)',
   },
 }
