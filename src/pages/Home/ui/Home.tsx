@@ -1,7 +1,7 @@
-import { RoomList } from 'features/room-management'
+import { RoomManagement } from 'features/room-management'
 
 const Home = () => {
-  return <RoomList />
+  return <RoomManagement />
 }
 
 export default Home

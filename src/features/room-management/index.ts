@@ -1,1 +1,1 @@
-export { default as RoomList } from './ui'
+export { RoomManagement } from './ui'
