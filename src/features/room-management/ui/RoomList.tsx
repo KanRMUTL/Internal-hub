@@ -7,10 +7,11 @@ import { AnimatePresence } from 'motion/react'
 interface RoomListProps {
   rooms: Room[]
   onClickAdd: (id: string) => void
+  onClickRoom: (id: string) => void
   onClickRemove: (id: string) => void
 }
 
-const RoomList = ({ rooms, onClickAdd, onClickRemove }: RoomListProps) => {
+const RoomList = ({ rooms, onClickRoom, onClickAdd, onClickRemove }: RoomListProps) => {
   const [removedIds, setRemovedIds] = useState<string[]>([])
   const visibleRooms = rooms.filter((room) => !removedIds.includes(room.id))
 
@@ -23,6 +24,7 @@ const RoomList = ({ rooms, onClickAdd, onClickRemove }: RoomListProps) => {
             id={room.id}
             title={room.name}
             description={room.description}
+            onClick={onClickRoom}
             onClickAdd={onClickAdd}
             onClickRemove={(id) => {
               setRemovedIds((prev) => [...prev, id])

@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import dayjs from 'dayjs'
+import { useNavigate } from 'react-router-dom'
 import { removeRoom, createRoom } from 'features/room-management/services'
 import { useActiveRooms } from 'features/room-management/hooks'
 import { RoomList, RoomModal, RoomForm } from 'features/room-management/ui'
@@ -8,9 +9,9 @@ import { useModal } from 'shared/hooks'
 
 const RoomManagement = () => {
   const { data: rooms, loading, error } = useActiveRooms()
+  const navigate = useNavigate()
 
   const roomModal = useModal()
-
   const handleCreateRoom = async ({ name, description }: RoomForm) => {
     const timestamp = dayjs().toString()
     await createRoom({
@@ -32,6 +33,7 @@ const RoomManagement = () => {
     <Box $flex $justify="center" $align="center" $gap="lg" $p="lg">
       <RoomList
         rooms={rooms}
+        onClickRoom={(id) => navigate(`/room/${id}`)}
         onClickAdd={(id) => {
           // show modal contain input form to add new member inside the room
         }}
