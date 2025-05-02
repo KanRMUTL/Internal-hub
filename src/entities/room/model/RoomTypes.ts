@@ -9,7 +9,7 @@ export interface RoomMember {
 export interface Room {
   id: string
   name: string
-  descirption: string
+  description: string
   createdAt: string
   updatedAt: string
   active: boolean
