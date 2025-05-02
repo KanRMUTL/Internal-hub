@@ -57,6 +57,21 @@ const ModalContainer = styled(motion.div)`
   padding: ${({ theme }) => theme.spacing.lg};
   box-shadow: ${({ theme }) => theme.shadow.lg};
   position: relative;
-  max-width: 500px;
-  width: 100%;
+  width: 70%;
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    width: 50%;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    width: 40%;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.desktop}) {
+    width: 40%;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.widescreen}) {
+    width: 30%;
+  }
 `
