@@ -1,4 +1,3 @@
-// src/features/room-management/ui/RoomModal.tsx
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { Box, Button, Input, Modal, Typography, TextArea } from 'shared/ui'
 
