@@ -5,6 +5,7 @@ import { spacing } from './spacing'
 import { fontSizes } from './fontSizes'
 import { fontWeight } from './fontWeight'
 import { borderRadius } from './borderRadius'
+import { borderWidth } from './borderWidth'
 
 export const lightTheme: Theme = {
   mode: 'light',
