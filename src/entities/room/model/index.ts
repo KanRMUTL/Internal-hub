@@ -1,1 +1,1 @@
-export { type RoomMember, type Room } from './Roomtypes'
+export { type RoomMember, type Room } from './RoomTypes'

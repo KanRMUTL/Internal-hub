@@ -8,7 +8,7 @@ interface BorderStyle {
   style: string
 }
 
-export default styled(Box)<{ $border: BorderStyle }>`
+export default styled(Box)<{ $border?: BorderStyle }>`
   transition: '0.2s ease-in-out';
 
   ${({ theme, $border }) => $border?.width && `border-width: ${theme.borderWidth[$border.width]};`}

@@ -34,7 +34,7 @@ const RoomManagement = () => {
       <RoomList
         rooms={rooms}
         onClickRoom={(id) => navigate(`/room/${id}`)}
-        onClickAdd={(id) => {
+        onClickAdd={() => {
           // show modal contain input form to add new member inside the room
         }}
         onClickRemove={removeRoom}
