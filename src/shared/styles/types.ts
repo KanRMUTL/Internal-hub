@@ -78,6 +78,15 @@ export interface BorderRadius {
 
 export type BorderRadiusKeys = keyof BorderRadius
 
+export interface BorderWidth {
+  none: string
+  thin: string
+  medium: string
+  thick: string
+}
+
+export type BorderWidthKeys = keyof BorderWidth
+
 export interface Background {
   primary: string
   secondary: string
@@ -98,5 +107,6 @@ export interface Theme {
   fontWeight: FontWeight
   shadow: Shadow
   borderRadius: BorderRadius
+  borderWidth: BorderWidth
   background: Background
 }

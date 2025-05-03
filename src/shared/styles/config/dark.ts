@@ -5,6 +5,7 @@ import { spacing } from './spacing'
 import { fontSizes } from './fontSizes'
 import { fontWeight } from './fontWeight'
 import { borderRadius } from './borderRadius'
+import { borderWidth } from './borderWidth'
 
 export const darkTheme: Theme = {
   mode: 'dark',
@@ -15,6 +16,7 @@ export const darkTheme: Theme = {
   fontSizes,
   fontWeight,
   borderRadius,
+  borderWidth,
   shadow: {
     sm: '0 1px 2px rgba(255, 255, 255, 0.05)',
     md: '0 4px 6px rgba(255, 255, 255, 0.1)',
