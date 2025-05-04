@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import dayjs from 'dayjs'
 import { motion } from 'motion/react'
 import { RoomMember } from 'entities/room'
 import { useModal } from 'shared/hooks'
-import { updateMember, useMemberCollection, createMember } from 'features/member-management'
-import { MemberItem, MemberModal } from 'features/member-management/ui'
+import { updateMember, useMemberCollection, createMember, deleteMember } from 'features/member-management'
+import { MemberList, MemberModal } from 'features/member-management/ui'
 import { Alert, Box, Button, Spinner } from 'shared/ui'
 
 type MemberManagementProps = { roomId: string }
@@ -17,10 +17,17 @@ const MemberManagement = ({ roomId }: MemberManagementProps) => {
 
   const { data: members, loading, error } = useMemberCollection(roomId)
 
-  const handleClickMember = (member: RoomMember) => {
-    setSelectedMember(member)
+  const handleClickMember = (id: string) => {
+    const findMember = members.find((member) => member.id === id)
+    if (!findMember) return
+
+    setSelectedMember(findMember)
     modalEditMember.open()
   }
+
+  const handleDeleteMember = useCallback(async (memberId: string) => {
+    await deleteMember(roomId, memberId)
+  }, [])
 
   const handleSaveMember = async (name: string) => {
     if (!roomId || !selectedMember) return
@@ -50,9 +57,7 @@ const MemberManagement = ({ roomId }: MemberManagementProps) => {
 
   return (
     <Box $flex $justify="center" $align="center" $gap="xl" $p="xl">
-      {members.map((member, index) => (
-        <MemberItem key={index} member={member} onClick={handleClickMember} />
-      ))}
+      <MemberList members={members} onClickMember={handleClickMember} onDeleteMember={handleDeleteMember} />
       <Box>
         <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 1.1 }}>
           <Button $variant="info" onClick={modalNewMember.open}>

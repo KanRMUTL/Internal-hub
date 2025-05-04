@@ -10,6 +10,7 @@ interface BorderStyle {
 
 export default styled(Box)<{ $border?: BorderStyle }>`
   transition: '0.2s ease-in-out';
+  position: relative;
 
   ${({ theme, $border }) => $border?.width && `border-width: ${theme.borderWidth[$border.width]};`}
   ${({ $border }) => $border?.style && `border-style: ${$border.style};`}

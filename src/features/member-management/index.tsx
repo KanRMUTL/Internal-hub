@@ -1,3 +1,3 @@
 export { useMemberCollection } from './hooks'
-export { createMember, updateMember } from './services'
+export { createMember, updateMember, deleteMember } from './services'
 export { MemberManagement } from './ui'

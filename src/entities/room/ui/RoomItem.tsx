@@ -60,7 +60,7 @@ const RoomItem = ({ id, title, description, onClick, onClickAdd, onClickRemove }
             <Button
               $variant="danger"
               onClick={(e) => {
-                e.stopPropagation
+                e.stopPropagation()
                 onClickRemove(id)
               }}
             >

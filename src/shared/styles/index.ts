@@ -1,5 +1,4 @@
-export { lightTheme } from './config/light'
-export { darkTheme } from './config/dark'
+export { lightTheme, darkTheme, colors } from './config'
 export { GlobalStyle } from './globalStyle'
 
 export {

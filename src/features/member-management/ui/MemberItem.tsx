@@ -1,13 +1,17 @@
-import { RoomMember } from 'entities/room'
 import { motion } from 'motion/react'
 import { Card, Typography } from 'shared/ui'
+import styled from 'styled-components'
+import { X } from 'lucide-react'
+import { colors } from 'shared/styles'
 
 interface MemberItemProps {
-  member: RoomMember
-  onClick: (member: RoomMember) => void
+  id: string
+  name: string
+  onClick: (id: string) => void
+  onDelete?: (id: string) => void
 }
 
-const MemberItem = ({ member, onClick }: MemberItemProps) => {
+const MemberItem = ({ id, name, onClick, onDelete }: MemberItemProps) => {
   return (
     <motion.div
       initial={{ scale: 0.5, opacity: 0 }}
@@ -17,29 +21,73 @@ const MemberItem = ({ member, onClick }: MemberItemProps) => {
       whileTap={{ scale: 1.08 }}
       exit={{ opacity: 0, scale: 0 }}
     >
-      <Card
-        $border={{
-          width: 'thin',
-          style: 'solid',
-          color: 'primary',
-        }}
-        $pointer
-        $flex
-        $direction="column"
-        $justify="space-between"
-        $align="center"
-        $p="lg"
-        $shadow="md"
-        $radius="lg"
-        $gap="lg"
-        $bg="secondary"
-        style={{ cursor: 'pointer' }}
-        onClick={() => onClick(member)}
-      >
-        <Typography $pointer>{member.name}</Typography>
-      </Card>
+      <CardWrapper>
+        <Card
+          $border={{
+            width: 'thin',
+            style: 'solid',
+            color: 'primary',
+          }}
+          $pointer
+          $flex
+          $direction="column"
+          $justify="space-between"
+          $align="center"
+          $p="lg"
+          $shadow="md"
+          $radius="lg"
+          $gap="lg"
+          $bg="secondary"
+          style={{ cursor: 'pointer' }}
+          onClick={() => onClick(id)}
+        >
+          <Typography $pointer>{name}</Typography>
+          {onDelete && (
+            <DeleteButtonWrapper whileHover={{ scale: 1.2 }} whileTap={{ scale: 1.2 }}>
+              <DeleteButton
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onDelete(id)
+                }}
+              >
+                <div>
+                  <X size={12} color={colors.white} />
+                </div>
+              </DeleteButton>
+            </DeleteButtonWrapper>
+          )}
+        </Card>
+      </CardWrapper>
     </motion.div>
   )
 }
 
 export default MemberItem
+
+const DeleteButtonWrapper = styled(motion.div)`
+  position: absolute;
+  top: -6px;
+  right: -6px;
+`
+
+const DeleteButton = styled.div`
+  aspect-ratio: 1/1;
+  width: 18px;
+  display: flex;
+  justify-content: center;
+  background: ${({ theme }) => theme.colors.danger};
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+  border: 1px solid ${({ theme }) => theme.colors.danger};
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+`
+
+const CardWrapper = styled.div`
+  position: relative;
+
+  &:hover ${DeleteButton}, &:focus-within ${DeleteButton} {
+    opacity: 1;
+    visibility: visible;
+  }
+`

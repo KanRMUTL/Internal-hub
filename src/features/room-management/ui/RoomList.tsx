@@ -1,6 +1,5 @@
-import { RoomItem } from 'entities/room'
 import { Box } from 'shared/ui'
-import { Room } from 'entities/room'
+import { Room, RoomItem } from 'entities/room'
 import { useState } from 'react'
 import { AnimatePresence } from 'motion/react'
 
