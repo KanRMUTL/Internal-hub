@@ -1,17 +1,18 @@
 import { motion } from 'motion/react'
 import { Card, Typography } from 'shared/ui'
 import styled from 'styled-components'
-import { X } from 'lucide-react'
+import { X, Edit } from 'lucide-react'
 import { colors } from 'shared/styles'
 
 interface MemberItemProps {
   id: string
   name: string
-  onClick: (id: string) => void
+  onClick?: (id: string) => void
+  onEdit?: (id: string) => void
   onDelete?: (id: string) => void
 }
 
-const MemberItem = ({ id, name, onClick, onDelete }: MemberItemProps) => {
+const MemberItem = ({ id, name, onClick, onEdit, onDelete }: MemberItemProps) => {
   return (
     <motion.div
       initial={{ scale: 0.5, opacity: 0 }}
@@ -33,13 +34,13 @@ const MemberItem = ({ id, name, onClick, onDelete }: MemberItemProps) => {
           $direction="column"
           $justify="space-between"
           $align="center"
-          $p="lg"
-          $shadow="md"
+          $p="md"
+          $shadow="sm"
           $radius="lg"
           $gap="lg"
           $bg="secondary"
           style={{ cursor: 'pointer' }}
-          onClick={() => onClick(id)}
+          onClick={() => onClick?.(id)}
         >
           <Typography $pointer>{name}</Typography>
           {onDelete && (
@@ -51,10 +52,24 @@ const MemberItem = ({ id, name, onClick, onDelete }: MemberItemProps) => {
                 }}
               >
                 <div>
-                  <X size={12} color={colors.white} />
+                  <X size={14} color={colors.white} />
                 </div>
               </DeleteButton>
             </DeleteButtonWrapper>
+          )}
+          {onEdit && (
+            <EditButtonWrapper>
+              <EditButton
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onEdit(id)
+                }}
+              >
+                <div>
+                  <Edit size={12} color={colors.white} />
+                </div>
+              </EditButton>
+            </EditButtonWrapper>
           )}
         </Card>
       </CardWrapper>
@@ -72,7 +87,7 @@ const DeleteButtonWrapper = styled(motion.div)`
 
 const DeleteButton = styled.div`
   aspect-ratio: 1/1;
-  width: 18px;
+  width: 16px;
   display: flex;
   justify-content: center;
   background: ${({ theme }) => theme.colors.danger};
@@ -83,10 +98,29 @@ const DeleteButton = styled.div`
   transition: opacity 0.3s ease;
 `
 
+const EditButtonWrapper = styled(motion.div)`
+  position: absolute;
+  top: -6px;
+  left: -6px;
+`
+
+const EditButton = styled.div`
+  aspect-ratio: 1/1;
+  width: 16px;
+  display: flex;
+  justify-content: center;
+  background: ${({ theme }) => theme.colors.info};
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+  border: 1px solid ${({ theme }) => theme.colors.info};
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+`
+
 const CardWrapper = styled.div`
   position: relative;
 
-  &:hover ${DeleteButton}, &:focus-within ${DeleteButton} {
+  &:hover ${DeleteButton}, &:focus-within ${DeleteButton}, &:hover ${EditButton}, &:focus-within ${EditButton} {
     opacity: 1;
     visibility: visible;
   }

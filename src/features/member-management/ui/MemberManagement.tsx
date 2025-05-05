@@ -17,7 +17,7 @@ const MemberManagement = ({ roomId }: MemberManagementProps) => {
 
   const { data: members, loading, error } = useMemberCollection(roomId)
 
-  const handleClickMember = (id: string) => {
+  const handleEditMember = (id: string) => {
     const findMember = members.find((member) => member.id === id)
     if (!findMember) return
 
@@ -57,7 +57,7 @@ const MemberManagement = ({ roomId }: MemberManagementProps) => {
 
   return (
     <Box $flex $justify="center" $align="center" $gap="xl" $p="xl">
-      <MemberList members={members} onClickMember={handleClickMember} onDeleteMember={handleDeleteMember} />
+      <MemberList members={members} onEditMember={handleEditMember} onDeleteMember={handleDeleteMember} />
       <Box>
         <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 1.1 }}>
           <Button $variant="info" onClick={modalNewMember.open}>

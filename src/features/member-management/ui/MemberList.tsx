@@ -6,11 +6,11 @@ import { MemberItem } from 'features/member-management/ui'
 
 interface MemberListProps {
   members: RoomMember[]
-  onClickMember: (id: string) => void
+  onEditMember: (id: string) => void
   onDeleteMember: (id: string) => void
 }
 
-const MemberList = ({ members, onClickMember, onDeleteMember }: MemberListProps) => {
+const MemberList = ({ members, onEditMember, onDeleteMember }: MemberListProps) => {
   const [removedIds, setRemovedIds] = useState<string[]>([])
   const visibleMembers = members.filter((member) => !removedIds.includes(member.id))
 
@@ -22,7 +22,7 @@ const MemberList = ({ members, onClickMember, onDeleteMember }: MemberListProps)
             key={member.id}
             id={member.id}
             name={member.name}
-            onClick={onClickMember}
+            onEdit={onEditMember}
             onDelete={(id) => {
               setRemovedIds((prev) => [...prev, id])
               onDeleteMember(id)
