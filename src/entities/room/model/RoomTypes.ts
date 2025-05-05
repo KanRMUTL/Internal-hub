@@ -1,6 +1,7 @@
 export interface RoomMember {
   id: string
   name: string
+  isEligibleRandom: boolean
   joinAt: string
   createdAt: string
   updatedAt: string

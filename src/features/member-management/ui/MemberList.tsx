@@ -6,11 +6,19 @@ import { MemberItem } from 'features/member-management/ui'
 
 interface MemberListProps {
   members: RoomMember[]
-  onEditMember: (id: string) => void
-  onDeleteMember: (id: string) => void
+  prefixKey?: string
+  onClickMember: (id: string) => void
+  onEditMember?: (id: string) => void
+  onDeleteMember?: (id: string) => void
 }
 
-const MemberList = ({ members, onEditMember, onDeleteMember }: MemberListProps) => {
+const MemberList = ({
+  members,
+  prefixKey = 'member',
+  onClickMember,
+  onEditMember,
+  onDeleteMember,
+}: MemberListProps) => {
   const [removedIds, setRemovedIds] = useState<string[]>([])
   const visibleMembers = members.filter((member) => !removedIds.includes(member.id))
 
@@ -19,13 +27,14 @@ const MemberList = ({ members, onEditMember, onDeleteMember }: MemberListProps) 
       <AnimatePresence>
         {visibleMembers.map((member) => (
           <MemberItem
-            key={member.id}
+            key={`${prefixKey}-${member.id}`}
             id={member.id}
             name={member.name}
+            onClick={onClickMember}
             onEdit={onEditMember}
             onDelete={(id) => {
               setRemovedIds((prev) => [...prev, id])
-              onDeleteMember(id)
+              onDeleteMember?.(id)
             }}
           />
         ))}

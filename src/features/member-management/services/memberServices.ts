@@ -24,6 +24,15 @@ export const updateMember = async (
   await updateDoc(memberRef, { name, updatedAt })
 }
 
+export const switchEligibleMember = async (
+  roomId: string,
+  memberId: string,
+  { isEligibleRandom, updatedAt }: Pick<RoomMember, 'isEligibleRandom' | 'updatedAt'>
+) => {
+  const memberRef = getMemberRef(roomId, memberId)
+  await updateDoc(memberRef, { isEligibleRandom, updatedAt })
+}
+
 export const deleteMember = async (roomId: string, memberId: string) => {
   const memberRef = getMemberRef(roomId, memberId)
   await deleteDoc(memberRef)

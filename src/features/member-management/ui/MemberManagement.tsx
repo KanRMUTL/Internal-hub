@@ -1,13 +1,21 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import dayjs from 'dayjs'
 import { motion } from 'motion/react'
 import { RoomMember } from 'entities/room'
 import { useModal } from 'shared/hooks'
-import { updateMember, useMemberCollection, createMember, deleteMember } from 'features/member-management'
+import {
+  updateMember,
+  useMemberCollection,
+  createMember,
+  deleteMember,
+  switchEligibleMember,
+} from 'features/member-management'
 import { MemberList, MemberModal } from 'features/member-management/ui'
 import { Alert, Box, Button, Spinner } from 'shared/ui'
 
-type MemberManagementProps = { roomId: string }
+interface MemberManagementProps {
+  roomId: string
+}
 
 const MemberManagement = ({ roomId }: MemberManagementProps) => {
   const [selectedMember, setSelectedMember] = useState<RoomMember | null>(null)
@@ -17,12 +25,31 @@ const MemberManagement = ({ roomId }: MemberManagementProps) => {
 
   const { data: members, loading, error } = useMemberCollection(roomId)
 
+  const { eligibleRandomMembers, normalMember } = useMemo(() => {
+    const eligibleRandomMembers = members.filter((m) => m.isEligibleRandom === true)
+    const normalMember = members.filter((m) => m.isEligibleRandom === false)
+    return {
+      eligibleRandomMembers,
+      normalMember,
+    }
+  }, [members])
+
   const handleEditMember = (id: string) => {
     const findMember = members.find((member) => member.id === id)
     if (!findMember) return
 
     setSelectedMember(findMember)
     modalEditMember.open()
+  }
+  const handleSwitchEligibleMember = async (id: string) => {
+    const findMember = members.find((member) => member.id === id)
+    if (!findMember) return
+
+    const timestamp = dayjs().toString()
+    await switchEligibleMember(roomId, findMember.id, {
+      isEligibleRandom: !findMember.isEligibleRandom,
+      updatedAt: timestamp,
+    })
   }
 
   const handleDeleteMember = useCallback(async (memberId: string) => {
@@ -41,6 +68,7 @@ const MemberManagement = ({ roomId }: MemberManagementProps) => {
     await createMember(roomId, {
       name,
       joinAt: timestamp,
+      isEligibleRandom: false,
       createdAt: timestamp,
       updatedAt: timestamp,
     })
@@ -57,14 +85,24 @@ const MemberManagement = ({ roomId }: MemberManagementProps) => {
 
   return (
     <Box $flex $justify="center" $align="center" $gap="xl" $p="xl">
-      <MemberList members={members} onEditMember={handleEditMember} onDeleteMember={handleDeleteMember} />
-      <Box>
-        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 1.1 }}>
-          <Button $variant="info" onClick={modalNewMember.open}>
-            + Add Member
-          </Button>
-        </motion.div>
+      <Box $flex $direction="column" $justify="center" $align="center" $gap="xl" $p="xl">
+        <MemberList
+          members={eligibleRandomMembers}
+          prefixKey="eligible"
+          onClickMember={handleSwitchEligibleMember}
+          onEditMember={handleEditMember}
+          onDeleteMember={handleDeleteMember}
+        />
+        <MemberList members={normalMember} prefixKey="normal" onClickMember={handleSwitchEligibleMember} />
+        <Box>
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 1.1 }}>
+            <Button $variant="info" onClick={modalNewMember.open}>
+              + Add Member
+            </Button>
+          </motion.div>
+        </Box>
       </Box>
+
       <MemberModal
         isOpen={modalNewMember.isOpen}
         title="Add Member"

@@ -1,1 +1,1 @@
-export { getMemberQuery, createMember, updateMember, deleteMember } from './memberServices'
+export { getMemberQuery, createMember, updateMember, deleteMember, switchEligibleMember } from './memberServices'
