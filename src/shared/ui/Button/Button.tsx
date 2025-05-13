@@ -11,7 +11,9 @@ interface ButtonProps {
 }
 
 export default styled.button<ButtonProps>`
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: ${({ theme }) => theme.fontWeight.medium};
   border: none;
   cursor: pointer;

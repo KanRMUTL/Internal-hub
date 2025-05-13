@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { SpacingKeys, ShadowKeys, BorderRadiusKeys, BackgroundKeys } from 'shared/styles'
 
-export default styled.div<{
+export interface BoxProps {
   $p?: SpacingKeys
   $m?: SpacingKeys
   $bg?: BackgroundKeys
@@ -14,7 +14,9 @@ export default styled.div<{
   $flexWrap?: 'no-wrap' | 'wrap' | 'wrap-reverse'
   $gap?: SpacingKeys
   $pointer?: boolean
-}>`
+}
+
+export default styled.div<BoxProps>`
   padding: ${({ theme, $p }) => $p && theme.spacing[$p]};
   margin: ${({ theme, $m }) => $m && theme.spacing[$m]};
   background: ${({ theme, $bg }) => $bg && theme.background[$bg]};

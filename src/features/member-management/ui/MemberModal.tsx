@@ -46,6 +46,7 @@ const MemberModal = ({ isOpen, title, defaultValues = { name: '' }, onClose, onS
             <Input
               placeholder="Enter member name..."
               error={errors.name?.message}
+              autoFocus
               {...register('name', {
                 required: { value: true, message: 'Please enter a name' },
                 maxLength: { value: 15, message: 'Name must not exceed 15 characters' },

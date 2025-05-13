@@ -5,7 +5,16 @@ import { useMemo } from 'react'
 
 const useMemberCollection = (roomId: string) => {
   const query = useMemo(() => getMemberQuery(roomId), [roomId])
-  return useFirestoreCollection<RoomMember>(query)
+  const { data: members, loading, error } = useFirestoreCollection<RoomMember>(query)
+
+  const { eligibleRandomMembers, normalMembers } = useMemo(() => {
+    return {
+      eligibleRandomMembers: members.filter((member) => member.isEligibleRandom === true),
+      normalMembers: members.filter((member) => member.isEligibleRandom === false),
+    }
+  }, [members])
+
+  return { members, loading, error, eligibleRandomMembers, normalMembers }
 }
 
 export default useMemberCollection

@@ -1,103 +1,47 @@
-import { useCallback, useMemo, useState } from 'react'
-import dayjs from 'dayjs'
 import { motion } from 'motion/react'
+import { PlusCircle } from 'lucide-react'
+
 import { RoomMember } from 'entities/room'
-import { useModal } from 'shared/hooks'
-import {
-  updateMember,
-  useMemberCollection,
-  createMember,
-  deleteMember,
-  switchEligibleMember,
-} from 'features/member-management'
+import { useMemberManagement } from 'features/member-management/hooks'
 import { MemberList, MemberModal } from 'features/member-management/ui'
-import { Alert, Box, Button, Spinner } from 'shared/ui'
+import { Box, Button } from 'shared/ui'
 
 interface MemberManagementProps {
   roomId: string
+  members: RoomMember[]
+  eligibleRandomMembers: RoomMember[]
+  normalMembers: RoomMember[]
 }
 
-const MemberManagement = ({ roomId }: MemberManagementProps) => {
-  const [selectedMember, setSelectedMember] = useState<RoomMember | null>(null)
-
-  const modalNewMember = useModal()
-  const modalEditMember = useModal()
-
-  const { data: members, loading, error } = useMemberCollection(roomId)
-
-  const { eligibleRandomMembers, normalMember } = useMemo(() => {
-    const eligibleRandomMembers = members.filter((m) => m.isEligibleRandom === true)
-    const normalMember = members.filter((m) => m.isEligibleRandom === false)
-    return {
-      eligibleRandomMembers,
-      normalMember,
-    }
-  }, [members])
-
-  const handleEditMember = (id: string) => {
-    const findMember = members.find((member) => member.id === id)
-    if (!findMember) return
-
-    setSelectedMember(findMember)
-    modalEditMember.open()
-  }
-  const handleSwitchEligibleMember = async (id: string) => {
-    const findMember = members.find((member) => member.id === id)
-    if (!findMember) return
-
-    const timestamp = dayjs().toString()
-    await switchEligibleMember(roomId, findMember.id, {
-      isEligibleRandom: !findMember.isEligibleRandom,
-      updatedAt: timestamp,
-    })
-  }
-
-  const handleDeleteMember = useCallback(async (memberId: string) => {
-    await deleteMember(roomId, memberId)
-  }, [])
-
-  const handleSaveMember = async (name: string) => {
-    if (!roomId || !selectedMember) return
-
-    const timestamp = dayjs().toString()
-    await updateMember(roomId, selectedMember.id, { name, updatedAt: timestamp })
-  }
-
-  const handleAddMember = async (name: string) => {
-    const timestamp = dayjs().toString()
-    await createMember(roomId, {
-      name,
-      joinAt: timestamp,
-      isEligibleRandom: false,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-    })
-  }
-
-  const closeModalEditMember = () => {
-    modalEditMember.close()
-    setSelectedMember(null)
-  }
-
-  if (loading) return renderLoading()
-
-  if (error) return renderError()
+const MemberManagement = ({ roomId, members, eligibleRandomMembers, normalMembers }: MemberManagementProps) => {
+  const {
+    selectedMember,
+    modalNewMember,
+    modalEditMember,
+    handleEditMember,
+    handleSwitchEligibleMember,
+    handleDeleteMember,
+    handleSaveMember,
+    handleAddMember,
+    closeModalEditMember,
+  } = useMemberManagement(roomId, members)
 
   return (
-    <Box $flex $justify="center" $align="center" $gap="xl" $p="xl">
-      <Box $flex $direction="column" $justify="center" $align="center" $gap="xl" $p="xl">
+    <>
+      <Box $flex $direction="column" $justify="center" $align="center" $gap="md">
+        <MemberList members={eligibleRandomMembers} prefixKey="eligible" onClickMember={handleSwitchEligibleMember} />
         <MemberList
-          members={eligibleRandomMembers}
-          prefixKey="eligible"
+          members={normalMembers}
+          prefixKey="normal"
+          showDelete
           onClickMember={handleSwitchEligibleMember}
           onEditMember={handleEditMember}
           onDeleteMember={handleDeleteMember}
         />
-        <MemberList members={normalMember} prefixKey="normal" onClickMember={handleSwitchEligibleMember} />
         <Box>
           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 1.1 }}>
             <Button $variant="info" onClick={modalNewMember.open}>
-              + Add Member
+              <PlusCircle size={20} /> &nbsp; New Member
             </Button>
           </motion.div>
         </Box>
@@ -112,6 +56,7 @@ const MemberManagement = ({ roomId }: MemberManagementProps) => {
           handleAddMember(data.name)
         }}
       />
+
       {selectedMember && (
         <MemberModal
           isOpen={modalEditMember.isOpen}
@@ -121,20 +66,8 @@ const MemberManagement = ({ roomId }: MemberManagementProps) => {
           onSubmit={(data) => handleSaveMember(data.name)}
         />
       )}
-    </Box>
+    </>
   )
 }
 
 export default MemberManagement
-
-const renderLoading = () => (
-  <Box $flex $justify="center" $align="center" $gap="xl" $p="lg">
-    <Spinner label="Loading room..." />
-  </Box>
-)
-
-const renderError = () => (
-  <Box $flex $justify="center" $align="center" $gap="xl" $p="lg">
-    <Alert $type="danger">Failed to load room</Alert>
-  </Box>
-)

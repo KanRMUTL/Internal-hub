@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { Card, Typography } from 'shared/ui'
+import { Card, Typography, TypogaphyProps, BoxProps } from 'shared/ui'
 import styled from 'styled-components'
 import { X, Edit } from 'lucide-react'
 import { colors } from 'shared/styles'
@@ -9,10 +9,13 @@ interface MemberItemProps {
   name: string
   onClick?: (id: string) => void
   onEdit?: (id: string) => void
+  showDelete?: boolean
   onDelete?: (id: string) => void
+  typography?: TypogaphyProps
+  box?: BoxProps
 }
 
-const MemberItem = ({ id, name, onClick, onEdit, onDelete }: MemberItemProps) => {
+const MemberItem = ({ id, name, onClick, onEdit, showDelete = false, onDelete, typography, box }: MemberItemProps) => {
   return (
     <motion.div
       initial={{ scale: 0.5, opacity: 0 }}
@@ -41,9 +44,28 @@ const MemberItem = ({ id, name, onClick, onEdit, onDelete }: MemberItemProps) =>
           $bg="secondary"
           style={{ cursor: 'pointer' }}
           onClick={() => onClick?.(id)}
+          {...box}
         >
-          <Typography $pointer>{name}</Typography>
-          {onDelete && (
+          <Typography $pointer {...typography}>
+            {name}
+          </Typography>
+
+          {onEdit && (
+            <EditButtonWrapper whileHover={{ scale: 1.2 }} whileTap={{ scale: 1.2 }}>
+              <EditButton
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onEdit(id)
+                }}
+              >
+                <div>
+                  <Edit size={12} color={colors.white} />
+                </div>
+              </EditButton>
+            </EditButtonWrapper>
+          )}
+
+          {showDelete && onDelete && (
             <DeleteButtonWrapper whileHover={{ scale: 1.2 }} whileTap={{ scale: 1.2 }}>
               <DeleteButton
                 onClick={(e) => {
@@ -56,20 +78,6 @@ const MemberItem = ({ id, name, onClick, onEdit, onDelete }: MemberItemProps) =>
                 </div>
               </DeleteButton>
             </DeleteButtonWrapper>
-          )}
-          {onEdit && (
-            <EditButtonWrapper>
-              <EditButton
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onEdit(id)
-                }}
-              >
-                <div>
-                  <Edit size={12} color={colors.white} />
-                </div>
-              </EditButton>
-            </EditButtonWrapper>
           )}
         </Card>
       </CardWrapper>

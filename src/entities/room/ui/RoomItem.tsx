@@ -34,8 +34,8 @@ const RoomItem = ({ id, title, description, onClick, onClickAdd, onClickRemove }
         style={{ cursor: 'pointer' }}
         onClick={() => onClick(id)}
       >
-        <Box $flex $direction="column" $align="center" $gap="sm">
-          <Typography $size="lg" $pointer>
+        <Box $flex $direction="column" $align="center" $gap="sm" $p="md">
+          <Typography $size="xl" $weight="semibold" $pointer>
             {title}
           </Typography>
           <Typography $color="grey" $size="sm" $pointer>
