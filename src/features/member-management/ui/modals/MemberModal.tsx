@@ -49,7 +49,7 @@ const MemberModal = ({ isOpen, title, defaultValues = { name: '' }, onClose, onS
               autoFocus
               {...register('name', {
                 required: { value: true, message: 'Please enter a name' },
-                maxLength: { value: 15, message: 'Name must not exceed 15 characters' },
+                maxLength: { value: 30, message: 'Name must not exceed 30 characters' },
               })}
             />
             <Box $flex $justify="center" $gap="sm">
