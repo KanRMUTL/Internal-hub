@@ -1,4 +1,3 @@
-// src/shared/ui/Button.tsx
 import styled, { css } from 'styled-components'
 import { FontSizeKeys, ColorKeys, BorderRadiusKeys, ShadowKeys } from 'shared/styles'
 

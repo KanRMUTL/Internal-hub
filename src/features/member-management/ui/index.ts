@@ -1,4 +1,5 @@
-export { default as MemberModal } from './MemberModal'
 export { default as MemberManagement } from './MemberManagement'
+export { default as MemberManagementV2 } from './MemberManagementV2'
 export { default as MemberItem } from './MemberItem'
 export { default as MemberList } from './MemberList'
+export { ModalConfirmRemove, MemberModal } from './modals'

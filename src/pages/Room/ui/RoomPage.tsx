@@ -1,16 +1,21 @@
-import { MemberManagement } from 'features/member-management'
-import { useParams } from 'react-router-dom'
-import { Box, Alert, Spinner } from 'shared/ui'
-import { WheelOfFortune, LuckyModal } from 'features/fortune'
 import { useState } from 'react'
-import { useMemberCollection } from 'features/member-management'
+import styled from 'styled-components'
+import _ from 'lodash'
+import { useParams } from 'react-router-dom'
+import { motion } from 'motion/react'
+import { Plus } from 'lucide-react'
+
 import { RoomMember } from 'entities/room'
+import { Box, Alert, Spinner, CircularButton } from 'shared/ui'
+import { MemberManagementV2, useMemberCollection, useMemberManagement, MemberModal } from 'features/member-management'
+import { WheelOfFortune, LuckyModal } from 'features/fortune'
 
 const RoomPage = () => {
   const { id = '' } = useParams<{ id: string }>()
   const [winner, setWinner] = useState<RoomMember | null>(null)
 
-  const { members, loading, error, eligibleRandomMembers, normalMembers } = useMemberCollection(id)
+  const { members, loading, error, eligibleRandomMembers } = useMemberCollection(id)
+  const { modalNewMember, handleAddMember } = useMemberManagement(id, members)
 
   const memberNames = eligibleRandomMembers.map(({ id, name }) => ({
     id,
@@ -29,17 +34,37 @@ const RoomPage = () => {
   if (error) return renderError()
 
   return (
-    <Box $flex $justify="center" $align="center" $gap="md" $p="xl">
-      <Box $flex $direction="column" $justify="center" $align="center" $gap="md">
+    <Box $flex $justify="center" $gap="md" $p="lg" style={{ position: 'relative' }}>
+      <WrapperButtonAdd>
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 1.2 }}
+        >
+          <CircularButton $size={54} $variant="info" onClick={modalNewMember.open}>
+            <Plus size={30} />
+          </CircularButton>
+        </motion.div>
+      </WrapperButtonAdd>
+      <div style={{ flex: 1 }}>
         <WheelOfFortune members={memberNames} onSpinCompleted={handleSpinComplete} />
-        {winner && <LuckyModal winner={winner} onAccept={() => setWinner(null)} onDiscard={() => setWinner(null)} />}
-        <MemberManagement
-          roomId={id}
-          members={members}
-          eligibleRandomMembers={eligibleRandomMembers}
-          normalMembers={normalMembers}
-        />
-      </Box>
+      </div>
+      <ScrollableContainer>
+        <MemberManagementV2 roomId={id} members={members} />
+      </ScrollableContainer>
+
+      {winner && <LuckyModal winner={winner} onAccept={() => setWinner(null)} onDiscard={() => setWinner(null)} />}
+
+      <MemberModal
+        isOpen={modalNewMember.isOpen}
+        title="Add Member"
+        defaultValues={{ name: '' }}
+        onClose={modalNewMember.close}
+        onSubmit={(data) => {
+          handleAddMember(data.name)
+        }}
+      />
     </Box>
   )
 }
@@ -57,3 +82,19 @@ const renderError = () => (
     <Alert $type="danger">Failed to load room</Alert>
   </Box>
 )
+
+const ScrollableContainer = styled.div`
+  width: fit-content;
+  height: calc(100vh - 66px - 60px - 32px);
+  overflow: auto;
+  padding: 1rem;
+`
+
+const WrapperButtonAdd = styled.div`
+  z-index: 99;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  justify-content: flex-end;
+`
