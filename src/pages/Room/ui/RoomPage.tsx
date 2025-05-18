@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 
 import { RoomMember } from 'entities/room'
-import { Box, CircularButton, withMotion, DataBoundary } from 'shared/ui'
+import { Box, CircularButton, withMotion, DataBoundary, FlashAlert } from 'shared/ui'
 import { MemberManagementV2, useMemberCollection, useCreateNewMember, MemberModal } from 'features/member-management'
 import { WheelOfFortune, LuckyModal } from 'features/fortune'
 
@@ -14,7 +14,7 @@ const RoomPage = () => {
   const [winner, setWinner] = useState<RoomMember | null>(null)
 
   const { members, loading, error, eligibleRandomMembers } = useMemberCollection(id)
-  const { modalNewMember, handleCreateMember } = useCreateNewMember()
+  const { modalNewMember, flashAlert, flashState, handleCreateMember } = useCreateNewMember()
 
   const memberNames = eligibleRandomMembers.map(({ id, name }) => ({
     id,
@@ -60,6 +60,13 @@ const RoomPage = () => {
           onSubmit={(data) => {
             handleCreateMember(id, data.name)
           }}
+        />
+
+        <FlashAlert
+          type={flashState.state.type}
+          message={flashState.state.message}
+          visible={flashAlert.isOpen}
+          onClose={flashAlert.close}
         />
       </Box>
     </DataBoundary>
