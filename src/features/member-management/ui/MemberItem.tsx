@@ -13,9 +13,20 @@ interface MemberItemProps {
   onDelete?: (id: string) => void
   typography?: TypogaphyProps
   box?: BoxProps
+  active?: boolean
 }
 
-const MemberItem = ({ id, name, onClick, onEdit, showDelete = false, onDelete, typography, box }: MemberItemProps) => {
+const MemberItem = ({
+  id,
+  name,
+  onClick,
+  onEdit,
+  showDelete = false,
+  onDelete,
+  typography,
+  box,
+  active = true,
+}: MemberItemProps) => {
   return (
     <motion.div
       initial={{ scale: 0.5, opacity: 0 }}
@@ -30,7 +41,7 @@ const MemberItem = ({ id, name, onClick, onEdit, showDelete = false, onDelete, t
           $border={{
             width: 'thin',
             style: 'solid',
-            color: 'primary',
+            color: active ? 'primary' : 'grey',
           }}
           $pointer
           $flex
@@ -46,7 +57,7 @@ const MemberItem = ({ id, name, onClick, onEdit, showDelete = false, onDelete, t
           onClick={() => onClick?.(id)}
           {...box}
         >
-          <Typography $pointer {...typography}>
+          <Typography $pointer $color={active ? undefined : 'grey'} {...typography}>
             {name}
           </Typography>
 

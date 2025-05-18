@@ -10,6 +10,7 @@ export const useMemberManagement = (roomId: string, members: RoomMember[]) => {
 
   const modalNewMember = useModal()
   const modalEditMember = useModal()
+  const modalConfirmRemove = useModal()
 
   const handleEditMember = (id: string) => {
     const findMember = members.find((member) => member.id === id)
@@ -31,6 +32,7 @@ export const useMemberManagement = (roomId: string, members: RoomMember[]) => {
 
   const handleDeleteMember = useCallback(
     async (memberId: string) => {
+      modalConfirmRemove.close()
       await deleteMember(roomId, memberId)
     },
     [roomId]
@@ -54,6 +56,14 @@ export const useMemberManagement = (roomId: string, members: RoomMember[]) => {
     })
   }
 
+  const handleConfirmRemoveMember = async (memberId: string) => {
+    const findMember = members.find((member) => member.id === memberId)
+    if (!findMember) return
+
+    setSelectedMember(findMember)
+    modalConfirmRemove.open()
+  }
+
   const closeModalEditMember = () => {
     modalEditMember.close()
     setTimeout(() => setSelectedMember(null), 200)
@@ -63,11 +73,13 @@ export const useMemberManagement = (roomId: string, members: RoomMember[]) => {
     selectedMember,
     modalNewMember,
     modalEditMember,
+    modalConfirmRemove,
     handleEditMember,
     handleSwitchEligibleMember,
     handleDeleteMember,
     handleSaveMember,
     handleAddMember,
     closeModalEditMember,
+    handleConfirmRemoveMember,
   }
 }
