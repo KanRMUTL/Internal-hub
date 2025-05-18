@@ -71,13 +71,11 @@ export default function WheelOfFortune({ members, onSpinCompleted }: WheelOfFort
           const endAngle = startAngle + SEGMENT_ANGLE
           const largeArcFlag = SEGMENT_ANGLE > 180 ? 1 : 0
 
-          // ใช้ความละเอียดสูงในการคำนวณจุด
           const x1 = CENTER + RADIUS * Math.cos(toRad(startAngle))
           const y1 = CENTER + RADIUS * Math.sin(toRad(startAngle))
           const x2 = CENTER + RADIUS * Math.cos(toRad(endAngle))
           const y2 = CENTER + RADIUS * Math.sin(toRad(endAngle))
 
-          // ตำแหน่ง label ให้อยู่กลาง segment
           const labelAngle = startAngle + SEGMENT_ANGLE / 2
           const labelRad = toRad(labelAngle)
           const textX = CENTER + RADIUS * 0.65 * Math.cos(labelRad)
@@ -145,8 +143,10 @@ export const Pointer = styled.div`
 `
 
 export const StyledWheel = styled(motion.svg)`
-  width: 600px;
-  height: 600px;
+  width: 80%;
+  height: 80%;
+  max-width: 80vh;
+  max-height: 80vh;
   border-radius: 50%;
   box-shadow: ${({ theme }) => theme.shadow.md};
 `
