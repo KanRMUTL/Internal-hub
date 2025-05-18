@@ -7,6 +7,7 @@ export interface TypogaphyProps {
   $align?: 'left' | 'center' | 'right'
   $weight?: FontWeightKeys
   $pointer?: boolean
+  $inline?: boolean
 }
 
 export default styled.p<TypogaphyProps>`
@@ -14,6 +15,7 @@ export default styled.p<TypogaphyProps>`
   font-weight: ${({ theme, $weight = 'normal' }) => $weight || theme.fontWeight[$weight]};
   color: ${({ theme, $color }) => ($color ? theme.colors[$color] : theme.text)};
   text-align: ${({ $align }) => $align || 'left'};
+  display: ${({ $inline }) => ($inline ? 'inline' : 'block')};
   cursor: ${({ $pointer }) => ($pointer ? 'pointer' : 'auto')};
   margin: 0;
 `
