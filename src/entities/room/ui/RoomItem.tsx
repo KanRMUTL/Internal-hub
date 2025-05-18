@@ -7,7 +7,7 @@ interface RoomItemProps {
   title: string
   description: string
   onClick: (id: string) => void
-  onClickAdd: (id: string) => void
+  onClickAdd: (id: string, name: string) => void
   onClickRemove: (id: string) => void
 }
 
@@ -48,7 +48,7 @@ const RoomItem = ({ id, title, description, onClick, onClickAdd, onClickRemove }
               $variant="info"
               onClick={(e) => {
                 e.stopPropagation()
-                onClickAdd(id)
+                onClickAdd(id, title)
               }}
             >
               <Typography $color="white" $size="sm" $pointer>

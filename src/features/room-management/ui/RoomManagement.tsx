@@ -5,7 +5,7 @@ import { useActiveRooms, useRoomManagement, useRemoveRoom } from 'features/room-
 import { ModalConfirmRemoveRoom, RoomList, RoomModal } from 'features/room-management/ui'
 
 interface RoomManagementProps {
-  onClickAddItem: (id: string) => void
+  onClickAddItem: (id: string, name: string) => void
 }
 
 const RoomManagement = ({ onClickAddItem }: RoomManagementProps) => {

@@ -5,7 +5,7 @@ import { AnimatePresence } from 'motion/react'
 interface RoomListProps {
   rooms: Room[]
   removedIds: string[]
-  onClickAdd: (id: string) => void
+  onClickAdd: (id: string, name: string) => void
   onClickRoom: (id: string) => void
   onClickRemove: (id: string) => void
 }
