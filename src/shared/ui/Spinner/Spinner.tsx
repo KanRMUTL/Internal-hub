@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 
 interface SpinnerProps {
-  size?: number // px
+  size?: number
   color?: string
   label?: string
 }
