@@ -2,12 +2,11 @@ import { useCallback, useState } from 'react'
 import dayjs from 'dayjs'
 import { RoomMember } from 'entities/room'
 import { useModal } from 'shared/hooks'
-import { updateMember, createMember, deleteMember, switchEligibleMember } from 'features/member-management/services'
+import { updateMember, deleteMember, switchEligibleMember } from 'features/member-management/services'
 
-export const useMemberManagement = (roomId: string, members: RoomMember[]) => {
+const useMemberManagement = (roomId: string, members: RoomMember[]) => {
   const [selectedMember, setSelectedMember] = useState<RoomMember | null>(null)
 
-  const modalNewMember = useModal()
   const modalEditMember = useModal()
   const modalConfirmRemove = useModal()
 
@@ -44,17 +43,6 @@ export const useMemberManagement = (roomId: string, members: RoomMember[]) => {
     await updateMember(roomId, selectedMember.id, { name, updatedAt: timestamp })
   }
 
-  const handleAddMember = async (name: string) => {
-    const timestamp = dayjs().toString()
-    await createMember(roomId, {
-      name,
-      joinAt: timestamp,
-      isEligibleRandom: false,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-    })
-  }
-
   const handleConfirmRemoveMember = async (memberId: string) => {
     const findMember = members.find((member) => member.id === memberId)
     if (!findMember) return
@@ -70,15 +58,15 @@ export const useMemberManagement = (roomId: string, members: RoomMember[]) => {
 
   return {
     selectedMember,
-    modalNewMember,
     modalEditMember,
     modalConfirmRemove,
     handleEditMember,
     handleSwitchEligibleMember,
     handleDeleteMember,
     handleSaveMember,
-    handleAddMember,
     closeModalEditMember,
     handleConfirmRemoveMember,
   }
 }
+
+export default useMemberManagement

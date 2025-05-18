@@ -1,2 +1,3 @@
 export { default as useMemberCollection } from './useMemberCollection'
-export { useMemberManagement } from './useMemberManagement'
+export { default as useMemberManagement } from './useMemberManagement'
+export { default as useCreateNewMember } from './useCreateNewMember'

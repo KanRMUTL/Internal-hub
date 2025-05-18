@@ -6,7 +6,7 @@ import { Plus } from 'lucide-react'
 
 import { RoomMember } from 'entities/room'
 import { Box, CircularButton, withMotion, DataBoundary } from 'shared/ui'
-import { MemberManagementV2, useMemberCollection, useMemberManagement, MemberModal } from 'features/member-management'
+import { MemberManagementV2, useMemberCollection, useCreateNewMember, MemberModal } from 'features/member-management'
 import { WheelOfFortune, LuckyModal } from 'features/fortune'
 
 const RoomPage = () => {
@@ -14,7 +14,7 @@ const RoomPage = () => {
   const [winner, setWinner] = useState<RoomMember | null>(null)
 
   const { members, loading, error, eligibleRandomMembers } = useMemberCollection(id)
-  const { modalNewMember, handleAddMember } = useMemberManagement(id, members)
+  const { modalNewMember, handleCreateMember } = useCreateNewMember()
 
   const memberNames = eligibleRandomMembers.map(({ id, name }) => ({
     id,
@@ -58,7 +58,7 @@ const RoomPage = () => {
           defaultValues={{ name: '' }}
           onClose={modalNewMember.close}
           onSubmit={(data) => {
-            handleAddMember(data.name)
+            handleCreateMember(id, data.name)
           }}
         />
       </Box>
