@@ -17,5 +17,4 @@ export const Nav = styled.div<{ $light: boolean }>`
 
 export const Main = styled.div`
   width: 100%;
-  min-height: 100vh;
 `
