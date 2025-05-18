@@ -1,2 +1,2 @@
-export { default as ModalConfirmRemove } from './ModalConfirmRemove'
+export { default as ModalConfirmRemoveMember } from './ModalConfirmRemoveMember'
 export { default as MemberModal } from './MemberModal'

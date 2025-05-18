@@ -1,6 +1,6 @@
 import { RoomMember } from 'entities/room'
 import { Table } from 'shared/ui'
-import { MemberModal, ModalConfirmRemove } from 'features/member-management/ui'
+import { MemberModal, ModalConfirmRemoveMember } from 'features/member-management/ui'
 import { useMemberManagement } from 'features/member-management/hooks'
 import { createMemberColumns } from 'features/member-management/libs'
 
@@ -42,9 +42,9 @@ const MemberManagementV2 = ({ roomId, members }: MemberTableProps) => {
             onSubmit={(data) => handleSaveMember(data.name)}
           />
 
-          <ModalConfirmRemove
+          <ModalConfirmRemoveMember
             selectedMember={selectedMember}
-            modal={modalConfirmRemove}
+            isOpen={modalConfirmRemove.isOpen}
             onCancel={modalConfirmRemove.close}
             onConfirm={() => handleDeleteMember(selectedMember.id)}
           />

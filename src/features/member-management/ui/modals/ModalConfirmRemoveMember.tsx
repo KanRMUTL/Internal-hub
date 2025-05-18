@@ -2,19 +2,16 @@ import { ModalConfirm, Button, Typography } from 'shared/ui'
 import { RoomMember } from 'entities/room'
 import { withMotion } from 'shared/ui'
 
-const ModalConfirmRemove = ({
-  selectedMember,
-  modal,
-  onConfirm,
-  onCancel,
-}: {
+interface ModalConfirmRemoveMemberProps {
   selectedMember: RoomMember
-  modal: { isOpen: boolean; close: () => void }
+  isOpen: boolean
   onConfirm: () => void
   onCancel: () => void
-}) => (
+}
+
+const ModalConfirmRemoveMember = ({ selectedMember, isOpen, onConfirm, onCancel }: ModalConfirmRemoveMemberProps) => (
   <ModalConfirm
-    isOpen={modal.isOpen}
+    isOpen={isOpen}
     title={
       <Typography $size="xl" $weight="bold" $color="danger" $inline>
         {'🥹 Are you sure to remove '}
@@ -44,4 +41,4 @@ const ModalConfirmRemove = ({
   />
 )
 
-export default ModalConfirmRemove
+export default ModalConfirmRemoveMember
