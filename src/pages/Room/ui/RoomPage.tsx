@@ -2,7 +2,6 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import _ from 'lodash'
 import { useParams } from 'react-router-dom'
-import { motion } from 'motion/react'
 import { Plus } from 'lucide-react'
 
 import { RoomMember } from 'entities/room'

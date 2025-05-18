@@ -1,9 +1,8 @@
-// hooks/useMemberManagement.ts
 import { useCallback, useState } from 'react'
 import dayjs from 'dayjs'
 import { RoomMember } from 'entities/room'
 import { useModal } from 'shared/hooks'
-import { updateMember, createMember, deleteMember, switchEligibleMember } from 'features/member-management'
+import { updateMember, createMember, deleteMember, switchEligibleMember } from 'features/member-management/services'
 
 export const useMemberManagement = (roomId: string, members: RoomMember[]) => {
   const [selectedMember, setSelectedMember] = useState<RoomMember | null>(null)

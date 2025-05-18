@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import styled, { keyframes } from 'styled-components'
-import { Button } from 'shared/ui'
-import { MemberItem } from 'features/member-management/ui'
+import { Box, Button, Typography } from 'shared/ui'
 import { RoomMember } from 'entities/room'
 
 interface LuckyModalProps {
@@ -21,12 +20,11 @@ const LuckyModal = ({ winner, onAccept, onDiscard }: LuckyModalProps) => {
         <WinnerWrapper>
           <motion.div whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.8 }}>
             <RainbowBorder>
-              <MemberItem
-                id={winner.id}
-                name={`🎆 ${winner.name} 🎉`}
-                typography={{ $size: 'xl', $weight: 'bold' }}
-                box={{ $p: 'lg' }}
-              />
+              <Box $flex $justify="center" $align="center" $p="lg" $pointer>
+                <Typography $size="xl" $weight="bold" $color="white" $pointer>
+                  🎆 {winner.name} 🎉
+                </Typography>
+              </Box>
             </RainbowBorder>
           </motion.div>
 

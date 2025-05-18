@@ -2,7 +2,7 @@ import { RoomMember } from 'entities/room'
 import { Table } from 'shared/ui'
 import { MemberModal, ModalConfirmRemove } from 'features/member-management/ui'
 import { useMemberManagement } from 'features/member-management/hooks'
-import { createMemberColumns } from 'features/member-management/lib/memberTable'
+import { createMemberColumns } from 'features/member-management/libs'
 
 interface MemberTableProps {
   roomId: string
