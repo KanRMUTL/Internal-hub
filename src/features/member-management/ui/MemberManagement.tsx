@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 import { PlusCircle } from 'lucide-react'
 
 import { RoomMember } from 'entities/room'
-import { useMemberManagement } from 'features/member-management/hooks'
+import { useCreateNewMember, useMemberManagement } from 'features/member-management/hooks'
 import { MemberList, MemberModal } from 'features/member-management/ui'
 import { Box, Button } from 'shared/ui'
 
@@ -16,15 +16,14 @@ interface MemberManagementProps {
 const MemberManagement = ({ roomId, members, eligibleRandomMembers, normalMembers }: MemberManagementProps) => {
   const {
     selectedMember,
-    modalNewMember,
     modalEditMember,
     handleEditMember,
     handleSwitchEligibleMember,
     handleDeleteMember,
     handleSaveMember,
-    handleAddMember,
     closeModalEditMember,
   } = useMemberManagement(roomId, members)
+  const { modalNewMember } = useCreateNewMember()
 
   return (
     <>
@@ -46,16 +45,6 @@ const MemberManagement = ({ roomId, members, eligibleRandomMembers, normalMember
           </motion.div>
         </Box>
       </Box>
-
-      <MemberModal
-        isOpen={modalNewMember.isOpen}
-        title="Add Member"
-        defaultValues={{ name: '' }}
-        onClose={modalNewMember.close}
-        onSubmit={(data) => {
-          handleAddMember(data.name)
-        }}
-      />
 
       {selectedMember && (
         <MemberModal
