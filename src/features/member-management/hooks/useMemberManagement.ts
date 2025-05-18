@@ -32,6 +32,7 @@ const useMemberManagement = (roomId: string, members: RoomMember[]) => {
     async (memberId: string) => {
       modalConfirmRemove.close()
       await deleteMember(roomId, memberId)
+      resetSelectedMember()
     },
     [roomId]
   )
@@ -41,9 +42,10 @@ const useMemberManagement = (roomId: string, members: RoomMember[]) => {
 
     const timestamp = dayjs().toString()
     await updateMember(roomId, selectedMember.id, { name, updatedAt: timestamp })
+    resetSelectedMember()
   }
 
-  const handleConfirmRemoveMember = async (memberId: string) => {
+  const handleConfirmRemoveMember = (memberId: string) => {
     const findMember = members.find((member) => member.id === memberId)
     if (!findMember) return
 
@@ -53,8 +55,12 @@ const useMemberManagement = (roomId: string, members: RoomMember[]) => {
 
   const closeModalEditMember = () => {
     modalEditMember.close()
-    setTimeout(() => setSelectedMember(null), 200)
+    resetSelectedMember()
   }
+
+  const resetSelectedMember = useCallback(() => {
+    setTimeout(() => setSelectedMember(null), 200)
+  }, [])
 
   return {
     selectedMember,
