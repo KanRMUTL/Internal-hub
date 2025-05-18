@@ -1,4 +1,4 @@
-import { useTheme } from 'features/toggleTheme'
+import { useTheme } from 'features/toggle-theme'
 import Toggle from 'shared/ui/Toggle'
 
 const ToggleThemeButton = () => {

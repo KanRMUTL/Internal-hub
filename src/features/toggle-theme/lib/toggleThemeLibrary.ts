@@ -1,5 +1,5 @@
 import { THEME_MODE_KEYS } from 'shared/styles'
-import { DEFAULT_MODE } from 'features/toggleTheme/config'
+import { DEFAULT_MODE } from 'features/toggle-theme/config'
 
 export const switchMode = (currentMode: THEME_MODE_KEYS | undefined) => {
   switch (currentMode) {

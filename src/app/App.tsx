@@ -1,4 +1,4 @@
-import { ThemeProvider } from 'features/toggleTheme'
+import { ThemeProvider } from 'features/toggle-theme'
 import { GlobalStyle } from 'shared/styles'
 import { AppRouter } from './routes'
 

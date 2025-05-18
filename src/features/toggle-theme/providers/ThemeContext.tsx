@@ -2,8 +2,8 @@ import React, { createContext, useCallback, useContext, useMemo } from 'react'
 import { useLocalStorage } from 'react-use'
 import { ThemeProvider as StyledProvider } from 'styled-components'
 import { lightTheme, darkTheme, THEME_MODE_KEYS } from 'shared/styles'
-import { DEFAULT_MODE } from 'features/toggleTheme/config'
-import { switchMode } from 'features/toggleTheme/lib'
+import { DEFAULT_MODE } from 'features/toggle-theme/config'
+import { switchMode } from 'features/toggle-theme/lib'
 
 interface ThemeContextValue {
   toggleTheme: VoidFunction

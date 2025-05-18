@@ -1,5 +1,5 @@
 import { Wrapper, Nav, Main } from './styled'
-import ToggleThemeButton, { useTheme } from 'features/toggleTheme'
+import { ToggleThemeButton, useTheme } from 'features/toggle-theme'
 import { Outlet } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
