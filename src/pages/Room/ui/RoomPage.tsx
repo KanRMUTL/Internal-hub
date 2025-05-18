@@ -6,7 +6,7 @@ import { motion } from 'motion/react'
 import { Plus } from 'lucide-react'
 
 import { RoomMember } from 'entities/room'
-import { Box, Alert, Spinner, CircularButton } from 'shared/ui'
+import { Box, Alert, Spinner, CircularButton, withMotion } from 'shared/ui'
 import { MemberManagementV2, useMemberCollection, useMemberManagement, MemberModal } from 'features/member-management'
 import { WheelOfFortune, LuckyModal } from 'features/fortune'
 
@@ -36,16 +36,11 @@ const RoomPage = () => {
   return (
     <Box $flex $justify="center" $gap="md" $p="lg" style={{ position: 'relative' }}>
       <WrapperButtonAdd>
-        <motion.div
-          initial={{ scale: 0.5, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          whileHover={{ scale: 1.2 }}
-          whileTap={{ scale: 1.2 }}
-        >
+        {withMotion(
           <CircularButton $size={54} $variant="info" onClick={modalNewMember.open}>
             <Plus size={30} />
           </CircularButton>
-        </motion.div>
+        )}
       </WrapperButtonAdd>
       <div style={{ flex: 1 }}>
         <WheelOfFortune members={memberNames} onSpinCompleted={handleSpinComplete} />

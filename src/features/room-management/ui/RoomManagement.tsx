@@ -1,29 +1,14 @@
-import { motion } from 'motion/react'
-import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
-import { removeRoom, createRoom } from 'features/room-management/services'
-import { useActiveRooms } from 'features/room-management/hooks'
-import { RoomList, RoomModal, RoomForm } from 'features/room-management/ui'
-import { Box, Button, Spinner, Alert } from 'shared/ui'
-import { useModal } from 'shared/hooks'
+import { removeRoom } from 'features/room-management/services'
+import { useActiveRooms, useRoomManagement } from 'features/room-management/hooks'
+import { RoomList, RoomModal } from 'features/room-management/ui'
+import { Box, Spinner, Alert, CircularButton, withMotion } from 'shared/ui'
+import { Plus } from 'lucide-react'
 
 const RoomManagement = () => {
   const { data: rooms, loading, error } = useActiveRooms()
   const navigate = useNavigate()
-
-  const roomModal = useModal()
-  const handleCreateRoom = async ({ name, description }: RoomForm) => {
-    const timestamp = dayjs().toString()
-    await createRoom({
-      name,
-      description,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-      active: true,
-      lastWinner: '',
-      members: [],
-    })
-  }
+  const { roomModal, handleCreateRoom } = useRoomManagement()
 
   if (loading) renderLoading()
 
@@ -40,11 +25,11 @@ const RoomManagement = () => {
         onClickRemove={removeRoom}
       />
       <Box>
-        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 1 }}>
-          <Button $variant="info" onClick={roomModal.open}>
-            + new room
-          </Button>
-        </motion.div>
+        {withMotion(
+          <CircularButton $size={54} $variant="info" onClick={roomModal.open}>
+            <Plus size={30} />
+          </CircularButton>
+        )}
       </Box>
       <RoomModal isOpen={roomModal.isOpen} onClose={roomModal.close} onSubmit={handleCreateRoom} />
     </Box>

@@ -51,8 +51,8 @@ const RoomItem = ({ id, title, description, onClick, onClickAdd, onClickRemove }
                 onClickAdd(id)
               }}
             >
-              <Typography $color="white" $size="sm">
-                Add
+              <Typography $color="white" $size="sm" $pointer>
+                Add Item
               </Typography>
             </Button>
           </motion.div>
@@ -64,7 +64,7 @@ const RoomItem = ({ id, title, description, onClick, onClickAdd, onClickRemove }
                 onClickRemove(id)
               }}
             >
-              <Typography $color="white" $size="sm">
+              <Typography $color="white" $size="sm" $pointer>
                 Remove
               </Typography>
             </Button>
