@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import styled from 'styled-components'
 import { Alert } from 'shared/ui'
@@ -10,25 +10,6 @@ type FlashAlertProps = {
   visible: boolean
   duration?: number
   onClose: () => void
-}
-
-type FlashAlertState = {
-  type: ColorKeys
-  message: string
-}
-
-export const useFlashAlert = () => {
-  const [state, set] = useState<FlashAlertState>({ type: 'success', message: '' })
-
-  const reset = () => {
-    set({ type: 'success', message: '' })
-  }
-
-  return {
-    state,
-    set,
-    reset,
-  }
 }
 
 const FlashAlert = ({ type = 'info', message, visible, duration = 3000, onClose }: FlashAlertProps) => {

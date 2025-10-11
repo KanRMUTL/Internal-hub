@@ -1,19 +1,10 @@
-import React, { createContext, useCallback, useContext, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useLocalStorage } from 'react-use'
 import { ThemeProvider as StyledProvider } from 'styled-components'
 import { lightTheme, darkTheme, THEME_MODE_KEYS } from 'shared/styles'
 import { DEFAULT_MODE } from 'features/toggle-theme/config'
 import { switchMode } from 'features/toggle-theme/lib'
-
-interface ThemeContextValue {
-  toggleTheme: VoidFunction
-  mode: THEME_MODE_KEYS
-}
-
-const ThemeContext = createContext<ThemeContextValue>({
-  toggleTheme: () => {},
-  mode: 'LIGHT',
-})
+import { ThemeContext } from './context'
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [modeStorage, setModeStorage] = useLocalStorage<THEME_MODE_KEYS>('theme', 'LIGHT')
@@ -21,7 +12,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const toggleTheme = useCallback(() => {
     const nextMode = switchMode(modeStorage)
     setModeStorage(nextMode)
-  }, [modeStorage])
+  }, [modeStorage, setModeStorage])
 
   const { theme, mode } = useMemo(() => {
     const theme = modeStorage === 'LIGHT' ? lightTheme : darkTheme
@@ -38,5 +29,3 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     </ThemeContext.Provider>
   )
 }
-
-export const useTheme = () => useContext(ThemeContext)

@@ -1,15 +1,60 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import styled, { keyframes } from 'styled-components'
-import { Box, Button, Typography } from 'shared/ui'
+import { AlertTriangle, Loader2 } from 'lucide-react'
+import { Box, Button, Typography, Alert } from 'shared/ui'
 import { RoomMember } from 'entities/room'
 
 interface LuckyModalProps {
   winner: RoomMember
   onAccept: () => void
   onDiscard: () => void
+  onSaveFortuneHistory?: (winnerId: string, winnerName: string) => Promise<void>
 }
 
-const LuckyModal = ({ winner, onAccept, onDiscard }: LuckyModalProps) => {
+const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: LuckyModalProps) => {
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+
+  const handleAccept = async () => {
+    setSaving(true)
+    setSaveError(null)
+
+    try {
+      // Save fortune history if function is provided
+      if (onSaveFortuneHistory) {
+        await onSaveFortuneHistory(winner.id, winner.name)
+      }
+      // Call the original onAccept handler
+      onAccept()
+    } catch (error) {
+      console.error('Failed to save fortune history:', error)
+      const errorMessage = getErrorMessage(error as Error)
+      setSaveError(errorMessage)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleRetry = () => {
+    setSaveError(null)
+    handleAccept()
+  }
+
+  const getErrorMessage = (error: Error): string => {
+    const message = error.message.toLowerCase()
+
+    if (message.includes('network') || message.includes('offline')) {
+      return 'Network connection failed. Please check your internet connection and try again.'
+    }
+
+    if (message.includes('permission') || message.includes('unauthorized')) {
+      return 'You do not have permission to save fortune history.'
+    }
+
+    return 'Failed to save fortune history. Please try again.'
+  }
+
   return (
     <Backdrop>
       <motion.div
@@ -28,14 +73,48 @@ const LuckyModal = ({ winner, onAccept, onDiscard }: LuckyModalProps) => {
             </RainbowBorder>
           </motion.div>
 
+          {saveError && (
+            <ErrorContainer>
+              <Alert $type="danger">
+                <Box $flex $direction="column" $gap="sm" $align="center">
+                  <Box $flex $align="center" $gap="sm">
+                    <AlertTriangle size={16} />
+                    <Typography $size="sm" $weight="medium">
+                      {saveError}
+                    </Typography>
+                  </Box>
+                  <Button $variant="info" $size="sm" onClick={handleRetry} disabled={saving}>
+                    Try Again
+                  </Button>
+                </Box>
+              </Alert>
+            </ErrorContainer>
+          )}
+
           <ButtonRow>
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.8 }}>
-              <Button onClick={onDiscard} $variant="grey">
+              <Button onClick={onDiscard} $variant="grey" disabled={saving}>
                 🔄 Discard
               </Button>
             </motion.div>
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.8 }}>
-              <Button onClick={onAccept}>✅ Accept</Button>
+              <Button onClick={handleAccept} disabled={saving}>
+                <Box $flex $align="center" $gap="sm">
+                  {saving && (
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 1,
+                        ease: 'linear',
+                      }}
+                    >
+                      <Loader2 size={16} />
+                    </motion.div>
+                  )}
+                  {saving ? 'Saving...' : '✅ Accept'}
+                </Box>
+              </Button>
             </motion.div>
           </ButtonRow>
         </WinnerWrapper>
@@ -81,4 +160,9 @@ const ButtonRow = styled.div`
   gap: 1rem;
   margin-top: 1rem;
   justify-content: center;
+`
+
+const ErrorContainer = styled.div`
+  margin-top: 1rem;
+  max-width: 300px;
 `

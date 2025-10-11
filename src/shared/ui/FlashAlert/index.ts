@@ -1,1 +1,2 @@
-export { default, useFlashAlert } from './FlashAlert'
+export { default } from './FlashAlert'
+export { useFlashAlert } from './useFlashAlert'

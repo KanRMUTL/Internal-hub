@@ -1,0 +1,1 @@
+export { useFortuneHistory } from './useFortuneHistory'

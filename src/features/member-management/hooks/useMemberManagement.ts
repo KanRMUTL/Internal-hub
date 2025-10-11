@@ -10,6 +10,10 @@ const useMemberManagement = (roomId: string, members: RoomMember[]) => {
   const modalEditMember = useModal()
   const modalConfirmRemove = useModal()
 
+  const resetSelectedMember = useCallback(() => {
+    setTimeout(() => setSelectedMember(null), 200)
+  }, [])
+
   const handleEditMember = (id: string) => {
     const findMember = members.find((member) => member.id === id)
     if (!findMember) return
@@ -34,7 +38,7 @@ const useMemberManagement = (roomId: string, members: RoomMember[]) => {
       await deleteMember(roomId, memberId)
       resetSelectedMember()
     },
-    [roomId]
+    [roomId, modalConfirmRemove, resetSelectedMember]
   )
 
   const handleSaveMember = async (name: string) => {
@@ -57,10 +61,6 @@ const useMemberManagement = (roomId: string, members: RoomMember[]) => {
     modalEditMember.close()
     resetSelectedMember()
   }
-
-  const resetSelectedMember = useCallback(() => {
-    setTimeout(() => setSelectedMember(null), 200)
-  }, [])
 
   return {
     selectedMember,

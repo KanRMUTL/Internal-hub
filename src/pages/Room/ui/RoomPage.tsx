@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import styled from 'styled-components'
-import _ from 'lodash'
 import { useParams } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 
 import { RoomMember } from 'entities/room'
-import { Box, CircularButton, withMotion, DataBoundary, FlashAlert } from 'shared/ui'
+import { Box, CircularButton, withMotion, DataBoundary, FlashAlert, useFlashAlert } from 'shared/ui'
 import { MemberManagementV2, useMemberCollection, useCreateNewMember, MemberModal } from 'features/member-management'
-import { WheelOfFortune, LuckyModal } from 'features/fortune'
+import { WheelOfFortune, LuckyModal, FortuneHistoryTable, createFortuneHistoryEntry } from 'features/fortune'
 
 const RoomPage = () => {
   const { id = '' } = useParams<{ id: string }>()
@@ -16,16 +15,41 @@ const RoomPage = () => {
   const { members, loading, error, eligibleRandomMembers } = useMemberCollection(id)
   const { modalNewMember, flashAlert, flashState, handleCreateMember } = useCreateNewMember()
 
-  const memberNames = eligibleRandomMembers.map(({ id, name }) => ({
+  // Flash alert for fortune history errors
+  const fortuneFlashState = useFlashAlert()
+  const [fortuneFlashVisible, setFortuneFlashVisible] = useState(false)
+
+  const memberNames = eligibleRandomMembers.map(({ id, name }: RoomMember) => ({
     id,
     name,
   }))
 
   const handleSpinComplete = (id: string) => {
-    const findMember = members.find((m) => m.id === id)
+    const findMember = members.find((m: RoomMember) => m.id === id)
     if (!findMember) return
 
     setWinner(findMember)
+  }
+
+  const handleSaveFortuneHistory = async (winnerId: string, winnerName: string) => {
+    try {
+      await createFortuneHistoryEntry({
+        roomId: id,
+        winnerId,
+        winnerName,
+      })
+    } catch (error) {
+      fortuneFlashState.set({
+        type: 'danger',
+        message: 'Failed to save fortune history. Please try again.',
+      })
+      setFortuneFlashVisible(true)
+      throw error // Re-throw to prevent modal from closing
+    }
+  }
+
+  const handleAcceptWinner = () => {
+    setWinner(null)
   }
 
   return (
@@ -46,11 +70,23 @@ const RoomPage = () => {
         <div style={{ flex: 1 }}>
           <WheelOfFortune members={memberNames} onSpinCompleted={handleSpinComplete} />
         </div>
-        <ScrollableContainer>
-          <MemberManagementV2 roomId={id} members={members} />
-        </ScrollableContainer>
+        <RightSideContainer>
+          <ScrollableContainer>
+            <MemberManagementV2 roomId={id} members={members} />
+          </ScrollableContainer>
+          <FortuneHistoryContainer>
+            <FortuneHistoryTable roomId={id} />
+          </FortuneHistoryContainer>
+        </RightSideContainer>
 
-        {winner && <LuckyModal winner={winner} onAccept={() => setWinner(null)} onDiscard={() => setWinner(null)} />}
+        {winner && (
+          <LuckyModal
+            winner={winner}
+            onAccept={handleAcceptWinner}
+            onDiscard={() => setWinner(null)}
+            onSaveFortuneHistory={handleSaveFortuneHistory}
+          />
+        )}
 
         <MemberModal
           isOpen={modalNewMember.isOpen}
@@ -68,6 +104,13 @@ const RoomPage = () => {
           visible={flashAlert.isOpen}
           onClose={flashAlert.close}
         />
+
+        <FlashAlert
+          type={fortuneFlashState.state.type}
+          message={fortuneFlashState.state.message}
+          visible={fortuneFlashVisible}
+          onClose={() => setFortuneFlashVisible(false)}
+        />
       </Box>
     </DataBoundary>
   )
@@ -75,11 +118,31 @@ const RoomPage = () => {
 
 export default RoomPage
 
+const RightSideContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.lg};
+  width: fit-content;
+  max-width: 100%;
+`
+
 const ScrollableContainer = styled.div`
   width: fit-content;
-  height: calc(100vh - 66px - 60px - 32px);
+  height: calc(50vh - 33px - 30px - 16px);
   overflow: auto;
   padding: 1rem;
+`
+
+const FortuneHistoryContainer = styled.div`
+  width: fit-content;
+  min-width: 400px;
+  max-width: 600px;
+  padding: 1rem;
+
+  @media (max-width: 768px) {
+    min-width: 300px;
+    max-width: 100%;
+  }
 `
 
 const WrapperButtonAdd = styled.div`
