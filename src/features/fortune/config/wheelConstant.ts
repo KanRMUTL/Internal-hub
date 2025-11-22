@@ -22,3 +22,6 @@ export const WHEEL_COLORS = [
 export const SPIN_DURATION = 12
 export const RADIUS = 150
 export const CENTER = RADIUS
+export const SPINS_COUNT = 5
+export const POINTER_ANGLE = 270
+export const ANIMATION_EASING = [0.22, 1, 0.36, 1]

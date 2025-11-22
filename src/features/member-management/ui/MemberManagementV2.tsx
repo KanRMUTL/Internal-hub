@@ -9,7 +9,7 @@ interface MemberTableProps {
   members: RoomMember[]
 }
 
-const MemberManagementV2 = ({ roomId, members }: MemberTableProps) => {
+const MemberManagement = ({ roomId, members }: MemberTableProps) => {
   const {
     selectedMember,
     modalEditMember,
@@ -59,4 +59,4 @@ const MemberManagementV2 = ({ roomId, members }: MemberTableProps) => {
   )
 }
 
-export default MemberManagementV2
+export default MemberManagement

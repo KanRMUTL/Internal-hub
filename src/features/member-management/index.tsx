@@ -1,2 +1,2 @@
-export { MemberManagementV2, MemberModal } from './ui'
+export { MemberManagement, MemberModal } from './ui'
 export { useCreateNewMember, useMemberCollection } from './hooks'

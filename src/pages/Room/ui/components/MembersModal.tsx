@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Plus } from 'lucide-react'
 import { RoomMember } from 'entities/room'
 import { CircularButton, withMotion, Modal } from 'shared/ui'
-import { MemberManagementV2 } from 'features/member-management'
+import { MemberManagement } from 'features/member-management'
 
 interface MembersModalProps {
   isOpen: boolean
@@ -23,7 +23,7 @@ const MembersModal = ({ isOpen, onClose, onAddMember, roomId, members }: Members
             </CircularButton>
           )}
         </MembersModalHeader>
-        <MemberManagementV2 roomId={roomId} members={members} />
+        <MemberManagement roomId={roomId} members={members} />
       </MembersModalContent>
     </Modal>
   )

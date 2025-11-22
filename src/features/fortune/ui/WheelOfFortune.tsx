@@ -1,7 +1,15 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
-import { WHEEL_COLORS, SPIN_DURATION, RADIUS, CENTER } from 'features/fortune/config'
+import {
+  WHEEL_COLORS,
+  SPIN_DURATION,
+  RADIUS,
+  CENTER,
+  SPINS_COUNT,
+  POINTER_ANGLE,
+  ANIMATION_EASING,
+} from 'features/fortune/config'
 import { Button, Typography, Box } from 'shared/ui'
 import { useAnimationPerformance } from 'shared/hooks'
 import _ from 'lodash'
@@ -28,7 +36,7 @@ export default function WheelOfFortune({ members, onSpinCompleted }: WheelOfFort
     animate: { rotate: rotation },
     transition: {
       duration: SPIN_DURATION,
-      ease: [0.22, 1, 0.36, 1], // Optimized easing for wheel spin
+      ease: ANIMATION_EASING, // Optimized easing for wheel spin
     },
   }
 
@@ -47,17 +55,15 @@ export default function WheelOfFortune({ members, onSpinCompleted }: WheelOfFort
     startMonitoring()
     setSpinning(true)
 
-    const spins = 5
     const randomExtra = Math.random() * 360
-    const angleToRotate = spins * 360 + randomExtra
+    const angleToRotate = SPINS_COUNT * 360 + randomExtra
     const finalRotation = rotation + angleToRotate
 
     setRotation(finalRotation)
 
     setTimeout(() => {
-      const pointerAngle = 270
       const effectiveRotation = finalRotation % 360
-      const pointerOnWheel = (360 + pointerAngle - effectiveRotation) % 360
+      const pointerOnWheel = (360 + POINTER_ANGLE - effectiveRotation) % 360
       const winnerIndex = Math.floor(pointerOnWheel / SEGMENT_ANGLE)
       const winner = members[winnerIndex]
 
@@ -68,7 +74,7 @@ export default function WheelOfFortune({ members, onSpinCompleted }: WheelOfFort
   }
 
   return (
-    <Box
+    <WheelContainer
       $flex
       $direction="column"
       $align="center"
@@ -76,24 +82,8 @@ export default function WheelOfFortune({ members, onSpinCompleted }: WheelOfFort
       $tabletP="md"
       $gap="lg"
       $tabletM="sm"
-      style={{
-        padding: window.innerWidth <= 768 ? '8px' : '0',
-        margin: window.innerWidth <= 768 ? '8px' : '0',
-      }}
     >
-      <Box
-        $position="absolute"
-        $zIndex={10}
-        style={{
-          width: 0,
-          height: 0,
-          borderLeft: '15px solid transparent',
-          borderRight: '15px solid transparent',
-          borderTop: '24px solid var(--color-danger, #fa0707)',
-          top: '-10px',
-          filter: 'drop-shadow(0 4px 4px rgba(255, 255, 255, 0.4))',
-        }}
-      />
+      <Pointer />
       <StyledWheel
         width={RADIUS * 2}
         height={RADIUS * 2}
@@ -161,9 +151,28 @@ export default function WheelOfFortune({ members, onSpinCompleted }: WheelOfFort
           </Button>
         </motion.div>
       </Box>
-    </Box>
+    </WheelContainer>
   )
 }
+
+const WheelContainer = styled(Box)`
+  @media (max-width: 768px) {
+    padding: 8px;
+    margin: 8px;
+  }
+`
+
+const Pointer = styled(Box)`
+  position: absolute;
+  z-index: 10;
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 24px solid var(--color-danger, #fa0707);
+  top: -10px;
+  filter: drop-shadow(0 4px 4px rgba(255, 255, 255, 0.4));
+`
 
 export const StyledWheel = styled(motion.svg)`
   width: 100%;
