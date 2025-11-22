@@ -1,16 +1,18 @@
 import { useState } from 'react'
-import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import { Plus } from 'lucide-react'
 
 import { RoomMember } from 'entities/room'
-import { Box, CircularButton, withMotion, DataBoundary, FlashAlert, useFlashAlert } from 'shared/ui'
-import { MemberManagementV2, useMemberCollection, useCreateNewMember, MemberModal } from 'features/member-management'
-import { WheelOfFortune, LuckyModal, FortuneHistoryTable, createFortuneHistoryEntry } from 'features/fortune'
+import { DataBoundary, FlashAlert, useFlashAlert, SkipLinks, Box } from 'shared/ui'
+import { useMemberCollection, useCreateNewMember, MemberModal } from 'features/member-management'
+import { WheelOfFortune, LuckyModal, createFortuneHistoryEntry } from 'features/fortune'
+
+import { MobileNavigation, FloatingActionButton, HistorySection, MembersModal } from './components'
 
 const RoomPage = () => {
   const { id = '' } = useParams<{ id: string }>()
   const [winner, setWinner] = useState<RoomMember | null>(null)
+  const [activeMobileSection, setActiveMobileSection] = useState<'wheel' | 'history'>('wheel')
+  const [isMembersModalOpen, setIsMembersModalOpen] = useState(false)
 
   const { members, loading, error, eligibleRandomMembers } = useMemberCollection(id)
   const { modalNewMember, flashAlert, flashState, handleCreateMember } = useCreateNewMember()
@@ -53,103 +55,95 @@ const RoomPage = () => {
   }
 
   return (
-    <DataBoundary
-      loading={loading}
-      error={error}
-      loadingMessage="Loading room information..."
-      errorMessage="Failed to load room information..."
-    >
-      <Box $flex $justify="center" $gap="md" $p="lg" style={{ position: 'relative' }}>
-        <WrapperButtonAdd>
-          {withMotion(
-            <CircularButton $size={54} $variant="info" onClick={modalNewMember.open}>
-              <Plus size={30} />
-            </CircularButton>
-          )}
-        </WrapperButtonAdd>
-        <div style={{ flex: 1 }}>
-          <WheelOfFortune members={memberNames} onSpinCompleted={handleSpinComplete} />
-        </div>
-        <RightSideContainer>
-          <ScrollableContainer>
-            <MemberManagementV2 roomId={id} members={members} />
-          </ScrollableContainer>
-          <FortuneHistoryContainer>
-            <FortuneHistoryTable roomId={id} />
-          </FortuneHistoryContainer>
-        </RightSideContainer>
+    <>
+      <SkipLinks
+        links={[
+          { href: '#wheel-section', label: 'Skip to fortune wheel' },
+          { href: '#history-section', label: 'Skip to history' },
+        ]}
+      />
 
-        {winner && (
-          <LuckyModal
-            winner={winner}
-            onAccept={handleAcceptWinner}
-            onDiscard={() => setWinner(null)}
-            onSaveFortuneHistory={handleSaveFortuneHistory}
+      <DataBoundary
+        loading={loading}
+        error={error}
+        loadingMessage="Loading room information..."
+        errorMessage="Failed to load room information..."
+      >
+        <Box $minHeight="100vh" $tabletP="lg" $position="relative">
+          {/* Mobile Navigation */}
+          <MobileNavigation
+            activeMobileSection={activeMobileSection}
+            onSectionChange={setActiveMobileSection}
+            onMembersClick={() => setIsMembersModalOpen(true)}
           />
-        )}
 
-        <MemberModal
-          isOpen={modalNewMember.isOpen}
-          title="Add Member"
-          defaultValues={{ name: '' }}
-          onClose={modalNewMember.close}
-          onSubmit={(data) => {
-            handleCreateMember(id, data.name)
-          }}
-        />
+          {/* Floating Action Button for Desktop */}
+          <FloatingActionButton onClick={() => setIsMembersModalOpen(true)} />
 
-        <FlashAlert
-          type={flashState.state.type}
-          message={flashState.state.message}
-          visible={flashAlert.isOpen}
-          onClose={flashAlert.close}
-        />
+          {/* Two Column Layout */}
+          <Box
+            $flex
+            $direction="column"
+            $gap="lg"
+            $grid={false}
+            $tabletDisplay="grid"
+            $gridColumns="1fr 1fr"
+            $tabletGap="xl"
+            $desktopGridColumns="2fr 1fr"
+            role="main"
+          >
+            {/* Wheel Section */}
 
-        <FlashAlert
-          type={fortuneFlashState.state.type}
-          message={fortuneFlashState.state.message}
-          visible={fortuneFlashVisible}
-          onClose={() => setFortuneFlashVisible(false)}
-        />
-      </Box>
-    </DataBoundary>
+            <WheelOfFortune members={memberNames} onSpinCompleted={handleSpinComplete} />
+
+            {/* History Section */}
+            <HistorySection roomId={id} active={activeMobileSection === 'history'} />
+          </Box>
+
+          {winner && (
+            <LuckyModal
+              winner={winner}
+              onAccept={handleAcceptWinner}
+              onDiscard={() => setWinner(null)}
+              onSaveFortuneHistory={handleSaveFortuneHistory}
+            />
+          )}
+
+          {/* Members Management Modal */}
+          <MembersModal
+            isOpen={isMembersModalOpen}
+            onClose={() => setIsMembersModalOpen(false)}
+            onAddMember={modalNewMember.open}
+            roomId={id}
+            members={members}
+          />
+
+          <MemberModal
+            isOpen={modalNewMember.isOpen}
+            defaultValues={{ name: '' }}
+            onClose={modalNewMember.close}
+            onSubmit={(data) => {
+              handleCreateMember(id, data.name)
+            }}
+          />
+
+          <FlashAlert
+            type={flashState.state.type}
+            message={flashState.state.message}
+            visible={flashAlert.isOpen}
+            onClose={flashAlert.close}
+          />
+
+          <FlashAlert
+            type={fortuneFlashState.state.type}
+            message={fortuneFlashState.state.message}
+            visible={fortuneFlashVisible}
+            onClose={() => setFortuneFlashVisible(false)}
+          />
+        </Box>
+      </DataBoundary>
+    </>
   )
 }
 
 export default RoomPage
-
-const RightSideContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.lg};
-  width: fit-content;
-  max-width: 100%;
-`
-
-const ScrollableContainer = styled.div`
-  width: fit-content;
-  height: calc(50vh - 33px - 30px - 16px);
-  overflow: auto;
-  padding: 1rem;
-`
-
-const FortuneHistoryContainer = styled.div`
-  width: fit-content;
-  min-width: 400px;
-  max-width: 600px;
-  padding: 1rem;
-
-  @media (max-width: 768px) {
-    min-width: 300px;
-    max-width: 100%;
-  }
-`
-
-const WrapperButtonAdd = styled.div`
-  z-index: 99;
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  display: flex;
-  justify-content: flex-end;
-`

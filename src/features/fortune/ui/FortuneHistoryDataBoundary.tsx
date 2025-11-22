@@ -116,11 +116,11 @@ const FortuneHistorySkeleton = () => (
   >
     <SkeletonContainer>
       <SkeletonHeader>
-        <SkeletonCell $width="80px" />
-        <SkeletonCell $width="150px" />
-        <SkeletonCell $width="200px" />
+        <SkeletonCell $width="60px" />
+        <SkeletonCell $width="120px" />
+        <SkeletonCell $width="180px" />
       </SkeletonHeader>
-      {Array.from({ length: 3 }).map((_, index) => (
+      {Array.from({ length: 5 }).map((_, index) => (
         <motion.div
           key={index}
           initial={{ opacity: 0, y: 20 }}
@@ -128,9 +128,9 @@ const FortuneHistorySkeleton = () => (
           transition={{ duration: 0.3, delay: index * 0.1 }}
         >
           <SkeletonRow>
-            <SkeletonCell $width="80px" />
-            <SkeletonCell $width="150px" />
-            <SkeletonCell $width="200px" />
+            <SkeletonCell $width="60px" />
+            <SkeletonCell $width="120px" />
+            <SkeletonCell $width="180px" />
           </SkeletonRow>
         </motion.div>
       ))}
@@ -175,25 +175,32 @@ const ErrorState = styled(Box)`
 
 const SkeletonContainer = styled.div`
   width: 100%;
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  border: 1px solid ${({ theme }) => theme.colors.grey};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
   background: ${({ theme }) => theme.background.surface};
   overflow: hidden;
+  box-shadow: ${({ theme }) => theme.shadow.sm};
 `
 
 const SkeletonHeader = styled.div`
   display: flex;
-  padding: ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
   background: ${({ theme }) => theme.background.elevated};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey};
-  gap: ${({ theme }) => theme.spacing.md};
+  border-bottom: 2px solid ${({ theme }) => theme.colors.grey[300]};
+  gap: ${({ theme }) => theme.spacing.lg};
+  box-shadow: 0 1px 0 ${({ theme }) => theme.colors.grey[200]};
 `
 
 const SkeletonRow = styled.div`
   display: flex;
-  padding: ${({ theme }) => theme.spacing.md};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey};
-  gap: ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  gap: ${({ theme }) => theme.spacing.lg};
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.background.elevated};
+  }
 
   &:last-child {
     border-bottom: none;

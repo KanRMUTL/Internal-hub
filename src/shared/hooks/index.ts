@@ -1,3 +1,6 @@
 export { default as useFirestoreCollection } from './useFirestoreCollection'
 export { default as useFirestoreCollectionWithRetry } from './useFirestoreCollectionWithRetry'
 export { default as useModal } from './useModal'
+export { useMotionPreference, useMotionValue } from './useMotionPreference'
+export { useMotionConfig, useMotionTransition, useMotionProps, useInteractionProps } from './useMotionConfig'
+export { useAnimationPerformance, useDeviceCapabilities, useAdaptiveAnimations } from './useAnimationPerformance'

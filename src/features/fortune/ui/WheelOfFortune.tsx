@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
 import { WHEEL_COLORS, SPIN_DURATION, RADIUS, CENTER } from 'features/fortune/config'
-import { Button, Typography } from 'shared/ui'
+import { Button, Typography, Box } from 'shared/ui'
+import { useAnimationPerformance } from 'shared/hooks'
 import _ from 'lodash'
 
 interface Member {
@@ -19,6 +20,18 @@ export default function WheelOfFortune({ members, onSpinCompleted }: WheelOfFort
   const [spinning, setSpinning] = useState(false)
   const [rotation, setRotation] = useState(0)
 
+  // Performance monitoring for wheel animations
+  const { startMonitoring, stopMonitoring } = useAnimationPerformance(spinning)
+
+  // Simple motion props for wheel
+  const wheelMotionProps = {
+    animate: { rotate: rotation },
+    transition: {
+      duration: SPIN_DURATION,
+      ease: [0.22, 1, 0.36, 1], // Optimized easing for wheel spin
+    },
+  }
+
   const SEGMENT_ANGLE = 360 / members.length
 
   const shuffledColors = useMemo(() => {
@@ -29,6 +42,9 @@ export default function WheelOfFortune({ members, onSpinCompleted }: WheelOfFort
 
   const spin = () => {
     if (spinning) return
+
+    // Start performance monitoring
+    startMonitoring()
     setSpinning(true)
 
     const spins = 5
@@ -46,23 +62,48 @@ export default function WheelOfFortune({ members, onSpinCompleted }: WheelOfFort
       const winner = members[winnerIndex]
 
       setSpinning(false)
+      stopMonitoring()
       onSpinCompleted(winner.id)
     }, SPIN_DURATION * 1000)
   }
 
   return (
-    <WheelContainer>
-      <Pointer />
+    <Box
+      $flex
+      $direction="column"
+      $align="center"
+      $position="relative"
+      $tabletP="md"
+      $gap="lg"
+      $tabletM="sm"
+      style={{
+        padding: window.innerWidth <= 768 ? '8px' : '0',
+        margin: window.innerWidth <= 768 ? '8px' : '0',
+      }}
+    >
+      <Box
+        $position="absolute"
+        $zIndex={10}
+        style={{
+          width: 0,
+          height: 0,
+          borderLeft: '15px solid transparent',
+          borderRight: '15px solid transparent',
+          borderTop: '24px solid var(--color-danger, #fa0707)',
+          top: '-10px',
+          filter: 'drop-shadow(0 4px 4px rgba(255, 255, 255, 0.4))',
+        }}
+      />
       <StyledWheel
         width={RADIUS * 2}
         height={RADIUS * 2}
         viewBox={`0 0 ${RADIUS * 2} ${RADIUS * 2}`}
-        animate={{ rotate: rotation }}
-        transition={{
-          duration: SPIN_DURATION,
-          ease: [0.22, 1, 0.36, 1],
+        {...wheelMotionProps}
+        style={{
+          originX: '50%',
+          originY: '50%',
+          willChange: spinning ? 'transform' : 'auto', // Optimize will-change
         }}
-        style={{ originX: '50%', originY: '50%' }}
       >
         {members.map((member, index) => {
           const toRad = (deg: number) => (Math.PI / 180) * deg
@@ -111,7 +152,7 @@ export default function WheelOfFortune({ members, onSpinCompleted }: WheelOfFort
         })}
       </StyledWheel>
 
-      <Controls>
+      <Box $flex $justify="center">
         <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.8 }}>
           <Button $variant="success" onClick={spin} disabled={spinning || members.length === 0}>
             <Typography $color="white" $size="lg" $weight="semibold" $pointer>
@@ -119,61 +160,46 @@ export default function WheelOfFortune({ members, onSpinCompleted }: WheelOfFort
             </Typography>
           </Button>
         </motion.div>
-      </Controls>
-    </WheelContainer>
+      </Box>
+    </Box>
   )
 }
 
-export const WheelContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-`
-
-export const Pointer = styled.div`
-  width: 0;
-  height: 0;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-top: 20px solid red;
-  position: absolute;
-  top: -10px;
-  z-index: 10;
-`
-
 export const StyledWheel = styled(motion.svg)`
-  width: 80%;
-  height: 80%;
+  width: 100%;
+  height: auto;
   max-width: 80vh;
   max-height: 80vh;
+  aspect-ratio: 1;
   border-radius: 50%;
-  box-shadow: ${({ theme }) => theme.shadow.md};
-`
+  box-shadow:
+    ${({ theme }) => theme.shadow.xl},
+    0 0 0 3px ${({ theme }) => theme.background.surface},
+    0 0 0 4px ${({ theme }) => theme.colors.grey[300]};
+  background: ${({ theme }) => theme.background.surface};
 
-export const Controls = styled.div`
-  margin-top: 1rem;
-  text-align: center;
-`
-
-export const SpinButton = styled.button`
-  padding: 0.6rem 1.2rem;
-  font-size: 1.2rem;
-  background: #ff6f00;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-
-  &:disabled {
-    background: #ccc;
-    cursor: not-allowed;
+  /* Responsive sizing */
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    max-width: min(60vh, 400px);
+    max-height: min(60vh, 400px);
   }
-`
 
-export const Winner = styled.div`
-  margin-top: 1rem;
-  font-size: 1.4rem;
-  color: green;
-  font-weight: bold;
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    max-width: min(50vh, 300px);
+    max-height: min(50vh, 300px);
+  }
+
+  /* Enhanced visual separation */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: linear-gradient(
+      45deg,
+      ${({ theme }) => theme.colors.primary}20,
+      ${({ theme }) => theme.colors.secondary}20
+    );
+    z-index: -1;
+  }
 `

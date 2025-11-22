@@ -1,5 +1,5 @@
 import { RoomMember } from 'entities/room'
-import { TableColumn } from 'shared/ui'
+import { TableColumn, Typography } from 'shared/ui'
 import { Toggle, CircularButton, withMotion } from 'shared/ui'
 import { Edit, Trash } from 'lucide-react'
 import { MemberItem } from 'features/member-management/ui'
@@ -24,6 +24,11 @@ export const createMemberColumns = ({
       <MemberItem
         id={member.id}
         name={member.name}
+        description={
+          <Typography $size="sm" $color={member.isEligibleRandom ? 'success' : 'disabled'} $weight="normal" $pointer>
+            {member.isEligibleRandom ? 'Eligible for selection' : 'Not eligible'}
+          </Typography>
+        }
         onClick={() => {}}
         typography={{ $weight: 'semibold', $size: 'lg' }}
         active={member.isEligibleRandom}

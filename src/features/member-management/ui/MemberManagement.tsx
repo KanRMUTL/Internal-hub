@@ -27,20 +27,26 @@ const MemberManagement = ({ roomId, members, eligibleRandomMembers, normalMember
 
   return (
     <>
-      <Box $flex $direction="column" $justify="center" $align="center" $gap="md">
-        <MemberList members={eligibleRandomMembers} prefixKey="eligible" onClickMember={handleSwitchEligibleMember} />
+      <Box $flex $direction="column" $justify="center" $align="stretch" $gap="xl">
+        <MemberList
+          members={eligibleRandomMembers}
+          prefixKey="eligible"
+          title="Eligible Members"
+          onClickMember={handleSwitchEligibleMember}
+        />
         <MemberList
           members={normalMembers}
           prefixKey="normal"
+          title="All Members"
           showDelete
           onClickMember={handleSwitchEligibleMember}
           onEditMember={handleEditMember}
           onDeleteMember={handleDeleteMember}
         />
-        <Box>
-          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 1.1 }}>
-            <Button $variant="info" onClick={modalNewMember.open}>
-              <PlusCircle size={20} /> &nbsp; New Member
+        <Box $flex $justify="center">
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button $variant="info" $size="lg" onClick={modalNewMember.open}>
+              <PlusCircle size={20} /> &nbsp; Add New Member
             </Button>
           </motion.div>
         </Box>
@@ -49,7 +55,6 @@ const MemberManagement = ({ roomId, members, eligibleRandomMembers, normalMember
       {selectedMember && (
         <MemberModal
           isOpen={modalEditMember.isOpen}
-          title="Edit Member"
           defaultValues={{ name: selectedMember.name }}
           onClose={closeModalEditMember}
           onSubmit={(data) => handleSaveMember(data.name)}

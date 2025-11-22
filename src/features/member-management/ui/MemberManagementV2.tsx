@@ -30,13 +30,18 @@ const MemberManagementV2 = ({ roomId, members }: MemberTableProps) => {
 
   return (
     <>
-      <Table<RoomMember> rowkey="id" columns={columns} data={members} />
+      <Table<RoomMember>
+        rowkey="id"
+        columns={columns}
+        data={members}
+        ariaLabel="Table of room members with actions to edit, delete, and toggle eligibility"
+        emptyMessage="No members in this room yet. Add some members to get started."
+      />
 
       {selectedMember && (
         <>
           <MemberModal
             isOpen={modalEditMember.isOpen}
-            title={`Edit "${selectedMember.name}"`}
             defaultValues={{ name: selectedMember.name }}
             onClose={closeModalEditMember}
             onSubmit={(data) => handleSaveMember(data.name)}

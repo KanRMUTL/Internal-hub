@@ -1,5 +1,6 @@
-export { lightTheme, darkTheme, colors } from './config'
+export { lightTheme, darkTheme, colors, motion } from './config'
 export { GlobalStyle } from './globalStyle'
+export * from './utils'
 
 export {
   THEME_MODE,
@@ -12,6 +13,7 @@ export {
   type BorderRadius,
   type BorderWidth,
   type Background,
+  type Motion,
   type Theme,
   type THEME_MODE_KEYS,
   type ColorKeys,
@@ -23,4 +25,5 @@ export {
   type BorderRadiusKeys,
   type BorderWidthKeys,
   type BackgroundKeys,
+  type MotionKeys,
 } from './types'

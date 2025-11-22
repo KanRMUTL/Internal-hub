@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
-import { Modal, Box, Typography } from 'shared/ui'
+import Modal from '../Modal'
+import Box from '../Box'
+import Typography from '../Typography'
 
 interface ModalConfirmProps {
   isOpen: boolean

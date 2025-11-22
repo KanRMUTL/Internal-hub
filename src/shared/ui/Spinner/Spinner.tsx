@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 
 interface SpinnerProps {
   size?: number
@@ -6,7 +6,9 @@ interface SpinnerProps {
   label?: string
 }
 
-const Spinner = ({ size = 40, color = '#4F46E5', label }: SpinnerProps) => {
+const Spinner = ({ size = 40, color = 'currentColor', label }: SpinnerProps) => {
+  const borderWidth = Math.max(2, size * 0.12)
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
       <motion.div
@@ -19,9 +21,10 @@ const Spinner = ({ size = 40, color = '#4F46E5', label }: SpinnerProps) => {
         style={{
           width: size,
           height: size,
-          border: `${size * 0.12}px solid #E5E7EB`,
-          borderTop: `${size * 0.12}px solid ${color}`,
+          border: `${borderWidth}px solid transparent`,
+          borderTop: `${borderWidth}px solid ${color}`,
           borderRadius: '50%',
+          opacity: 0.8,
         }}
       />
       {label && <span style={{ color: '#6B7280', fontSize: '14px' }}>{label}</span>}

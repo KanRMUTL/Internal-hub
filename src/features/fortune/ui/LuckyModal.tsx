@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import styled, { keyframes } from 'styled-components'
 import { AlertTriangle, Loader2 } from 'lucide-react'
-import { Box, Button, Typography, Alert } from 'shared/ui'
+import { Box, Button, Typography, Alert, ScreenReaderOnly } from 'shared/ui'
 import { RoomMember } from 'entities/room'
 
 interface LuckyModalProps {
@@ -56,25 +56,101 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
   }
 
   return (
-    <Backdrop>
+    <Box
+      $position="fixed"
+      style={{
+        inset: 0,
+        background: 'rgba(0, 0, 0, 0.8)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 999,
+        padding: '16px',
+      }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="winner-title"
+      aria-describedby="winner-description"
+    >
       <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+        initial={{
+          scale: 0.8,
+          opacity: 0,
+          y: 50,
+          rotateX: -15,
+        }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          y: 0,
+          rotateX: 0,
+        }}
+        exit={{
+          scale: 0.9,
+          opacity: 0,
+          y: 20,
+          transition: { duration: 0.2, ease: 'easeIn' },
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 400,
+          damping: 25,
+          duration: 0.4,
+        }}
       >
-        <WinnerWrapper>
-          <motion.div whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.8 }}>
+        <Box
+          $flex
+          $direction="column"
+          $align="center"
+          $gap="lg"
+          $bg="surface"
+          $radius="xl"
+          $shadow="xl"
+          $position="relative"
+          style={{ background: 'rgba(0,0,0,0)' }}
+        >
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ scale: 0.9, rotateY: -10 }}
+            animate={{
+              scale: 1,
+              rotateY: 0,
+              transition: { delay: 0.2, duration: 0.3 },
+            }}
+          >
             <RainbowBorder>
               <Box $flex $justify="center" $align="center" $p="lg" $pointer>
-                <Typography $size="xl" $weight="bold" $color="white" $pointer>
-                  🎆 {winner.name} 🎉
-                </Typography>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    transition: { delay: 0.4, duration: 0.3 },
+                  }}
+                >
+                  <Typography
+                    id="winner-title"
+                    $size="xl"
+                    $weight="bold"
+                    $color="white"
+                    $pointer
+                    role="heading"
+                    aria-level={1}
+                    $noWrap
+                  >
+                    <ScreenReaderOnly>Winner: </ScreenReaderOnly>
+                    <span aria-hidden="true">🎆</span> {winner.name} <span aria-hidden="true">🎉</span>
+                  </Typography>
+                </motion.div>
               </Box>
             </RainbowBorder>
           </motion.div>
 
           {saveError && (
-            <ErrorContainer>
+            <Box $width="100%" $maxWidth="350px">
               <Alert $type="danger">
                 <Box $flex $direction="column" $gap="sm" $align="center">
                   <Box $flex $align="center" $gap="sm">
@@ -88,17 +164,27 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
                   </Button>
                 </Box>
               </Alert>
-            </ErrorContainer>
+            </Box>
           )}
 
-          <ButtonRow>
+          <Box
+            $flex
+            $gap="md"
+            $width="100%"
+            $justify="center"
+            style={{
+              flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
+            }}
+          >
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.8 }}>
-              <Button onClick={onDiscard} $variant="grey" disabled={saving}>
-                🔄 Discard
-              </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.8 }}>
-              <Button onClick={handleAccept} disabled={saving}>
+              <Button
+                onClick={handleAccept}
+                disabled={saving}
+                aria-label={
+                  saving ? `Saving ${winner.name} as winner` : `Accept ${winner.name} as winner and save to history`
+                }
+                $loadingText={`Saving ${winner.name} as winner`}
+              >
                 <Box $flex $align="center" $gap="sm">
                   {saving && (
                     <motion.div
@@ -108,18 +194,35 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
                         duration: 1,
                         ease: 'linear',
                       }}
+                      aria-hidden="true"
                     >
                       <Loader2 size={16} />
                     </motion.div>
                   )}
-                  {saving ? 'Saving...' : '✅ Accept'}
+                  {saving ? (
+                    'Saving...'
+                  ) : (
+                    <>
+                      <span aria-hidden="true">✅</span> Accept
+                    </>
+                  )}
                 </Box>
               </Button>
             </motion.div>
-          </ButtonRow>
-        </WinnerWrapper>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.8 }}>
+              <Button
+                onClick={onDiscard}
+                $variant="danger"
+                disabled={saving}
+                aria-label={`Discard ${winner.name} as winner and spin again`}
+              >
+                <span aria-hidden="true">🔄</span> Discard
+              </Button>
+            </motion.div>
+          </Box>
+        </Box>
       </motion.div>
-    </Backdrop>
+    </Box>
   )
 }
 
@@ -131,38 +234,51 @@ const rainbow = keyframes`
 `
 
 const RainbowBorder = styled.div`
-  padding: 16px;
+  padding: ${({ theme }) => theme.spacing.lg};
   background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet, red);
   background-size: 1400% 1400%;
   animation: ${rainbow} 5s linear infinite;
-  border-radius: 1rem;
-`
+  border-radius: ${({ theme }) => theme.borderRadius.xl};
+  box-shadow:
+    ${({ theme }) => theme.shadow.lg},
+    0 0 20px rgba(255, 255, 255, 0.3);
+  position: relative;
 
-const Backdrop = styled.div`
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-`
+  /* Enhanced winner display */
+  & > div {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: ${({ theme }) => theme.borderRadius.lg};
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 
-const WinnerWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-`
+    /* Better typography hierarchy */
+    span {
+      font-size: ${({ theme }) => theme.fontSizes.xxl};
+      font-weight: ${({ theme }) => theme.fontWeight.bold};
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      letter-spacing: 0.5px;
 
-const ButtonRow = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  justify-content: center;
-`
+      /* Responsive text sizing */
+      @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+        font-size: ${({ theme }) => theme.fontSizes.xl};
+      }
+    }
+  }
 
-const ErrorContainer = styled.div`
-  margin-top: 1rem;
-  max-width: 300px;
+  /* Celebration effect */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    background: inherit;
+    border-radius: inherit;
+    z-index: -1;
+    filter: blur(8px);
+    opacity: 0.7;
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.md};
+  }
 `

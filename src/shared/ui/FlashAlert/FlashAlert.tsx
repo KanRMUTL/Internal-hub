@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import styled from 'styled-components'
-import { Alert } from 'shared/ui'
+import Alert from '../Alert'
 import { ColorKeys } from 'shared/styles'
 
 type FlashAlertProps = {

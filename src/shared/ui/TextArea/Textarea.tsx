@@ -1,6 +1,8 @@
 import React, { forwardRef } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'motion/react'
+import { useMotionProps } from 'shared/hooks'
+import { motionTransition } from 'shared/styles/utils'
 
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string
@@ -8,13 +10,20 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 }
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({ label, error, name, ...props }, ref) => {
+  const errorMotionProps = useMotionProps({
+    initial: { opacity: 0, y: -5 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -5 },
+    transition: { duration: 0.15 },
+  })
+
   return (
     <TextareaWrapper>
       {label && <Label htmlFor={name}>{label}</Label>}
       <StyledTextarea id={name} name={name} $hasError={!!error} ref={ref} {...props} />
       <AnimatePresence>
         {error && (
-          <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }}>
+          <motion.div {...errorMotionProps}>
             <ErrorMessage>{error}</ErrorMessage>
           </motion.div>
         )}
@@ -50,9 +59,7 @@ const StyledTextarea = styled.textarea<{ $hasError?: boolean }>`
   resize: vertical;
   min-height: 100px;
   box-shadow: ${({ theme }) => theme.shadow.sm};
-  transition:
-    border 0.2s,
-    box-shadow 0.2s;
+  ${motionTransition(['border-color', 'box-shadow'], 'fast', 'easeOut')}
 
   &:focus {
     outline: none;

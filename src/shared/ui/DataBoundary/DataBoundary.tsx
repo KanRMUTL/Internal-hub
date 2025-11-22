@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
-import { Box, Spinner, Alert } from 'shared/ui'
+import Box from '../Box'
+import Spinner from '../Spinner'
+import Alert from '../Alert'
 
 interface DataBoundaryProps {
   loading: boolean

@@ -2,27 +2,35 @@ import { Wrapper, Nav, Main } from './styled'
 import { ToggleThemeButton, useTheme } from 'features/toggle-theme'
 import { Outlet } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import { masterLogo, hatohub } from 'shared/assets'
+import { Box } from 'shared/ui'
+import styled from 'styled-components'
 
-interface LayoutProps {
-  logoPath: string
-}
-
-const Layout = ({ logoPath }: LayoutProps) => {
+const Layout = () => {
   const { mode } = useTheme()
   const navigate = useNavigate()
 
   return (
     <Wrapper>
       <Nav $light={mode == 'LIGHT'}>
-        <div>
+        <LogoWrapper $display="flex" $align="center" $gap="sm" $pl="sm" $pr="md" $pt="xs" $pb="xs">
           <img
-            src={logoPath}
+            src={masterLogo}
+            height={42}
             style={{ cursor: 'pointer' }}
             onClick={() => {
               navigate('/')
             }}
           />
-        </div>
+          <img
+            src={hatohub}
+            height={22}
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              navigate('/')
+            }}
+          />
+        </LogoWrapper>
         <div>
           <ToggleThemeButton />
         </div>
@@ -33,3 +41,8 @@ const Layout = ({ logoPath }: LayoutProps) => {
 }
 
 export default Layout
+
+const LogoWrapper = styled(Box)`
+  background-color: ${({ theme }) => theme.colors.white};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+`

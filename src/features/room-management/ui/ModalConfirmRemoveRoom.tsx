@@ -13,8 +13,8 @@ const ModalConfirmRemoveMember = ({ room, isOpen, onConfirm, onCancel }: ModalCo
   <ModalConfirm
     isOpen={isOpen}
     title={
-      <Typography $size="xl" $weight="bold" $color="danger" $inline>
-        {'🥹 Are you sure to remove '}
+      <Typography $size="xl" $weight="bold" $color="danger" $align="center" $inline $noWrap>
+        {'🥹 Are you sure to remove '} <br />
         <Typography $size="xl" $weight="bold" $color="primary" $inline>
           "{room.name}"
         </Typography>
@@ -24,15 +24,15 @@ const ModalConfirmRemoveMember = ({ room, isOpen, onConfirm, onCancel }: ModalCo
     description="This action cannot be undone❗️"
     onConfirm={onConfirm}
     onCancel={onCancel}
-    cancelSection={withMotion(
-      <Button $size="base" $variant="grey" onClick={onCancel}>
+    confirmSection={withMotion(
+      <Button $size="md" $variant="info" onClick={onCancel}>
         <Typography $size="base" $weight="semibold" $color="white" $pointer>
           Not Sure
         </Typography>
       </Button>
     )}
-    confirmSection={withMotion(
-      <Button $size="base" $variant="danger" onClick={onConfirm}>
+    cancelSection={withMotion(
+      <Button $size="md" $variant="danger" onClick={onConfirm}>
         <Typography $size="base" $weight="semibold" $color="white" $pointer>
           Remove
         </Typography>

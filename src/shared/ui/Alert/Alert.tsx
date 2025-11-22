@@ -8,10 +8,7 @@ const getColor = (type: ColorKeys, colors: Color) => {
 const Alert = styled.div<{ $type: ColorKeys; $width?: string }>`
   padding: ${({ theme }) => theme.spacing.md};
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  background-color: ${({ $type, theme }) => {
-    const color = getColor($type, theme.colors)
-    return `${color}20`
-  }};
+  background-color: rgba(255, 255, 255, 0.05);
   color: ${({ $type, theme }) => getColor($type, theme.colors)};
   font-size: ${({ theme }) => theme.fontSizes.base};
   font-weight: ${({ theme }) => theme.fontWeight.medium};

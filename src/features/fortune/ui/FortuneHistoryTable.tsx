@@ -12,14 +12,15 @@ const StyledTableContainer = styled.div`
   max-height: 400px;
   overflow-y: auto;
   overflow-x: auto;
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  border: 1px solid ${({ theme }) => theme.colors.grey};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
   background: ${({ theme }) => theme.background.surface};
   scroll-behavior: smooth;
+  box-shadow: ${({ theme }) => theme.shadow.sm};
 
-  /* Custom scrollbar styling */
+  /* Enhanced scrollbar styling */
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   &::-webkit-scrollbar-track {
@@ -28,44 +29,133 @@ const StyledTableContainer = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.grey};
+    background: ${({ theme }) => theme.colors.grey[400]};
     border-radius: ${({ theme }) => theme.borderRadius.sm};
+    transition: background-color 0.2s ease;
   }
 
   &::-webkit-scrollbar-thumb:hover {
     background: ${({ theme }) => theme.colors.primary};
+  }
+
+  /* Mobile responsive adjustments */
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    max-height: 350px;
+    border-radius: ${({ theme }) => theme.borderRadius.md};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    max-height: 300px;
+    overflow-x: scroll;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
   }
 `
 
 const AnimatedTable = styled(motion.table)`
   width: 100%;
   border-collapse: collapse;
+  min-width: 400px; /* Ensure minimum width for mobile horizontal scroll */
 
   th {
     background: ${({ theme }) => theme.background.elevated};
     font-weight: ${({ theme }) => theme.fontWeight.semibold};
     color: ${({ theme }) => theme.text};
-    border-bottom: 1px solid ${({ theme }) => theme.colors.grey};
+    border-bottom: 2px solid ${({ theme }) => theme.colors.grey[300]};
     position: sticky;
     top: 0;
     z-index: 1;
+    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+    font-size: ${({ theme }) => theme.fontSizes.sm};
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 1px 0 ${({ theme }) => theme.colors.grey[200]};
+
+    .mobile-label {
+      display: none;
+    }
+
+    .desktop-label {
+      display: inline;
+    }
   }
 
   td {
-    border-bottom: 1px solid ${({ theme }) => theme.colors.grey};
+    border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
     color: ${({ theme }) => theme.text};
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+    font-size: ${({ theme }) => theme.fontSizes.sm};
+    vertical-align: middle;
+
+    .mobile-date {
+      display: none;
+    }
+
+    .desktop-date {
+      display: inline;
+    }
   }
 
   tr:last-child td {
     border-bottom: none;
   }
 
-  @media (max-width: 768px) {
+  /* Enhanced mobile responsiveness */
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     th,
     td {
-      padding: 8px 12px !important;
-      font-size: ${({ theme }) => theme.fontSizes.sm};
+      padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+      font-size: ${({ theme }) => theme.fontSizes.xs};
+    }
+
+    th {
+      font-size: ${({ theme }) => theme.fontSizes.xs};
+      letter-spacing: 0.3px;
+    }
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    min-width: 350px;
+
+    th,
+    td {
+      padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+    }
+
+    th {
+      .mobile-label {
+        display: inline;
+      }
+
+      .desktop-label {
+        display: none;
+      }
+    }
+
+    td {
+      .mobile-date {
+        display: inline;
+      }
+
+      .desktop-date {
+        display: none;
+      }
+    }
+
+    /* Compact mobile layout */
+    th:first-child,
+    td:first-child {
+      width: 50px;
+      text-align: center;
+    }
+
+    th:last-child,
+    td:last-child {
+      width: 120px;
     }
   }
 `
@@ -73,42 +163,70 @@ const AnimatedTable = styled(motion.table)`
 const AnimatedTableRow = styled(motion.tr)<{ $isNew?: boolean }>`
   background: ${({ theme, $isNew }) =>
     $isNew
-      ? `linear-gradient(90deg, ${theme.colors.success}20, ${theme.background.surface})`
+      ? `linear-gradient(90deg, ${theme.colors.success}15, ${theme.background.surface})`
       : theme.background.surface};
+  cursor: pointer;
+  position: relative;
 
   &:hover {
     background: ${({ theme, $isNew }) =>
       $isNew
-        ? `linear-gradient(90deg, ${theme.colors.success}30, ${theme.background.elevated})`
+        ? `linear-gradient(90deg, ${theme.colors.success}25, ${theme.background.elevated})`
         : theme.background.elevated};
+    transform: translateY(-1px);
+    box-shadow: ${({ theme }) => theme.shadow.sm};
+  }
+
+  &:active {
+    transform: translateY(0);
+    transition: transform 0.1s ease;
   }
 
   ${({ $isNew, theme }) =>
     $isNew &&
     `
-    box-shadow: 0 0 0 2px ${theme.colors.success}40;
+    box-shadow: 0 0 0 1px ${theme.colors.success}30;
     animation: highlightPulse 2s ease-out;
   `}
 
   @keyframes highlightPulse {
     0% {
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.success}60;
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.success}50;
       background: linear-gradient(
         90deg,
-        ${({ theme }) => theme.colors.success}40,
+        ${({ theme }) => theme.colors.success}30,
         ${({ theme }) => theme.background.surface}
       );
     }
     50% {
-      box-shadow: 0 0 0 4px ${({ theme }) => theme.colors.success}30;
+      box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.success}25;
+      transform: scale(1.01);
     }
     100% {
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.success}20;
+      box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.success}15;
       background: linear-gradient(
         90deg,
-        ${({ theme }) => theme.colors.success}20,
+        ${({ theme }) => theme.colors.success}15,
         ${({ theme }) => theme.background.surface}
       );
+      transform: scale(1);
+    }
+  }
+
+  /* Enhanced mobile hover states */
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    &:hover {
+      transform: none;
+      box-shadow: none;
+      background: ${({ theme, $isNew }) =>
+        $isNew
+          ? `linear-gradient(90deg, ${theme.colors.success}20, ${theme.background.elevated})`
+          : theme.background.elevated};
+    }
+
+    &:active {
+      background: ${({ theme }) => theme.colors.grey[100]};
+      transform: scale(0.99);
     }
   }
 `
@@ -116,7 +234,28 @@ const AnimatedTableRow = styled(motion.tr)<{ $isNew?: boolean }>`
 const EmptyStateContainer = styled(Box)`
   padding: ${({ theme }) => theme.spacing.xl};
   text-align: center;
-  color: ${({ theme }) => theme.colors.grey};
+  color: ${({ theme }) => theme.colors.grey[600]};
+  background: ${({ theme }) => theme.background.surface};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+
+  /* Enhanced empty state styling */
+  &::before {
+    content: '🎲';
+    display: block;
+    font-size: 3rem;
+    margin-bottom: ${({ theme }) => theme.spacing.md};
+    opacity: 0.6;
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.lg};
+
+    &::before {
+      font-size: 2.5rem;
+      margin-bottom: ${({ theme }) => theme.spacing.sm};
+    }
+  }
 `
 
 const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) => {
@@ -182,41 +321,56 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
       {
         id: 'spinNumber',
         key: 'id' as keyof FortuneHistoryEntry,
-        label: 'Spin #',
+        label: '#',
         align: 'center' as const,
-        width: '80px',
+        width: '60px',
+        mobileWidth: '50px',
       },
       {
         id: 'winnerName',
         key: 'winnerName' as keyof FortuneHistoryEntry,
         label: 'Winner',
         align: 'left' as const,
+        flex: 1,
       },
       {
         id: 'createdAt',
         key: 'createdAt' as keyof FortuneHistoryEntry,
         label: 'Date & Time',
         align: 'left' as const,
-        width: '200px',
+        width: '180px',
+        mobileWidth: '120px',
+        mobileLabel: 'Date',
       },
     ],
     []
   )
 
   const renderAnimatedTable = () => (
-    <AnimatedTable initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+    <AnimatedTable
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      role="table"
+      aria-label="Fortune wheel spin history"
+    >
+      <caption style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', clip: 'rect(0,0,0,0)' }}>
+        History of fortune wheel spins showing winner names and dates
+      </caption>
       <thead>
-        <tr>
+        <tr role="row">
           {columns.map((col) => (
             <th
               key={col.id}
+              role="columnheader"
+              scope="col"
               style={{
                 textAlign: col.align || 'left',
                 width: col.width,
-                padding: 16,
               }}
             >
-              {col.label}
+              <span className="desktop-label">{col.label}</span>
+              <span className="mobile-label">{col.mobileLabel || col.label}</span>
             </th>
           ))}
         </tr>
@@ -232,6 +386,7 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
               <AnimatedTableRow
                 key={row.id}
                 $isNew={isNew}
+                role="row"
                 initial={{ opacity: 0, y: -20, scale: 0.95 }}
                 animate={{
                   opacity: 1,
@@ -253,7 +408,7 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
                 layout
                 layoutId={row.id}
               >
-                <td style={{ textAlign: 'center', padding: '12px 24px' }}>
+                <td role="cell" style={{ textAlign: 'center' }}>
                   <motion.div
                     initial={isNew ? { scale: 1.2 } : false}
                     animate={{ scale: 1 }}
@@ -264,7 +419,7 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
                     </Typography>
                   </motion.div>
                 </td>
-                <td style={{ textAlign: 'left', padding: '12px 24px' }}>
+                <td role="cell" style={{ textAlign: 'left' }}>
                   <motion.div
                     initial={isNew ? { scale: 1.1, x: 10 } : false}
                     animate={{ scale: 1, x: 0 }}
@@ -275,14 +430,15 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
                     </Typography>
                   </motion.div>
                 </td>
-                <td style={{ textAlign: 'left', padding: '12px 24px' }}>
+                <td role="cell" style={{ textAlign: 'left' }}>
                   <motion.div
                     initial={isNew ? { opacity: 0.5 } : false}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                   >
                     <Typography $size="sm" $color="grey">
-                      {formattedDate}
+                      <span className="desktop-date">{formattedDate}</span>
+                      <span className="mobile-date">{dayjs(row.createdAt).format('MMM D')}</span>
                     </Typography>
                   </motion.div>
                 </td>

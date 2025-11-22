@@ -18,10 +18,10 @@ const useCreateNewMember = () => {
         createdAt: timestamp,
         updatedAt: timestamp,
       })
-      flashState.set({ type: 'success', message: 'New Item created successfully!' })
+      flashState.set({ type: 'success', message: 'New member created successfully!' })
     } catch (error) {
       console.log(error)
-      flashState.set({ type: 'danger', message: 'Error from add new item!' })
+      flashState.set({ type: 'danger', message: 'Error from add new member!' })
     } finally {
       flashAlert.open()
     }
