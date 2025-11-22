@@ -4,6 +4,7 @@ import { AnimatePresence } from 'motion/react'
 import { Home } from 'lucide-react'
 import RoomGrid from './RoomGrid'
 import RoomCardSkeleton from './RoomCardSkeleton'
+import AddRoomCard from './AddRoomCard'
 
 interface RoomListProps {
   rooms: Room[]
@@ -64,6 +65,7 @@ const RoomList = ({
             onClickRemove={onClickRemove}
           />
         ))}
+        {onCreateRoom && <AddRoomCard onClick={onCreateRoom} />}
       </AnimatePresence>
     </RoomGrid>
   )

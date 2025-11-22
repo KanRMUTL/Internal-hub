@@ -1,7 +1,6 @@
-import { Plus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { Box, CircularButton, withMotion, Alert, FlashAlert, useFlashAlert } from 'shared/ui'
+import { Box, Alert, FlashAlert, useFlashAlert } from 'shared/ui'
 import { useActiveRooms, useRoomManagement, useRemoveRoom } from 'features/room-management/hooks'
 import { ModalConfirmRemoveRoom, RoomList, RoomModal } from 'features/room-management/ui'
 
@@ -94,19 +93,6 @@ const RoomManagement = ({ onClickAddItem }: RoomManagementProps) => {
       </Box>
 
       {/* Floating action button - positioned better for mobile */}
-      <Box
-        $position="fixed"
-        $bottom="24px"
-        $right="24px"
-        $zIndex={1000}
-        $display={loading || rooms.length === 0 ? 'none' : 'block'}
-      >
-        {withMotion(
-          <CircularButton $size={56} $variant="info" onClick={roomModal.open}>
-            <Plus size={24} />
-          </CircularButton>
-        )}
-      </Box>
 
       {/* Modals */}
       <RoomModal isOpen={roomModal.isOpen} onClose={roomModal.close} onSubmit={handleCreateRoomWithFeedback} />
