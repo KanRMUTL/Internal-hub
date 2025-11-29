@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { QuizService } from '../api/quiz-service'
-import { QuizPlayer, QuizRoom } from '../models/types'
+import { QuizService, QuizPlayer, QuizRoom } from 'features/quiz'
 import { Container, Typography, Box, Card, Button, Grid } from 'shared/ui'
 import { Users, Play, Copy, QrCode } from 'lucide-react'
 import styled, { keyframes } from 'styled-components'

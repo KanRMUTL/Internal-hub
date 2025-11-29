@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { QuizService } from '../api/quiz-service'
-import { QuizRoom, QuizPlayer } from '../models/types'
+import { QuizService, QuizRoom, QuizPlayer } from 'features/quiz'
 import { Container, Typography, Box, Card, Button, Grid } from 'shared/ui'
 import styled, { css } from 'styled-components'
 import { SkipForward, BarChart2, Trophy, Crown } from 'lucide-react'

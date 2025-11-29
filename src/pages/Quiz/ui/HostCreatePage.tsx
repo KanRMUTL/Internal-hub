@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { QuizService } from '../api/quiz-service'
+import { QuizService } from 'features/quiz'
 import { Button, Input, Card, Typography, Box, Container } from 'shared/ui'
 import { Plus, Trash2, Save, ChevronDown, ChevronUp, CheckCircle } from 'lucide-react'
 import styled, { css } from 'styled-components'

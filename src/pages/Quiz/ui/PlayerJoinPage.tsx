@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { QuizService } from '../api/quiz-service'
+import { QuizService } from 'features/quiz'
 import { Container, Typography, Box, Card, Button, Input } from 'shared/ui'
 import styled from 'styled-components'
 import { LogIn } from 'lucide-react'
