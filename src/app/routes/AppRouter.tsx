@@ -3,7 +3,11 @@ import { Routes, Route } from 'react-router-dom'
 import { Layout } from 'widgets/Layout'
 import { Home } from 'pages/Home'
 import { RoomPage } from 'pages/Room'
-import { HostCreatePage, HostLobbyPage, HostGamePage, PlayerJoinPage, PlayerGamePage } from 'pages/Quiz'
+import { HostCreatePage } from 'pages/HostCreatePage'
+import { HostGamePage } from 'pages/HostGamePage'
+import { HostLobbyPage } from 'pages/HostLobbyPage'
+import { PlayerGamePage } from 'pages/PlayerGamePage'
+import { PlayerJoinPage } from 'pages/PlayerJoinPage'
 
 const AppRouter = () => {
   return (

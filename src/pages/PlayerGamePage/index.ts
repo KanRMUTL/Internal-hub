@@ -1,0 +1,1 @@
+export { PlayerGamePage } from './ui'
