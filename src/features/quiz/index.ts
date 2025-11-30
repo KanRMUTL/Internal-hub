@@ -1,4 +1,4 @@
-export { QuizService } from './api/quiz-service'
+export { QuizService } from './services/quizService'
 export type {
   RoomStatus,
   QuestionState,

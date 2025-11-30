@@ -14,9 +14,7 @@ import {
 } from 'firebase/firestore'
 import { db } from 'shared/config/firebase'
 import { QuizRoom, QuizPlayer, PlayerAnswer, RoomStatus } from '../models/types'
-
-const ROOMS_COLLECTION = 'rooms'
-const PLAYERS_SUBCOLLECTION = 'players'
+import { ROOMS_COLLECTION, PLAYERS_SUBCOLLECTION } from '../config/constant'
 
 export const QuizService = {
   // Create a new room
