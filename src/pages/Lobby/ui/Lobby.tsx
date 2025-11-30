@@ -73,7 +73,7 @@ const WaitingText = styled(Typography)`
   animation: ${Pulse} 2s infinite ease-in-out;
 `
 
-export const HostLobbyPage = () => {
+export const Lobby = () => {
   const { roomId } = useParams<{ roomId: string }>()
   const navigate = useNavigate()
   const [room, setRoom] = useState<QuizRoom | null>(null)

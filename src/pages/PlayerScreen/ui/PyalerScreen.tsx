@@ -107,7 +107,7 @@ const TimerFill = styled(motion.div)`
 
 const COLORS = ['#ef4444', '#3b82f6', '#eab308', '#22c55e'] // Red, Blue, Yellow, Green
 
-export const PlayerGamePage = () => {
+export const PlayerScreen = () => {
   const { roomId } = useParams<{ roomId: string }>()
   const [room, setRoom] = useState<QuizRoom | null>(null)
   const [player, setPlayer] = useState<QuizPlayer | null>(null)

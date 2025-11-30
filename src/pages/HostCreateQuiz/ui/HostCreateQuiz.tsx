@@ -111,7 +111,7 @@ const Badge = styled.span`
   margin-right: 0.5rem;
 `
 
-export const HostCreatePage = () => {
+export const HostCreateQuiz = () => {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0)

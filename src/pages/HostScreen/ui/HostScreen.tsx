@@ -120,7 +120,7 @@ const TimerCircleProgress = styled(motion.circle)`
 
 const COLORS = ['#ef4444', '#3b82f6', '#eab308', '#22c55e']
 
-export const HostGamePage = () => {
+export const HostScreen = () => {
   const { roomId } = useParams<{ roomId: string }>()
   const [room, setRoom] = useState<QuizRoom | null>(null)
   const [players, setPlayers] = useState<QuizPlayer[]>([])

@@ -1,0 +1,1 @@
+export { JoinQuizeGame } from './JoinQuizeGame'

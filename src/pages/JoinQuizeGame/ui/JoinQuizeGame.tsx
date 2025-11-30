@@ -26,7 +26,7 @@ interface JoinForm {
   nickname: string
 }
 
-export const PlayerJoinPage = () => {
+export const JoinQuizeGame = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
