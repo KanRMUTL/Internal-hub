@@ -1,0 +1,1 @@
+export { GameOverView } from './GameOverView'
