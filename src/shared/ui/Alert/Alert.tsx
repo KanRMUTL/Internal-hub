@@ -1,20 +1,43 @@
-import styled from 'styled-components'
-import { Color, ColorKeys } from 'shared/styles'
+import { ComponentProps } from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { twMerge } from 'tailwind-merge'
+import { clsx, type ClassValue } from 'clsx'
 
-const getColor = (type: ColorKeys, colors: Color) => {
-  return colors[type] || colors.info
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 }
 
-const Alert = styled.div<{ $type: ColorKeys; $width?: string }>`
-  padding: ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  background-color: rgba(255, 255, 255, 0.05);
-  color: ${({ $type, theme }) => getColor($type, theme.colors)};
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  font-weight: ${({ theme }) => theme.fontWeight.medium};
-  box-shadow: ${({ theme }) => theme.shadow.sm};
-  border-left: 4px solid ${({ $type, theme }) => getColor($type, theme.colors)};
-  width: ${({ $width }) => $width || 'fit-content'};
-`
+const alertVariants = cva('p-md rounded-md bg-white border-l-4 shadow-sm text-base font-medium dark:bg-grey-800', {
+  variants: {
+    type: {
+      primary: 'text-primary border-primary',
+      secondary: 'text-secondary border-secondary',
+      success: 'text-success border-success',
+      danger: 'text-danger border-danger',
+      warning: 'text-warning border-warning',
+      info: 'text-info border-info',
+    },
+  },
+  defaultVariants: {
+    type: 'info',
+  },
+})
+
+export interface AlertProps extends ComponentProps<'div'>, VariantProps<typeof alertVariants> {
+  width?: string
+}
+
+const Alert = ({ type, width, className, ...props }: AlertProps) => {
+  const role = type === 'danger' ? 'alert' : 'status'
+
+  return (
+    <div
+      role={role}
+      className={cn(alertVariants({ type }), className)}
+      style={{ width: width || 'fit-content' }}
+      {...props}
+    />
+  )
+}
 
 export default Alert

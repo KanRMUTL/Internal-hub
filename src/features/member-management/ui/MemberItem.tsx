@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { Card, Typography, TypogaphyProps, BoxProps, Box, CircularButton } from 'shared/ui'
+import { Card, Typography, TypographyProps, BoxProps, Box, CircularButton } from 'shared/ui'
 import styled from 'styled-components'
 import { X, Edit, User, UserCheck } from 'lucide-react'
 import { ReactNode } from 'react'
@@ -12,7 +12,7 @@ interface MemberItemProps {
   onEdit?: (id: string) => void
   showDelete?: boolean
   onDelete?: (id: string) => void
-  typography?: TypogaphyProps
+  typography?: TypographyProps
   box?: BoxProps
   active?: boolean
 }

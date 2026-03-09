@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import styled, { keyframes } from 'styled-components'
 import { AlertTriangle, Loader2 } from 'lucide-react'
 import { Box, Button, Typography, Alert, ScreenReaderOnly } from 'shared/ui'
 import { RoomMember } from 'entities/room'
@@ -21,11 +20,9 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
     setSaveError(null)
 
     try {
-      // Save fortune history if function is provided
       if (onSaveFortuneHistory) {
         await onSaveFortuneHistory(winner.id, winner.name)
       }
-      // Call the original onAccept handler
       onAccept()
     } catch (error) {
       console.error('Failed to save fortune history:', error)
@@ -121,8 +118,22 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
               transition: { delay: 0.2, duration: 0.3 },
             }}
           >
-            <RainbowBorder>
-              <Box $flex $justify="center" $align="center" $p="lg" $pointer>
+            <div
+              className="relative p-4 md:p-6 rounded-xl shadow-lg isolate"
+              style={{
+                background: 'linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet, red)',
+                backgroundSize: '1400% 1400%',
+                animation: 'rainbow-bg 5s linear infinite',
+              }}
+            >
+              <style>{`
+                @keyframes rainbow-bg {
+                  0% { background-position: 0% 50%; }
+                  100% { background-position: 100% 50%; }
+                }
+              `}</style>
+              <div className="absolute inset-0 -z-10 blur-sm opacity-70 rounded-xl" style={{ background: 'inherit' }} />
+              <div className="bg-black/80 backdrop-blur-sm rounded-lg flex justify-center items-center p-6 cursor-pointer">
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{
@@ -142,11 +153,13 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
                     $noWrap
                   >
                     <ScreenReaderOnly>Winner: </ScreenReaderOnly>
-                    <span aria-hidden="true">🎆</span> {winner.name} <span aria-hidden="true">🎉</span>
+                    <span aria-hidden="true" className="text-2xl md:text-3xl font-bold tracking-wide drop-shadow-md">
+                      🎆 {winner.name} 🎉
+                    </span>
                   </Typography>
                 </motion.div>
-              </Box>
-            </RainbowBorder>
+              </div>
+            </div>
           </motion.div>
 
           {saveError && (
@@ -227,58 +240,3 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
 }
 
 export default LuckyModal
-
-const rainbow = keyframes`
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
-`
-
-const RainbowBorder = styled.div`
-  padding: ${({ theme }) => theme.spacing.lg};
-  background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet, red);
-  background-size: 1400% 1400%;
-  animation: ${rainbow} 5s linear infinite;
-  border-radius: ${({ theme }) => theme.borderRadius.xl};
-  box-shadow:
-    ${({ theme }) => theme.shadow.lg},
-    0 0 20px rgba(255, 255, 255, 0.3);
-  position: relative;
-
-  /* Enhanced winner display */
-  & > div {
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: ${({ theme }) => theme.borderRadius.lg};
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-
-    /* Better typography hierarchy */
-    span {
-      font-size: ${({ theme }) => theme.fontSizes.xxl};
-      font-weight: ${({ theme }) => theme.fontWeight.bold};
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-      letter-spacing: 0.5px;
-
-      /* Responsive text sizing */
-      @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-        font-size: ${({ theme }) => theme.fontSizes.xl};
-      }
-    }
-  }
-
-  /* Celebration effect */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    background: inherit;
-    border-radius: inherit;
-    z-index: -1;
-    filter: blur(8px);
-    opacity: 0.7;
-  }
-
-  /* Mobile adjustments */
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    padding: ${({ theme }) => theme.spacing.md};
-  }
-`

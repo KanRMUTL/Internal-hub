@@ -3,7 +3,7 @@ import { ToggleThemeButton, useTheme } from 'features/toggle-theme'
 import { Outlet } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { masterLogo, hatohub } from 'shared/assets'
-import { Box } from 'shared/ui'
+import { Box, Breadcrumbs, Container } from 'shared/ui'
 import styled from 'styled-components'
 
 const Layout = () => {
@@ -35,7 +35,12 @@ const Layout = () => {
           <ToggleThemeButton />
         </div>
       </Nav>
-      <Main>{<Outlet />}</Main>
+      <Main>
+        <Container>
+          <Breadcrumbs />
+          <Outlet />
+        </Container>
+      </Main>
     </Wrapper>
   )
 }
