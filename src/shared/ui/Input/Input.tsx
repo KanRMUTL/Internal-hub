@@ -1,7 +1,7 @@
 import { InputHTMLAttributes, forwardRef, useState, useId } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/shared/lib/utils'
+import { cn } from '../../lib/utils'
 
 const inputVariants = cva(
   'w-full text-base rounded-md transition-colors duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:bg-gray-100 disabled:border-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-800 dark:disabled:border-gray-700 dark:disabled:text-gray-500 placeholder:text-gray-400 placeholder:transition-opacity focus:placeholder:opacity-70 dark:placeholder:text-gray-500',
@@ -96,7 +96,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               htmlFor={finalId}
               className={cn(
                 'font-medium transition-all duration-300 ease-out',
-                !!error ? 'text-danger' : isFocused ? 'text-primary' : 'text-gray-900 dark:text-gray-100',
+                error ? 'text-danger' : isFocused ? 'text-primary' : 'text-gray-900 dark:text-gray-100',
                 $floatingLabel
                   ? 'absolute left-3 pointer-events-none z-10 bg-white dark:bg-gray-900 px-1'
                   : 'block mb-2',
