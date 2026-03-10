@@ -1,262 +1,38 @@
 import { useMemo, useRef, useEffect, useState } from 'react'
 import dayjs from 'dayjs'
-import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Typography, Box } from 'shared/ui'
 import { useFortuneHistory } from 'features/fortune/hooks'
 import { FortuneHistoryEntry, FortuneHistoryTableProps } from 'features/fortune/model/fortuneHistoryTypes'
 import FortuneHistoryDataBoundary from './FortuneHistoryDataBoundary'
+import { cva } from 'class-variance-authority'
+import { cn } from 'shared/utils'
 
-const StyledTableContainer = styled.div`
-  width: 100%;
-  max-height: 400px;
-  overflow-y: auto;
-  overflow-x: auto;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  background: ${({ theme }) => theme.background.surface};
-  scroll-behavior: smooth;
-  box-shadow: ${({ theme }) => theme.shadow.sm};
+const tableContainerVariants = cva(
+  'w-full max-h-[400px] overflow-y-auto overflow-x-auto rounded-lg border border-gray-200 bg-surface-light dark:bg-surface-dark shadow-sm scroll-smooth md:max-h-[350px] md:rounded-md sm:max-h-[300px] sm:overflow-x-scroll scrollbar-thin scrollbar-track-surface-light scrollbar-thumb-gray-400 hover:scrollbar-thumb-primary transition-colors'
+)
 
-  /* Enhanced scrollbar styling */
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
+const tableVariants = cva('w-full border-collapse min-w-[400px] sm:min-w-[350px]')
 
-  &::-webkit-scrollbar-track {
-    background: ${({ theme }) => theme.background.elevated};
-    border-radius: ${({ theme }) => theme.borderRadius.sm};
-  }
+const headerVariants = cva(
+  'bg-surface-light dark:bg-surface-dark font-semibold text-gray-900 dark:text-gray-100 border-bottom-2 border-gray-300 sticky top-0 z-10 px-6 py-4 text-sm uppercase tracking-wider shadow-[0_1px_0_rgba(0,0,0,0.05)] md:px-4 md:py-3 md:text-xs sm:px-2 sm:py-1'
+)
 
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.grey[400]};
-    border-radius: ${({ theme }) => theme.borderRadius.sm};
-    transition: background-color 0.2s ease;
-  }
+const cellVariants = cva(
+  'border-b border-gray-200 text-gray-900 dark:text-gray-100 px-6 py-4 text-sm align-middle md:px-4 md:py-3 md:text-xs sm:px-2 sm:py-1'
+)
 
-  &::-webkit-scrollbar-thumb:hover {
-    background: ${({ theme }) => theme.colors.primary};
-  }
-
-  /* Mobile responsive adjustments */
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    max-height: 350px;
-    border-radius: ${({ theme }) => theme.borderRadius.md};
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    max-height: 300px;
-    overflow-x: scroll;
-
-    &::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
-    }
-  }
-`
-
-const AnimatedTable = styled(motion.table)`
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 400px; /* Ensure minimum width for mobile horizontal scroll */
-
-  th {
-    background: ${({ theme }) => theme.background.elevated};
-    font-weight: ${({ theme }) => theme.fontWeight.semibold};
-    color: ${({ theme }) => theme.text};
-    border-bottom: 2px solid ${({ theme }) => theme.colors.grey[300]};
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-    font-size: ${({ theme }) => theme.fontSizes.sm};
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 1px 0 ${({ theme }) => theme.colors.grey[200]};
-
-    .mobile-label {
-      display: none;
-    }
-
-    .desktop-label {
-      display: inline;
-    }
-  }
-
-  td {
-    border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
-    color: ${({ theme }) => theme.text};
-    transition: all 0.2s ease;
-    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-    font-size: ${({ theme }) => theme.fontSizes.sm};
-    vertical-align: middle;
-
-    .mobile-date {
-      display: none;
-    }
-
-    .desktop-date {
-      display: inline;
-    }
-  }
-
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  /* Enhanced mobile responsiveness */
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    th,
-    td {
-      padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-      font-size: ${({ theme }) => theme.fontSizes.xs};
-    }
-
-    th {
-      font-size: ${({ theme }) => theme.fontSizes.xs};
-      letter-spacing: 0.3px;
-    }
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    min-width: 350px;
-
-    th,
-    td {
-      padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
-    }
-
-    th {
-      .mobile-label {
-        display: inline;
-      }
-
-      .desktop-label {
-        display: none;
-      }
-    }
-
-    td {
-      .mobile-date {
-        display: inline;
-      }
-
-      .desktop-date {
-        display: none;
-      }
-    }
-
-    /* Compact mobile layout */
-    th:first-child,
-    td:first-child {
-      width: 50px;
-      text-align: center;
-    }
-
-    th:last-child,
-    td:last-child {
-      width: 120px;
-    }
-  }
-`
-
-const AnimatedTableRow = styled(motion.tr)<{ $isNew?: boolean }>`
-  background: ${({ theme, $isNew }) =>
-    $isNew
-      ? `linear-gradient(90deg, ${theme.colors.success}15, ${theme.background.surface})`
-      : theme.background.surface};
-  cursor: pointer;
-  position: relative;
-
-  &:hover {
-    background: ${({ theme, $isNew }) =>
-      $isNew
-        ? `linear-gradient(90deg, ${theme.colors.success}25, ${theme.background.elevated})`
-        : theme.background.elevated};
-    transform: translateY(-1px);
-    box-shadow: ${({ theme }) => theme.shadow.sm};
-  }
-
-  &:active {
-    transform: translateY(0);
-    transition: transform 0.1s ease;
-  }
-
-  ${({ $isNew, theme }) =>
-    $isNew &&
-    `
-    box-shadow: 0 0 0 1px ${theme.colors.success}30;
-    animation: highlightPulse 2s ease-out;
-  `}
-
-  @keyframes highlightPulse {
-    0% {
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.success}50;
-      background: linear-gradient(
-        90deg,
-        ${({ theme }) => theme.colors.success}30,
-        ${({ theme }) => theme.background.surface}
-      );
-    }
-    50% {
-      box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.success}25;
-      transform: scale(1.01);
-    }
-    100% {
-      box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.success}15;
-      background: linear-gradient(
-        90deg,
-        ${({ theme }) => theme.colors.success}15,
-        ${({ theme }) => theme.background.surface}
-      );
-      transform: scale(1);
-    }
-  }
-
-  /* Enhanced mobile hover states */
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    &:hover {
-      transform: none;
-      box-shadow: none;
-      background: ${({ theme, $isNew }) =>
-        $isNew
-          ? `linear-gradient(90deg, ${theme.colors.success}20, ${theme.background.elevated})`
-          : theme.background.elevated};
-    }
-
-    &:active {
-      background: ${({ theme }) => theme.colors.grey[100]};
-      transform: scale(0.99);
-    }
-  }
-`
-
-const EmptyStateContainer = styled(Box)`
-  padding: ${({ theme }) => theme.spacing.xl};
-  text-align: center;
-  color: ${({ theme }) => theme.colors.grey[600]};
-  background: ${({ theme }) => theme.background.surface};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-
-  /* Enhanced empty state styling */
-  &::before {
-    content: '🎲';
-    display: block;
-    font-size: 3rem;
-    margin-bottom: ${({ theme }) => theme.spacing.md};
-    opacity: 0.6;
-  }
-
-  /* Mobile adjustments */
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    padding: ${({ theme }) => theme.spacing.lg};
-
-    &::before {
-      font-size: 2.5rem;
-      margin-bottom: ${({ theme }) => theme.spacing.sm};
-    }
-  }
-`
+const tableRowVariants = cva('cursor-pointer relative transition-all duration-200 group', {
+  variants: {
+    isNew: {
+      true: 'bg-gradient-to-r from-success/15 to-surface-light dark:to-surface-dark shadow-[0_0_0_1px_rgba(30,138,66,0.3)] animate-[highlightPulse_2s_ease-out]',
+      false: 'bg-surface-light dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-800',
+    },
+  },
+  defaultVariants: {
+    isNew: false,
+  },
+})
 
 const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) => {
   const { history, loading, error, retry } = useFortuneHistory(roomId)
@@ -265,7 +41,6 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
   const [newEntryIds, setNewEntryIds] = useState<Set<string>>(new Set())
   const [scrollPosition, setScrollPosition] = useState(0)
 
-  // Track scroll position to maintain it during updates
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -278,14 +53,12 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
     return () => container.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Detect new entries and highlight them
   useEffect(() => {
     if (loading || history.length === 0) return
 
     const currentIds = new Set(history.map((entry) => entry.id))
     const newIds = new Set<string>()
 
-    // Find entries that weren't in the previous history
     currentIds.forEach((id) => {
       if (!previousHistoryIdsRef.current.has(id)) {
         newIds.add(id)
@@ -294,23 +67,18 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
 
     if (newIds.size > 0) {
       setNewEntryIds(newIds)
-
-      // Clear highlights after animation duration
       setTimeout(() => {
         setNewEntryIds(new Set())
       }, 2000)
     }
 
-    // Update the ref without causing re-renders
     previousHistoryIdsRef.current = currentIds
   }, [history, loading])
 
-  // Restore scroll position after updates
   useEffect(() => {
     const container = containerRef.current
     if (!container || loading) return
 
-    // Small delay to ensure DOM has updated
     setTimeout(() => {
       container.scrollTop = scrollPosition
     }, 50)
@@ -324,7 +92,6 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
         label: '#',
         align: 'center' as const,
         width: '60px',
-        mobileWidth: '50px',
       },
       {
         id: 'winnerName',
@@ -339,7 +106,6 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
         label: 'Date & Time',
         align: 'left' as const,
         width: '180px',
-        mobileWidth: '120px',
         mobileLabel: 'Date',
       },
     ],
@@ -347,16 +113,15 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
   )
 
   const renderAnimatedTable = () => (
-    <AnimatedTable
+    <motion.table
+      className={tableVariants()}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
       role="table"
       aria-label="Fortune wheel spin history"
     >
-      <caption style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', clip: 'rect(0,0,0,0)' }}>
-        History of fortune wheel spins showing winner names and dates
-      </caption>
+      <caption className="sr-only">History of fortune wheel spins showing winner names and dates</caption>
       <thead>
         <tr role="row">
           {columns.map((col) => (
@@ -364,13 +129,14 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
               key={col.id}
               role="columnheader"
               scope="col"
+              className={headerVariants()}
               style={{
                 textAlign: col.align || 'left',
                 width: col.width,
               }}
             >
-              <span className="desktop-label">{col.label}</span>
-              <span className="mobile-label">{col.mobileLabel || col.label}</span>
+              <span className="inline sm:hidden">{col.label}</span>
+              <span className="hidden sm:inline">{col.mobileLabel || col.label}</span>
             </th>
           ))}
         </tr>
@@ -383,10 +149,10 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
             const formattedDate = dayjs(row.createdAt).format('MMM D, YYYY h:mm A')
 
             return (
-              <AnimatedTableRow
+              <motion.tr
                 key={row.id}
-                $isNew={isNew}
                 role="row"
+                className={tableRowVariants({ isNew })}
                 initial={{ opacity: 0, y: -20, scale: 0.95 }}
                 animate={{
                   opacity: 1,
@@ -408,7 +174,7 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
                 layout
                 layoutId={row.id}
               >
-                <td role="cell" style={{ textAlign: 'center' }}>
+                <td role="cell" className={cn(cellVariants(), 'text-center')}>
                   <motion.div
                     initial={isNew ? { scale: 1.2 } : false}
                     animate={{ scale: 1 }}
@@ -419,7 +185,7 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
                     </Typography>
                   </motion.div>
                 </td>
-                <td role="cell" style={{ textAlign: 'left' }}>
+                <td role="cell" className={cn(cellVariants(), 'text-left')}>
                   <motion.div
                     initial={isNew ? { scale: 1.1, x: 10 } : false}
                     animate={{ scale: 1, x: 0 }}
@@ -430,47 +196,46 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
                     </Typography>
                   </motion.div>
                 </td>
-                <td role="cell" style={{ textAlign: 'left' }}>
+                <td role="cell" className={cn(cellVariants(), 'text-left')}>
                   <motion.div
                     initial={isNew ? { opacity: 0.5 } : false}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                   >
                     <Typography $size="sm" $color="grey">
-                      <span className="desktop-date">{formattedDate}</span>
-                      <span className="mobile-date">{dayjs(row.createdAt).format('MMM D')}</span>
+                      <span className="inline sm:hidden">{formattedDate}</span>
+                      <span className="hidden sm:inline">{dayjs(row.createdAt).format('MMM D')}</span>
                     </Typography>
                   </motion.div>
                 </td>
-              </AnimatedTableRow>
+              </motion.tr>
             )
           })}
         </AnimatePresence>
       </tbody>
-    </AnimatedTable>
+    </motion.table>
   )
 
-  // Don't render anything if there's no history and not loading
   if (!loading && !error && history.length === 0) {
     return null
   }
 
   return (
-    <StyledTableContainer ref={containerRef} className={className}>
+    <div ref={containerRef} className={cn(tableContainerVariants(), className)}>
       <FortuneHistoryDataBoundary loading={loading} error={error} onRetry={retry} showSkeleton={true}>
         {history.length === 0 ? (
-          <EmptyStateContainer>
+          <div className="p-12 text-center text-gray-600 bg-surface-light dark:bg-surface-dark rounded-lg sm:p-8 before:content-['🎲'] before:block before:text-5xl before:mb-4 before:opacity-60 sm:before:text-4xl sm:before:mb-2">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
               <Typography $size="base" $color="grey">
                 No fortune history yet. Spin the wheel to get started!
               </Typography>
             </motion.div>
-          </EmptyStateContainer>
+          </div>
         ) : (
           renderAnimatedTable()
         )}
       </FortuneHistoryDataBoundary>
-    </StyledTableContainer>
+    </div>
   )
 }
 

@@ -1,59 +1,49 @@
-import styled, { css } from 'styled-components'
-import { motion } from 'motion/react'
+import { motion } from 'framer-motion'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from 'shared/utils'
 
-interface OptionButtonProps {
+interface OptionButtonProps extends VariantProps<typeof optionButtonVariants> {
   text: string
-  color: string
+  color: string // This seems to be a dynamic hex or tailwind class
   selected?: boolean
   disabled?: boolean
   onClick: () => void
+  className?: string
 }
 
-export const OptionButton = ({ text, color, selected, disabled, onClick }: OptionButtonProps) => {
+const optionButtonVariants = cva(
+  'w-full p-6 rounded-2xl text-white text-xl font-bold relative overflow-hidden min-h-[80px] flex items-center justify-center text-center transition-all duration-200 border-none shadow-[0_4px_0_rgba(0,0,0,0.2)]',
+  {
+    variants: {
+      selected: {
+        true: 'translate-y-1 shadow-none ring-4 ring-white',
+        false: '',
+      },
+      disabled: {
+        true: 'cursor-default',
+        false: 'cursor-pointer active:translate-y-1 active:shadow-none',
+      },
+    },
+    defaultVariants: {
+      selected: false,
+      disabled: false,
+    },
+  }
+)
+
+export const OptionButton = ({ text, color, selected, disabled, onClick, className }: OptionButtonProps) => {
   return (
-    <StyledButton
-      $color={color}
-      $selected={selected}
-      $disabled={disabled}
-      onClick={onClick}
+    <motion.button
+      className={cn(optionButtonVariants({ selected, disabled }), className)}
+      style={{
+        backgroundColor: color,
+        opacity: disabled && !selected ? 0.3 : 1,
+      }}
+      onClick={disabled ? undefined : onClick}
       whileHover={{ scale: disabled ? 1 : 1.02 }}
-      whileTap={{ scale: 0.95 }}
+      whileTap={disabled ? {} : { scale: 0.95 }}
     >
       {text}
-    </StyledButton>
+    </motion.button>
   )
 }
-
-const StyledButton = styled(motion.button)<{ $color: string; $selected?: boolean; $disabled?: boolean }>`
-  width: 100%;
-  padding: 1.5rem;
-  border: none;
-  border-radius: 16px;
-  background-color: ${({ $color }) => $color};
-  color: white;
-  font-size: 1.25rem;
-  font-weight: bold;
-  cursor: ${({ $disabled }) => ($disabled ? 'default' : 'pointer')};
-  opacity: ${({ $disabled, $selected }) => ($disabled && !$selected ? 0.3 : 1)};
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
-  position: relative;
-  overflow: hidden;
-  min-height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-
-  &:active {
-    transform: ${({ $disabled }) => ($disabled ? 'none' : 'translateY(4px)')};
-    box-shadow: ${({ $disabled }) => ($disabled ? '0 4px 0 rgba(0, 0, 0, 0.2)' : 'none')};
-  }
-
-  ${({ $selected }) =>
-    $selected &&
-    css`
-      transform: translateY(4px);
-      box-shadow: none;
-      ring: 4px solid white;
-    `}
-`

@@ -1,7 +1,6 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useEffect } from 'react'
 import { useLocalStorage } from 'react-use'
-import { ThemeProvider as StyledProvider } from 'styled-components'
-import { lightTheme, darkTheme, THEME_MODE_KEYS } from 'shared/styles'
+import { THEME_MODE_KEYS } from 'shared/styles'
 import { DEFAULT_MODE } from 'features/toggle-theme/config'
 import { switchMode } from 'features/toggle-theme/lib'
 import { ThemeContext } from './context'
@@ -14,18 +13,20 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setModeStorage(nextMode)
   }, [modeStorage, setModeStorage])
 
-  const { theme, mode } = useMemo(() => {
-    const theme = modeStorage === 'LIGHT' ? lightTheme : darkTheme
+  const { mode } = useMemo(() => {
     const mode = modeStorage || DEFAULT_MODE
     return {
-      theme,
       mode,
     }
   }, [modeStorage])
 
-  return (
-    <ThemeContext.Provider value={{ toggleTheme, mode }}>
-      <StyledProvider theme={theme}>{children}</StyledProvider>
-    </ThemeContext.Provider>
-  )
+  useEffect(() => {
+    if (mode === 'DARK') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [mode])
+
+  return <ThemeContext.Provider value={{ toggleTheme, mode }}>{children}</ThemeContext.Provider>
 }

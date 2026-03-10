@@ -1,33 +1,23 @@
-import styled from 'styled-components'
-import { motion } from 'motion/react'
+import { motion } from 'framer-motion'
+import { cva } from 'class-variance-authority'
 
 interface QuizTimerProps {
   progress: number
 }
 
+const timerBarContainerVariants = cva('w-full h-2 bg-white/20 rounded-lg mb-8 overflow-hidden')
+
+const timerFillVariants = cva('h-full bg-warning-bg rounded-lg')
+
 export const QuizTimer = ({ progress }: QuizTimerProps) => {
   return (
-    <TimerBarContainer>
-      <TimerFill
+    <div className={timerBarContainerVariants()}>
+      <motion.div
+        className={timerFillVariants()}
         initial={{ width: '100%' }}
         animate={{ width: `${progress}%` }}
         transition={{ ease: 'linear', duration: 0.1 }}
       />
-    </TimerBarContainer>
+    </div>
   )
 }
-
-const TimerBarContainer = styled.div`
-  width: 100%;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  margin-bottom: 2rem;
-  overflow: hidden;
-`
-
-const TimerFill = styled(motion.div)`
-  height: 100%;
-  background: #fbbf24; // Amber 400
-  border-radius: 4px;
-`

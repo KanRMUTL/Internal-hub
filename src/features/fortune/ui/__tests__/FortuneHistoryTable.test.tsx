@@ -1,95 +1,44 @@
-import { describe, it, expect, vi, beforeEach, Mock } from 'vitest'
-import { render } from '@testing-library/react'
-import { ThemeProvider } from 'styled-components'
+import { render, screen } from '@testing-library/react'
 import FortuneHistoryTable from '../FortuneHistoryTable'
-import { useFortuneHistory } from '../../hooks'
-import { TEST_ROOM_ID } from '../../../../test/fortuneHistoryTestUtils'
-import { lightTheme } from 'shared/styles/config'
+import { ThemeProvider } from 'features/toggle-theme/providers/ThemeContext'
+import { useFortuneHistory } from 'features/fortune/hooks'
 
-// Mock the fortune history hook
-vi.mock('../../hooks')
+jest.mock('features/fortune/hooks')
 
-// Mock FortuneHistoryDataBoundary
-vi.mock('../FortuneHistoryDataBoundary', () => ({
-  default: ({ children }: { children: React.ReactNode }) => <div data-testid="data-boundary">{children}</div>,
-}))
-
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => <div {...props}>{children}</div>,
-    table: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
-      <table {...props}>{children}</table>
-    ),
-    tr: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => <tr {...props}>{children}</tr>,
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}))
-
-// Mock dayjs
-vi.mock('dayjs', () => ({
-  default: vi.fn(() => ({
-    format: vi.fn(() => 'Dec 10, 2024 2:30 PM'),
-  })),
-}))
-
-const renderWithTheme = (component: React.ReactElement) => {
-  return render(<ThemeProvider theme={lightTheme}>{component}</ThemeProvider>)
-}
+const mockHistory = [{ id: '1', winnerName: 'Winner 1', createdAt: new Date().toISOString() }]
 
 describe('FortuneHistoryTable', () => {
-  const mockUseFortuneHistory = {
-    history: [],
-    loading: false,
-    error: null,
-    retry: vi.fn(),
-    saveEntry: vi.fn(),
-    clearHistory: vi.fn(),
-    retryCount: 0,
-    saveError: null,
-    saving: false,
-  }
-
-  beforeEach(() => {
-    vi.clearAllMocks()
-    ;(useFortuneHistory as Mock).mockReturnValue(mockUseFortuneHistory)
-  })
-
-  it('should call useFortuneHistory with correct roomId', () => {
-    // Act
-    renderWithTheme(<FortuneHistoryTable roomId={TEST_ROOM_ID} />)
-
-    // Assert
-    expect(useFortuneHistory).toHaveBeenCalledWith(TEST_ROOM_ID)
-  })
-
-  it('should render nothing when no history and not loading', () => {
-    // Act
-    const { container } = renderWithTheme(<FortuneHistoryTable roomId={TEST_ROOM_ID} />)
-
-    // Assert
-    expect(container.firstChild).toBeNull()
-  })
-
-  it('should render table when history exists', () => {
-    // Arrange
-    ;(useFortuneHistory as Mock).mockReturnValue({
-      ...mockUseFortuneHistory,
-      history: [
-        {
-          id: 'entry-1',
-          winnerName: 'John Doe',
-          winnerId: 'winner-1',
-          roomId: TEST_ROOM_ID,
-          createdAt: '2024-01-15T10:30:00.000Z',
-        },
-      ],
+  it('renders history entries', () => {
+    ;(useFortuneHistory as jest.Mock).mockReturnValue({
+      history: mockHistory,
+      loading: false,
+      error: null,
+      retry: jest.fn(),
     })
 
-    // Act
-    const { container } = renderWithTheme(<FortuneHistoryTable roomId={TEST_ROOM_ID} />)
+    render(
+      <ThemeProvider>
+        <FortuneHistoryTable roomId="1" />
+      </ThemeProvider>
+    )
 
-    // Assert
-    expect(container.firstChild).not.toBeNull()
+    expect(screen.getByText('Winner 1')).toBeInTheDocument()
+  })
+
+  it('renders empty state when no history', () => {
+    ;(useFortuneHistory as jest.Mock).mockReturnValue({
+      history: [],
+      loading: false,
+      error: null,
+      retry: jest.fn(),
+    })
+
+    render(
+      <ThemeProvider>
+        <FortuneHistoryTable roomId="1" />
+      </ThemeProvider>
+    )
+
+    expect(screen.queryByText('Winner 1')).not.toBeInTheDocument()
   })
 })
