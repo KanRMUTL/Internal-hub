@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import styled from 'styled-components'
 import Alert from '../Alert'
 import { ColorKeys } from 'shared/styles'
+import { cva, type VariantProps } from 'class-variance-authority'
+
+const flashAlertVariants = cva('fixed top-3 left-1/2 -translate-x-1/2 z-[1000] flex flex-col gap-2')
 
 type FlashAlertProps = {
   type?: ColorKeys
@@ -10,7 +12,7 @@ type FlashAlertProps = {
   visible: boolean
   duration?: number
   onClose: () => void
-}
+} & VariantProps<typeof flashAlertVariants>
 
 const FlashAlert = ({ type = 'info', message, visible, duration = 3000, onClose }: FlashAlertProps) => {
   useEffect(() => {
@@ -23,7 +25,7 @@ const FlashAlert = ({ type = 'info', message, visible, duration = 3000, onClose 
   }, [visible, duration, onClose])
 
   return (
-    <Wrapper>
+    <div className={flashAlertVariants()}>
       <AnimatePresence>
         {visible && (
           <motion.div
@@ -36,19 +38,8 @@ const FlashAlert = ({ type = 'info', message, visible, duration = 3000, onClose 
           </motion.div>
         )}
       </AnimatePresence>
-    </Wrapper>
+    </div>
   )
 }
 
 export default FlashAlert
-
-const Wrapper = styled.div`
-  position: fixed;
-  top: 12px;
-  left: 50%;
-  transform: translate(-50%, 0);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`
