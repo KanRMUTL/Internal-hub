@@ -1,13 +1,15 @@
 import { motion, AnimatePresence } from 'motion/react'
 import { Check } from 'lucide-react'
-import Box from '../Box'
-import Typography from '../Typography'
 import { useMotionProps } from 'shared/hooks'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 const successFeedbackVariants = cva(
   'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none will-change-[transform,opacity] backface-hidden max-w-[90vw] max-h-[90vh] [&>*]:pointer-events-auto'
 )
+
+const successBoxVariants = cva('flex items-center justify-center gap-sm p-lg bg-success rounded-lg shadow-xl')
+
+const successTextVariants = cva('text-white font-medium')
 
 interface SuccessFeedbackProps extends VariantProps<typeof successFeedbackVariants> {
   visible: boolean
@@ -45,27 +47,12 @@ const SuccessFeedback = ({ visible, message, onComplete }: SuccessFeedbackProps)
     <AnimatePresence onExitComplete={onComplete}>
       {visible && (
         <motion.div className={successFeedbackVariants()} {...motionProps}>
-          <Box
-            $flex
-            $align="center"
-            $justify="center"
-            $gap="sm"
-            $p="lg"
-            $bg="primary"
-            $radius="lg"
-            $shadow="xl"
-            style={{
-              backgroundColor: '#1e8a42', // WCAG AA compliant success color
-              color: '#ffffff',
-            }}
-          >
-            <motion.div {...iconMotionProps}>
+          <div className={successBoxVariants()}>
+            <motion.div {...iconMotionProps} className="text-white flex items-center justify-center">
               <Check size={24} />
             </motion.div>
-            <Typography $color="white" $weight="medium">
-              {message}
-            </Typography>
-          </Box>
+            <span className={successTextVariants()}>{message}</span>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
