@@ -1,13 +1,20 @@
 import { render, RenderOptions } from '@testing-library/react'
-import { ReactElement, ReactNode } from 'react'
-import { ThemeProvider } from 'styled-components'
-import { lightTheme, darkTheme } from 'shared/styles'
+import { ReactElement, ReactNode, useEffect } from 'react'
+import { ThemeProvider } from 'features/toggle-theme/providers/ThemeContext'
 import { vi, describe } from 'vitest'
 
 // Theme wrapper for testing
-const ThemeWrapper = ({ children, theme }: { children: ReactNode; theme: 'light' | 'dark' }) => (
-  <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>{children}</ThemeProvider>
-)
+const ThemeWrapper = ({ children, theme }: { children: ReactNode; theme: 'light' | 'dark' }) => {
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [theme])
+
+  return <ThemeProvider>{children}</ThemeProvider>
+}
 
 // Custom render function with theme support
 export const renderWithTheme = (
@@ -58,10 +65,7 @@ export const mockViewport = (width: number, height: number) => {
 
 // Color contrast testing utility
 export const getContrastRatio = (color1: string, color2: string): number => {
-  // Simplified contrast ratio calculation for testing
-  // In a real implementation, you'd use a proper color library
   const getLuminance = (color: string): number => {
-    // This is a simplified version - in practice use a proper color library
     const hex = color.replace('#', '')
     const r = parseInt(hex.substr(0, 2), 16) / 255
     const g = parseInt(hex.substr(2, 2), 16) / 255
@@ -100,7 +104,7 @@ export const mockReducedMotion = (reduced: boolean = true) => {
 // Touch target size validation
 export const validateTouchTarget = (element: HTMLElement): boolean => {
   const rect = element.getBoundingClientRect()
-  const minSize = 44 // WCAG AA minimum touch target size
+  const minSize = 44
   return rect.width >= minSize && rect.height >= minSize
 }
 
@@ -109,6 +113,5 @@ export const validateFocusIndicator = (element: HTMLElement): boolean => {
   element.focus()
   const styles = window.getComputedStyle(element)
 
-  // Check for visible focus indicators
   return styles.outline !== 'none' || styles.boxShadow !== 'none' || styles.border !== 'none'
 }
