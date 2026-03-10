@@ -1,18 +1,19 @@
 import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Alert from '../Alert'
-import { ColorKeys } from 'shared/styles'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 const flashAlertVariants = cva('fixed top-3 left-1/2 -translate-x-1/2 z-[1000] flex flex-col gap-2')
 
-type FlashAlertProps = {
-  type?: ColorKeys
+type AlertType = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info'
+
+interface FlashAlertProps extends VariantProps<typeof flashAlertVariants> {
+  type?: AlertType
   message: string
   visible: boolean
   duration?: number
   onClose: () => void
-} & VariantProps<typeof flashAlertVariants>
+}
 
 const FlashAlert = ({ type = 'info', message, visible, duration = 3000, onClose }: FlashAlertProps) => {
   useEffect(() => {
@@ -34,7 +35,7 @@ const FlashAlert = ({ type = 'info', message, visible, duration = 3000, onClose 
             exit={{ opacity: 0, y: -50 }}
             transition={{ duration: 0.3 }}
           >
-            <Alert $type={type}>{message}</Alert>
+            <Alert type={type}>{message}</Alert>
           </motion.div>
         )}
       </AnimatePresence>
