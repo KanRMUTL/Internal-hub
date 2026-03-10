@@ -64,7 +64,7 @@ const PerformanceMonitor = ({
 
       {isVisible && (
         <div className="absolute top-full right-0 mt-2 bg-black/90 border border-white/10 rounded-lg p-3 min-w-[200px] backdrop-blur-md text-white">
-          <Typography $size="sm" $weight="semibold">
+          <Typography $size="sm" $weight="medium">
             Performance Monitor
           </Typography>
 

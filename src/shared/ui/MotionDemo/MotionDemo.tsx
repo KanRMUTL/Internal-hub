@@ -32,7 +32,7 @@ const MotionDemo = ({ className }: { className?: string }) => {
 
   return (
     <div className={cn(containerVariants({ className }))}>
-      <Typography $size="lg" $weight="semibold" $align="center">
+      <Typography $size="lg" $weight="medium" $align="center">
         Motion Preferences Demo
       </Typography>
 
@@ -52,7 +52,7 @@ const MotionDemo = ({ className }: { className?: string }) => {
           <MotionDiv {...cardMotionProps}>
             <div className={demoCardVariants()}>
               <Typography $weight="medium">Animated Card</Typography>
-              <Typography $size="sm" $color="grey">
+              <Typography $size="sm" $color="muted">
                 This card respects your motion preferences
               </Typography>
 
@@ -75,7 +75,7 @@ const MotionDemo = ({ className }: { className?: string }) => {
       </Box>
 
       <div className={instructionsBoxVariants()}>
-        <Typography $size="xs" $color="grey" $align="center">
+        <Typography $size="xs" $color="muted" $align="center">
           To test: Go to your browser settings and toggle "Reduce motion" preference, or use the accessibility settings
           in your OS.
         </Typography>
