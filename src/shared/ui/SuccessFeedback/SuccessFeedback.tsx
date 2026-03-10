@@ -3,9 +3,13 @@ import { Check } from 'lucide-react'
 import Box from '../Box'
 import Typography from '../Typography'
 import { useMotionProps } from 'shared/hooks'
-import styled from 'styled-components'
+import { cva, type VariantProps } from 'class-variance-authority'
 
-interface SuccessFeedbackProps {
+const successFeedbackVariants = cva(
+  'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none will-change-[transform,opacity] backface-hidden max-w-[90vw] max-h-[90vh] [&>*]:pointer-events-auto'
+)
+
+interface SuccessFeedbackProps extends VariantProps<typeof successFeedbackVariants> {
   visible: boolean
   message: string
   onComplete?: () => void
@@ -40,7 +44,7 @@ const SuccessFeedback = ({ visible, message, onComplete }: SuccessFeedbackProps)
   return (
     <AnimatePresence onExitComplete={onComplete}>
       {visible && (
-        <Wrapper {...motionProps}>
+        <motion.div className={successFeedbackVariants()} {...motionProps}>
           <Box
             $flex
             $align="center"
@@ -51,8 +55,8 @@ const SuccessFeedback = ({ visible, message, onComplete }: SuccessFeedbackProps)
             $radius="lg"
             $shadow="xl"
             style={{
-              backgroundColor: '#10b981',
-              color: 'white',
+              backgroundColor: '#1e8a42', // WCAG AA compliant success color
+              color: '#ffffff',
             }}
           >
             <motion.div {...iconMotionProps}>
@@ -62,32 +66,10 @@ const SuccessFeedback = ({ visible, message, onComplete }: SuccessFeedbackProps)
               {message}
             </Typography>
           </Box>
-        </Wrapper>
+        </motion.div>
       )}
     </AnimatePresence>
   )
 }
 
 export default SuccessFeedback
-
-const Wrapper = styled(motion.div)`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate3d(-50%, -50%, 0);
-  z-index: 9999;
-  pointer-events: none;
-
-  /* Performance optimizations */
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-
-  /* Ensure it works on all screen sizes */
-  max-width: 90vw;
-  max-height: 90vh;
-
-  /* Enable pointer events for the content if needed */
-  > * {
-    pointer-events: auto;
-  }
-`
