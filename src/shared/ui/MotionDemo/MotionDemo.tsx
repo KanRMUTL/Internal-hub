@@ -1,16 +1,20 @@
 import { useState } from 'react'
-import styled from 'styled-components'
+import { cva } from 'class-variance-authority'
+import { cn } from 'shared/lib/utils'
 import { MotionDiv } from '../MotionWrapper'
 import Button from '../Button'
 import Box from '../Box'
 import Typography from '../Typography'
 import { useMotionConfig, useMotionProps, useInteractionProps } from 'shared/hooks'
 
-/**
- * Demo component to test motion preferences
- * This component can be temporarily added to pages for testing
- */
-const MotionDemo = () => {
+const containerVariants = cva('flex flex-col gap-6 p-8 max-w-[500px] mx-auto')
+const statusBoxVariants = cva('flex justify-between p-4 bg-white dark:bg-grey-800 rounded-md border border-grey-200')
+const demoCardVariants = cva(
+  'p-6 bg-surface-light dark:bg-surface-dark border border-grey-200 rounded-lg shadow-md text-center min-w-[250px]'
+)
+const instructionsBoxVariants = cva('p-4 bg-grey-50 dark:bg-grey-900 rounded-md border-l-4 border-info')
+
+const MotionDemo = ({ className }: { className?: string }) => {
   const [isVisible, setIsVisible] = useState(true)
   const { prefersReducedMotion, shouldAnimate } = useMotionConfig()
 
@@ -27,26 +31,26 @@ const MotionDemo = () => {
   })
 
   return (
-    <DemoContainer>
+    <div className={cn(containerVariants({ className }))}>
       <Typography $size="lg" $weight="semibold" $align="center">
         Motion Preferences Demo
       </Typography>
 
-      <StatusBox>
+      <div className={statusBoxVariants()}>
         <Typography $size="sm" $color={prefersReducedMotion ? 'danger' : 'success'}>
           Reduced Motion: {prefersReducedMotion ? 'ON' : 'OFF'}
         </Typography>
         <Typography $size="sm" $color={shouldAnimate ? 'success' : 'danger'}>
           Animations: {shouldAnimate ? 'ENABLED' : 'DISABLED'}
         </Typography>
-      </StatusBox>
+      </div>
 
       <Box $flex $direction="column" $gap="md" $align="center">
         <Button onClick={() => setIsVisible(!isVisible)}>{isVisible ? 'Hide' : 'Show'} Demo Card</Button>
 
         {isVisible && (
           <MotionDiv {...cardMotionProps}>
-            <DemoCard>
+            <div className={demoCardVariants()}>
               <Typography $weight="medium">Animated Card</Typography>
               <Typography $size="sm" $color="grey">
                 This card respects your motion preferences
@@ -54,65 +58,30 @@ const MotionDemo = () => {
 
               <Box $flex $gap="sm" $justify="center" $pt="md">
                 <MotionDiv {...buttonInteractionProps}>
-                  <Button $size="sm" $variant="primary">
+                  <Button size="sm" variant="primary">
                     Hover Me
                   </Button>
                 </MotionDiv>
 
                 <MotionDiv {...buttonInteractionProps}>
-                  <Button $size="sm" $variant="secondary">
+                  <Button size="sm" variant="secondary">
                     Tap Me
                   </Button>
                 </MotionDiv>
               </Box>
-            </DemoCard>
+            </div>
           </MotionDiv>
         )}
       </Box>
 
-      <InstructionsBox>
+      <div className={instructionsBoxVariants()}>
         <Typography $size="xs" $color="grey" $align="center">
           To test: Go to your browser settings and toggle "Reduce motion" preference, or use the accessibility settings
           in your OS.
         </Typography>
-      </InstructionsBox>
-    </DemoContainer>
+      </div>
+    </div>
   )
 }
 
 export default MotionDemo
-
-const DemoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.lg};
-  padding: ${({ theme }) => theme.spacing.xl};
-  max-width: 500px;
-  margin: 0 auto;
-`
-
-const StatusBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: ${({ theme }) => theme.spacing.md};
-  background: ${({ theme }) => theme.background.elevated};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-`
-
-const DemoCard = styled.div`
-  padding: ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme }) => theme.background.surface};
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  box-shadow: ${({ theme }) => theme.shadow.md};
-  text-align: center;
-  min-width: 250px;
-`
-
-const InstructionsBox = styled.div`
-  padding: ${({ theme }) => theme.spacing.md};
-  background: ${({ theme }) => theme.colors.grey[50]};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  border-left: 4px solid ${({ theme }) => theme.colors.info};
-`
