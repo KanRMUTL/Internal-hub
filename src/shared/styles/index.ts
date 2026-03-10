@@ -1,5 +1,4 @@
 export { lightTheme, darkTheme, colors, motion } from './config'
-export { GlobalStyle } from './globalStyle'
 export * from './utils'
 
 export {

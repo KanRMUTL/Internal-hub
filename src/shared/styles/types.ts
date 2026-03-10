@@ -11,6 +11,7 @@ export interface Color {
   info: string
   success: string
   warning: string
+  warningBg: string
   danger: string
   white: string
   black: string
