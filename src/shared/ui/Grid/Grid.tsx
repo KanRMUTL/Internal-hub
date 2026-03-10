@@ -1,7 +1,7 @@
 import { HTMLAttributes } from 'react'
 import { cva } from 'class-variance-authority'
-import { cn } from 'shared/lib/utils'
-import { SpacingKeys } from 'shared/styles'
+import { cn } from '../../lib/utils'
+import { SpacingKeys } from '../../styles'
 
 const gridVariants = cva('grid', {
   variants: {
