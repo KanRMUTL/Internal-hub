@@ -1,8 +1,16 @@
 import { Container, Box, Typography, Input, Button } from 'shared/ui'
 import { Plus, Save } from 'lucide-react'
-import { PageWrapper, Header, StickyFooter } from './styled'
 import { QuestionList } from '../QuiestionList/QuestionList'
 import { useCreateQuiz } from '../../hooks/useCreateQuiz'
+import { cva } from 'class-variance-authority'
+
+const pageWrapperVariants = cva('pb-20 min-h-screen bg-surface-light dark:bg-surface-dark')
+
+const headerVariants = cva('bg-white dark:bg-gray-900 py-6 shadow-sm mb-8')
+
+const stickyFooterVariants = cva(
+  'fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 p-4 shadow-[0_-4px_6px_rgba(0,0,0,0.05)] flex justify-end gap-4 z-[100]'
+)
 
 export const HostCreateQuiz = () => {
   const {
@@ -22,9 +30,9 @@ export const HostCreateQuiz = () => {
   } = useCreateQuiz()
 
   return (
-    <PageWrapper>
+    <div className={pageWrapperVariants()}>
       <form onSubmit={submit}>
-        <Header>
+        <div className={headerVariants()}>
           <Container $maxWidth="md">
             <Box $display="flex" $justify="space-between" $align="center">
               <Box>
@@ -47,7 +55,7 @@ export const HostCreateQuiz = () => {
               </Box>
             </Box>
           </Container>
-        </Header>
+        </div>
 
         <Container $maxWidth="md">
           <Box $mb="md" $display="flex" $justify="space-between" $align="center">
@@ -55,7 +63,7 @@ export const HostCreateQuiz = () => {
               Questions ({fields.length})
             </Typography>
             <Button type="button" $variant="secondary" onClick={handleAddQuestion} $size="sm">
-              <Plus size={16} style={{ marginRight: '0.5rem' }} />
+              <Plus size={16} className="mr-2" />
               Add Question
             </Button>
           </Box>
@@ -71,15 +79,15 @@ export const HostCreateQuiz = () => {
           />
         </Container>
 
-        <StickyFooter>
+        <div className={stickyFooterVariants()}>
           <Container $maxWidth="md" style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
             <Button type="submit" disabled={isLoading} $size="lg">
-              <Save size={18} style={{ marginRight: '0.5rem' }} />
+              <Save size={18} className="mr-2" />
               {isLoading ? 'Creating...' : 'Create Room'}
             </Button>
           </Container>
-        </StickyFooter>
+        </div>
       </form>
-    </PageWrapper>
+    </div>
   )
 }

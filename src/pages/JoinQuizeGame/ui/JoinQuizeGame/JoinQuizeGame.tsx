@@ -1,29 +1,33 @@
 import { Container, Typography, Box, Button, Input } from 'shared/ui'
 import { LogIn } from 'lucide-react'
-import { PageWrapper, JoinCard } from './styled'
 import { useJoinGame } from '../../hooks/useJoinGame'
+import { cva } from 'class-variance-authority'
+
+const pageWrapperVariants = cva('min-h-screen bg-primary py-12 px-4 flex flex-col justify-center')
+
+const joinCardVariants = cva('bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-xl w-full max-w-sm mx-auto')
 
 export const JoinQuizeGame = () => {
   const { register, errors, isLoading, error, submit } = useJoinGame()
 
   return (
-    <PageWrapper>
+    <div className={pageWrapperVariants()}>
       <Container $maxWidth="sm">
-        <Box $display="flex" $justify="center" $mb="xl">
+        <div className="flex justify-center mb-8">
           <Typography as="h1" $size="3xl" $weight="bold" $color="white">
             Quiz Game
           </Typography>
-        </Box>
+        </div>
 
-        <JoinCard $padding="lg" $rounded="xl" $shadow="lg">
-          <Box $mb="lg" $display="flex" $justify="center">
+        <div className={joinCardVariants()}>
+          <div className="flex justify-center mb-6">
             <Typography as="h2" $size="xl" $weight="bold">
               Join the Fun!
             </Typography>
-          </Box>
+          </div>
 
           <form onSubmit={submit}>
-            <Box $mb="md">
+            <div className="mb-4">
               <Input
                 label="Room PIN"
                 placeholder="Enter 4-digit PIN"
@@ -31,9 +35,9 @@ export const JoinQuizeGame = () => {
                 error={errors.pin?.message}
                 $variant="filled"
               />
-            </Box>
+            </div>
 
-            <Box $mb="xl">
+            <div className="mb-8">
               <Input
                 label="Nickname"
                 placeholder="Enter your nickname"
@@ -41,23 +45,23 @@ export const JoinQuizeGame = () => {
                 error={errors.nickname?.message}
                 $variant="filled"
               />
-            </Box>
+            </div>
 
             {error && (
-              <Box $mb="md">
+              <div className="mb-4">
                 <Typography $color="danger" $size="sm" $align="center">
                   {error}
                 </Typography>
-              </Box>
+              </div>
             )}
 
             <Button type="submit" $fullWidth $size="lg" disabled={isLoading}>
               {isLoading ? 'Joining...' : 'Join Game'}
-              {!isLoading && <LogIn size={20} style={{ marginLeft: '8px' }} />}
+              {!isLoading && <LogIn size={20} className="ml-2" />}
             </Button>
           </form>
-        </JoinCard>
+        </div>
       </Container>
-    </PageWrapper>
+    </div>
   )
 }

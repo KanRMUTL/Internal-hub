@@ -1,6 +1,6 @@
 import { Container, Typography, Box, Grid } from 'shared/ui'
-import { PageWrapper, Header, QuestionText } from './styled'
 import { QuizRoom, QuizPlayer, QuizTimer, OptionButton, useQuizGameTimer } from 'features/quiz'
+import { cva } from 'class-variance-authority'
 
 interface GameViewProps {
   room: QuizRoom
@@ -10,7 +10,13 @@ interface GameViewProps {
   hasAnswered: boolean
 }
 
-const COLORS = ['#ef4444', '#3b82f6', '#eab308', '#22c55e'] // Red, Blue, Yellow, Green
+const COLORS = ['#ef4444', '#3b82f6', '#eab308', '#22c55e']
+
+const pageWrapperVariants = cva('min-h-screen bg-primary text-white p-4')
+
+const headerVariants = cva('flex justify-between items-center mb-8')
+
+const questionTextVariants = cva('text-2xl font-bold text-center mb-8')
 
 export const GameView = ({ room, player, handleAnswer, selectedOption, hasAnswered }: GameViewProps) => {
   const currentQuestion = room.questions[room.currentQuestionIndex]
@@ -19,32 +25,32 @@ export const GameView = ({ room, player, handleAnswer, selectedOption, hasAnswer
   const progress = (timeLeft / totalTime) * 100
 
   return (
-    <PageWrapper>
+    <div className={pageWrapperVariants()}>
       <Container $maxWidth="sm">
-        <Header>
+        <div className={headerVariants()}>
           <Box>
-            <Typography $size="xs" $weight="bold" style={{ opacity: 0.8 }}>
+            <Typography $size="xs" $weight="bold" className="opacity-80">
               QUESTION
             </Typography>
             <Typography $weight="bold" $size="lg">
               {room.currentQuestionIndex + 1} / {room.questions.length}
             </Typography>
           </Box>
-          <Box style={{ textAlign: 'right' }}>
-            <Typography $size="xs" $weight="bold" style={{ opacity: 0.8 }}>
+          <Box className="text-right">
+            <Typography $size="xs" $weight="bold" className="opacity-80">
               SCORE
             </Typography>
             <Typography $weight="bold" $size="lg">
               {player.score}
             </Typography>
           </Box>
-        </Header>
+        </div>
 
         <QuizTimer progress={progress} />
 
-        <Box $mb="xl">
-          <QuestionText>{currentQuestion.text}</QuestionText>
-        </Box>
+        <div className="mb-12">
+          <div className={questionTextVariants()}>{currentQuestion.text}</div>
+        </div>
 
         <Grid $gap="md" $columns="1fr 1fr">
           {currentQuestion.options.map((option, index) => (
@@ -59,6 +65,6 @@ export const GameView = ({ room, player, handleAnswer, selectedOption, hasAnswer
           ))}
         </Grid>
       </Container>
-    </PageWrapper>
+    </div>
   )
 }

@@ -1,22 +1,26 @@
 import { Container, Typography, Box } from 'shared/ui'
-import { motion } from 'motion/react'
-import { StatusCard, PageWrapper } from './styled'
+import { motion } from 'framer-motion'
 import { QuizPlayer } from 'features/quiz'
+import { cva } from 'class-variance-authority'
 
 interface GameOverViewProps {
   player: QuizPlayer
   allPlayers: QuizPlayer[]
 }
 
+const pageWrapperVariants = cva('min-h-screen bg-primary flex items-center justify-center p-4')
+
+const statusCardVariants = cva('bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl text-center w-full max-w-sm')
+
 export const GameOverView = ({ player, allPlayers }: GameOverViewProps) => {
   const sortedPlayers = [...allPlayers].sort((a, b) => b.score - a.score)
   const rank = sortedPlayers.findIndex((p) => p.id === player.id) + 1
 
   return (
-    <PageWrapper>
+    <div className={pageWrapperVariants()}>
       <Container $maxWidth="sm">
         <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-          <StatusCard $padding="lg">
+          <div className={statusCardVariants()}>
             <Typography as="h2" $size="2xl" $weight="bold">
               Game Over
             </Typography>
@@ -27,9 +31,9 @@ export const GameOverView = ({ player, allPlayers }: GameOverViewProps) => {
             <Box $mt="lg">
               <Typography $weight="bold">Score: {player.score}</Typography>
             </Box>
-          </StatusCard>
+          </div>
         </motion.div>
       </Container>
-    </PageWrapper>
+    </div>
   )
 }

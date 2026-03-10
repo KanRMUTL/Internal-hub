@@ -1,13 +1,27 @@
 import { Container, Typography, Box } from 'shared/ui'
-import { motion } from 'motion/react'
+import { motion } from 'framer-motion'
 import { CheckCircle, XCircle } from 'lucide-react'
-import { StatusCard, PageWrapper } from './styled'
 import { QuizPlayer, QuizQuestion } from 'features/quiz'
+import { cva } from 'class-variance-authority'
 
 interface ResultViewProps {
   player: QuizPlayer
   question: QuizQuestion
 }
+
+const pageWrapperVariants = cva('min-h-screen bg-primary flex items-center justify-center p-4')
+
+const statusCardVariants = cva('p-8 rounded-2xl shadow-xl flex flex-col items-center gap-4 w-full max-w-sm', {
+  variants: {
+    isCorrect: {
+      true: 'bg-green-50 border-4 border-green-500',
+      false: 'bg-red-50 border-4 border-red-500',
+    },
+  },
+  defaultVariants: {
+    isCorrect: false,
+  },
+})
 
 export const ResultView = ({ player, question }: ResultViewProps) => {
   const lastAnswer = player.answers[question.id]
@@ -15,16 +29,16 @@ export const ResultView = ({ player, question }: ResultViewProps) => {
   const correctOption = question.options.find((opt) => opt.isCorrect)
 
   return (
-    <PageWrapper>
+    <div className={pageWrapperVariants()}>
       <Container $maxWidth="sm">
         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-          <StatusCard $padding="lg" $isCorrect={isCorrect}>
+          <div className={statusCardVariants({ isCorrect })}>
             {isCorrect ? (
               <>
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
-                  <CheckCircle size={80} color="#059669" />
+                  <CheckCircle size={80} className="text-green-600" />
                 </motion.div>
-                <Typography as="h2" $size="2xl" $weight="bold" style={{ color: '#059669' }}>
+                <Typography as="h2" $size="2xl" $weight="bold" className="text-green-600">
                   Correct!
                 </Typography>
                 <Typography $weight="bold" $size="lg">
@@ -38,9 +52,9 @@ export const ResultView = ({ player, question }: ResultViewProps) => {
             ) : (
               <>
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
-                  <XCircle size={80} color="#dc2626" />
+                  <XCircle size={80} className="text-red-600" />
                 </motion.div>
-                <Typography as="h2" $size="2xl" $weight="bold" style={{ color: '#dc2626' }}>
+                <Typography as="h2" $size="2xl" $weight="bold" className="text-red-600">
                   Incorrect
                 </Typography>
                 <Typography>Better luck next time!</Typography>
@@ -48,25 +62,22 @@ export const ResultView = ({ player, question }: ResultViewProps) => {
             )}
 
             {correctOption && (
-              <Box
-                $mt="lg"
-                style={{ padding: '1rem', background: 'rgba(0,0,0,0.05)', borderRadius: '8px', width: '100%' }}
-              >
+              <div className="mt-4 p-4 bg-black/5 rounded-lg w-full">
                 <Typography $size="sm" $color="secondary">
                   Correct Answer:
                 </Typography>
                 <Typography $weight="bold" $size="lg">
                   {correctOption.text}
                 </Typography>
-              </Box>
+              </div>
             )}
 
-            <Box $mt="lg">
+            <div className="mt-4">
               <Typography $weight="bold">Total Score: {player.score}</Typography>
-            </Box>
-          </StatusCard>
+            </div>
+          </div>
         </motion.div>
       </Container>
-    </PageWrapper>
+    </div>
   )
 }

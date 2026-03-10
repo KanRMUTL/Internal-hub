@@ -1,8 +1,8 @@
-import styled from 'styled-components'
 import { Plus } from 'lucide-react'
 import { RoomMember } from 'entities/room'
 import { CircularButton, withMotion, Modal } from 'shared/ui'
 import { MemberManagement } from 'features/member-management'
+import { cva } from 'class-variance-authority'
 
 interface MembersModalProps {
   isOpen: boolean
@@ -12,36 +12,25 @@ interface MembersModalProps {
   members: RoomMember[]
 }
 
+const modalContentVariants = cva('flex flex-col gap-4 min-h-[50vh] max-h-[70vh]')
+
+const modalHeaderVariants = cva('flex justify-end p-1')
+
 const MembersModal = ({ isOpen, onClose, onAddMember, roomId, members }: MembersModalProps) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Manage Members" $size="xl">
-      <MembersModalContent>
-        <MembersModalHeader>
+      <div className={modalContentVariants()}>
+        <div className={modalHeaderVariants()}>
           {withMotion(
             <CircularButton $size={40} $variant="info" onClick={onAddMember} aria-label="Add new member">
               <Plus size={20} />
             </CircularButton>
           )}
-        </MembersModalHeader>
+        </div>
         <MemberManagement roomId={roomId} members={members} />
-      </MembersModalContent>
+      </div>
     </Modal>
   )
 }
 
 export default MembersModal
-
-// Members modal content
-const MembersModalContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.md};
-  min-height: 50vh;
-  max-height: 70vh;
-`
-
-const MembersModalHeader = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  padding: ${({ theme }) => theme.spacing.xs};
-`
