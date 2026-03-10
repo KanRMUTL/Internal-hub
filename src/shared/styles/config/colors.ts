@@ -2,14 +2,14 @@ import { Color } from 'shared/styles'
 
 export const colors: Color = {
   // Brand colors
-  primary: '#00d1b2',
-  secondary: '#209cee',
+  primary: '#008472',
+  secondary: '#1b7ab8',
 
   // Semantic colors
-  info: '#209cee',
-  success: '#23d160',
-  warning: '#ffdd57',
-  danger: '#ff3860',
+  info: '#1b7ab8',
+  success: '#1e8a42',
+  warning: '#856404',
+  danger: '#d31d43',
 
   // Base colors
   white: '#ffffff',
@@ -30,10 +30,10 @@ export const colors: Color = {
   },
 
   // Interactive states
-  hover: 'rgba(0, 209, 178, 0.1)',
-  focus: 'rgba(0, 209, 178, 0.2)',
-  focusRing: 'rgba(0, 209, 178, 0.4)', // High contrast focus ring
-  active: 'rgba(0, 209, 178, 0.3)',
+  hover: 'rgba(0, 132, 114, 0.1)',
+  focus: 'rgba(0, 132, 114, 0.2)',
+  focusRing: 'rgba(0, 132, 114, 0.4)', // High contrast focus ring
+  active: 'rgba(0, 132, 114, 0.3)',
   disabled: 'rgba(0, 0, 0, 0.3)',
 
   // Accessibility colors
