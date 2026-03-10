@@ -1,30 +1,20 @@
-import styled from 'styled-components'
 import { ReactNode } from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
 
-interface ScreenReaderOnlyProps {
+const screenReaderOnlyVariants = cva('sr-only')
+
+interface ScreenReaderOnlyProps extends VariantProps<typeof screenReaderOnlyVariants> {
   children: ReactNode
   as?: 'span' | 'div' | 'p'
   id?: string
 }
 
-const ScreenReaderOnly = ({ children, as = 'span', id }: ScreenReaderOnlyProps) => {
+const ScreenReaderOnly = ({ children, as: Component = 'span', id }: ScreenReaderOnlyProps) => {
   return (
-    <StyledScreenReaderOnly as={as} id={id}>
+    <Component className={screenReaderOnlyVariants()} id={id}>
       {children}
-    </StyledScreenReaderOnly>
+    </Component>
   )
 }
 
 export default ScreenReaderOnly
-
-const StyledScreenReaderOnly = styled.span`
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-`
