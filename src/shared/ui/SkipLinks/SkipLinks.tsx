@@ -1,75 +1,33 @@
-import styled from 'styled-components'
+import { cva, type VariantProps } from 'class-variance-authority'
 
-interface SkipLink {
+const skipLinksContainerVariants = cva('absolute -top-[100px] left-0 z-[9999] flex gap-1')
+
+const skipLinkVariants = cva([
+  'absolute -top-[100px] left-4 bg-[#008472] text-white py-2 px-4 rounded-md no-underline font-medium text-sm shadow-lg transition-all duration-150 ease-out z-[9999]',
+  'focus:static focus:top-auto focus:translate-y-0 focus:outline-[2px] focus:outline-white focus:outline-offset-2',
+  'focus:hover:bg-[#1b7ab8] focus:hover:-translate-y-[1px] focus:hover:shadow-xl',
+  'dark:bg-white dark:text-[#0a0a0a] dark:focus:hover:bg-gray-100',
+])
+
+interface SkipLinkItem {
   href: string
   label: string
 }
 
 interface SkipLinksProps {
-  links: SkipLink[]
+  links: SkipLinkItem[]
 }
 
 const SkipLinks = ({ links }: SkipLinksProps) => {
   return (
-    <SkipLinksContainer>
+    <div className={skipLinksContainerVariants()}>
       {links.map((link) => (
-        <SkipLink key={link.href} href={link.href}>
+        <a key={link.href} href={link.href} className={skipLinkVariants()}>
           {link.label}
-        </SkipLink>
+        </a>
       ))}
-    </SkipLinksContainer>
+    </div>
   )
 }
 
 export default SkipLinks
-
-const SkipLinksContainer = styled.div`
-  position: absolute;
-  top: -100px;
-  left: 0;
-  z-index: 9999;
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.xs};
-`
-
-const SkipLink = styled.a`
-  position: absolute;
-  top: -100px;
-  left: ${({ theme }) => theme.spacing.md};
-  background: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.white};
-  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  text-decoration: none;
-  font-weight: ${({ theme }) => theme.fontWeight.medium};
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  box-shadow: ${({ theme }) => theme.shadow.lg};
-  transition: all ${({ theme }) => theme.motion.duration.fast} ${({ theme }) => theme.motion.easing.easeOut};
-  z-index: 9999;
-
-  &:focus {
-    position: static;
-    top: auto;
-    transform: translateY(0);
-    outline: 2px solid ${({ theme }) => theme.colors.white};
-    outline-offset: 2px;
-  }
-
-  &:hover:focus {
-    background: ${({ theme }) => theme.colors.secondary};
-    transform: translateY(-1px);
-    box-shadow: ${({ theme }) => theme.shadow.xl};
-  }
-
-  /* Ensure high contrast in both themes */
-  ${({ theme }) =>
-    theme.mode === 'dark' &&
-    `
-    background: ${theme.colors.white};
-    color: ${theme.colors.black};
-    
-    &:hover:focus {
-      background: ${theme.colors.grey[100]};
-    }
-  `}
-`
