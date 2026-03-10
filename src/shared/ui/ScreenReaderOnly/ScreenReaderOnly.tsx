@@ -1,11 +1,11 @@
-import { ReactNode } from 'react'
+import { ReactNode, ElementType } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 const screenReaderOnlyVariants = cva('sr-only')
 
 interface ScreenReaderOnlyProps extends VariantProps<typeof screenReaderOnlyVariants> {
   children: ReactNode
-  as?: 'span' | 'div' | 'p'
+  as?: ElementType
   id?: string
 }
 
