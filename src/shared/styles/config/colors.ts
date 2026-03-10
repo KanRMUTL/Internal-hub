@@ -9,6 +9,7 @@ export const colors: Color = {
   info: '#1b7ab8',
   success: '#1e8a42',
   warning: '#856404',
+  warningBg: '#ffdd57',
   danger: '#d31d43',
 
   // Base colors

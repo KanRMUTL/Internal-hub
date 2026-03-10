@@ -3,12 +3,19 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      screens: {
+        mobile: '768px',
+        tablet: '1024px',
+        desktop: '1216px',
+        widescreen: '1408px',
+      },
       colors: {
         primary: '#008472',
         secondary: '#1b7ab8',
         success: '#1e8a42',
         danger: '#d31d43',
         warning: '#856404',
+        warningBg: '#ffdd57',
         info: '#1b7ab8',
         surface: {
           light: '#F5F6F8',
