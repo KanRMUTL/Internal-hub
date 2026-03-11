@@ -5,7 +5,7 @@ import { Container, Typography, Box, Card, Button, Grid } from 'shared/ui'
 import { SkipForward, BarChart2, Trophy, Crown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cva } from 'class-variance-authority'
-import { cn } from 'shared/utils'
+import { cn } from 'shared/lib/utils'
 
 const COLORS = ['#ef4444', '#3b82f6', '#eab308', '#22c55e']
 

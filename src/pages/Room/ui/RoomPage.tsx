@@ -1,58 +1,36 @@
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
-
 import { RoomMember } from 'entities/room'
-import { DataBoundary, FlashAlert, useFlashAlert, SkipLinks, Box } from 'shared/ui'
-import { useMemberCollection, useCreateNewMember, MemberModal } from 'features/member-management'
-import { WheelOfFortune, LuckyModal, createFortuneHistoryEntry } from 'features/fortune'
+import { DataBoundary, FlashAlert, SkipLinks, Box, PerformanceMonitor } from 'shared/ui'
+import { MemberModal } from 'features/member-management'
+import { WheelOfFortune, LuckyModal } from 'features/fortune'
 
 import { MobileNavigation, FloatingActionButton, HistorySection, MembersModal } from './components'
+import { useRoomPage } from '../hooks/useRoomPage'
 
 const RoomPage = () => {
-  const { id = '' } = useParams<{ id: string }>()
-  const [winner, setWinner] = useState<RoomMember | null>(null)
-  const [activeMobileSection, setActiveMobileSection] = useState<'wheel' | 'history'>('wheel')
-  const [isMembersModalOpen, setIsMembersModalOpen] = useState(false)
-
-  const { members, loading, error, eligibleRandomMembers } = useMemberCollection(id)
-  const { modalNewMember, flashAlert, flashState, handleCreateMember } = useCreateNewMember()
-
-  // Flash alert for fortune history errors
-  const fortuneFlashState = useFlashAlert()
-  const [fortuneFlashVisible, setFortuneFlashVisible] = useState(false)
-
-  const memberNames = eligibleRandomMembers.map(({ id, name }: RoomMember) => ({
-    id,
-    name,
-  }))
-
-  const handleSpinComplete = (id: string) => {
-    const findMember = members.find((m: RoomMember) => m.id === id)
-    if (!findMember) return
-
-    setWinner(findMember)
-  }
-
-  const handleSaveFortuneHistory = async (winnerId: string, winnerName: string) => {
-    try {
-      await createFortuneHistoryEntry({
-        roomId: id,
-        winnerId,
-        winnerName,
-      })
-    } catch (error) {
-      fortuneFlashState.set({
-        type: 'danger',
-        message: 'Failed to save fortune history. Please try again.',
-      })
-      setFortuneFlashVisible(true)
-      throw error // Re-throw to prevent modal from closing
-    }
-  }
-
-  const handleAcceptWinner = () => {
-    setWinner(null)
-  }
+  const {
+    roomId,
+    winner,
+    activeMobileSection,
+    isMembersModalOpen,
+    members,
+    loading,
+    error,
+    memberNames,
+    modalNewMember,
+    flashAlert,
+    flashState,
+    fortuneFlashState,
+    fortuneFlashVisible,
+    setActiveMobileSection,
+    handleSpinComplete,
+    handleSaveFortuneHistory,
+    handleAcceptWinner,
+    handleDiscardWinner,
+    openMembersModal,
+    closeMembersModal,
+    handleAddMember,
+    closeFortuneFlash,
+  } = useRoomPage()
 
   return (
     <>
@@ -74,11 +52,11 @@ const RoomPage = () => {
           <MobileNavigation
             activeMobileSection={activeMobileSection}
             onSectionChange={setActiveMobileSection}
-            onMembersClick={() => setIsMembersModalOpen(true)}
+            onMembersClick={openMembersModal}
           />
 
           {/* Floating Action Button for Desktop */}
-          <FloatingActionButton onClick={() => setIsMembersModalOpen(true)} />
+          <FloatingActionButton onClick={openMembersModal} />
 
           {/* Two Column Layout */}
           <Box
@@ -97,14 +75,14 @@ const RoomPage = () => {
             <WheelOfFortune members={memberNames} onSpinCompleted={handleSpinComplete} />
 
             {/* History Section */}
-            <HistorySection roomId={id} active={activeMobileSection === 'history'} />
+            <HistorySection roomId={roomId} active={activeMobileSection === 'history'} />
           </Box>
 
           {winner && (
             <LuckyModal
               winner={winner}
               onAccept={handleAcceptWinner}
-              onDiscard={() => setWinner(null)}
+              onDiscard={handleDiscardWinner}
               onSaveFortuneHistory={handleSaveFortuneHistory}
             />
           )}
@@ -112,9 +90,9 @@ const RoomPage = () => {
           {/* Members Management Modal */}
           <MembersModal
             isOpen={isMembersModalOpen}
-            onClose={() => setIsMembersModalOpen(false)}
+            onClose={closeMembersModal}
             onAddMember={modalNewMember.open}
-            roomId={id}
+            roomId={roomId}
             members={members}
           />
 
@@ -123,7 +101,7 @@ const RoomPage = () => {
             defaultValues={{ name: '' }}
             onClose={modalNewMember.close}
             onSubmit={(data) => {
-              handleCreateMember(id, data.name)
+              handleAddMember(data.name)
             }}
           />
 
@@ -138,8 +116,10 @@ const RoomPage = () => {
             type={fortuneFlashState.state.type}
             message={fortuneFlashState.state.message}
             visible={fortuneFlashVisible}
-            onClose={() => setFortuneFlashVisible(false)}
+            onClose={closeFortuneFlash}
           />
+
+          <PerformanceMonitor enabled showDetails position="bottom-right" />
         </Box>
       </DataBoundary>
     </>

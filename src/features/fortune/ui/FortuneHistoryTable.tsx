@@ -6,7 +6,7 @@ import { useFortuneHistory } from 'features/fortune/hooks'
 import { FortuneHistoryEntry, FortuneHistoryTableProps } from 'features/fortune/model/fortuneHistoryTypes'
 import FortuneHistoryDataBoundary from './FortuneHistoryDataBoundary'
 import { cva } from 'class-variance-authority'
-import { cn } from 'shared/utils'
+import { cn } from 'shared/lib/utils'
 
 const tableContainerVariants = cva(
   'w-full max-h-[400px] overflow-y-auto overflow-x-auto rounded-lg border border-gray-200 bg-surface-light dark:bg-surface-dark shadow-sm scroll-smooth md:max-h-[350px] md:rounded-md sm:max-h-[300px] sm:overflow-x-scroll scrollbar-thin scrollbar-track-surface-light scrollbar-thumb-gray-400 hover:scrollbar-thumb-primary transition-colors'

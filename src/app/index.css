@@ -4,13 +4,19 @@
 
 @layer base {
   body {
-    @apply m-0 w-full font-sans min-h-screen transition-colors duration-300;
-    background-color: theme('colors.surface.light');
-    color: theme('colors.grey.900');
+    margin: 0;
+    width: 100%;
+    font-family: sans-serif;
+    min-height: 100vh;
+    transition:
+      color 0.3s,
+      background-color 0.3s;
+    background-color: #f5f6f8;
+    color: #1a1a1a;
   }
 
   .dark body {
-    background-color: theme('colors.surface.dark');
-    color: theme('colors.grey.50');
+    background-color: #1a1a1a;
+    color: #f5f6f8;
   }
 }

@@ -3,7 +3,7 @@ import { Card, Typography, TypographyProps, BoxProps, Box, CircularButton } from
 import { X, Edit, User, UserCheck } from 'lucide-react'
 import { ReactNode } from 'react'
 import { cva } from 'class-variance-authority'
-import { cn } from 'shared/utils'
+import { cn } from 'shared/lib/utils'
 
 interface MemberItemProps {
   id: string

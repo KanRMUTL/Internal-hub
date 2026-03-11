@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from 'shared/utils'
+import { cn } from 'shared/lib/utils'
 
 interface OptionButtonProps extends VariantProps<typeof optionButtonVariants> {
   text: string

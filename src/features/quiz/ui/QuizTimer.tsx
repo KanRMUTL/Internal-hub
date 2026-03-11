@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { motion } from 'framer-motion'
 import { cva } from 'class-variance-authority'
 
@@ -9,7 +10,7 @@ const timerBarContainerVariants = cva('w-full h-2 bg-white/20 rounded-lg mb-8 ov
 
 const timerFillVariants = cva('h-full bg-warning-bg rounded-lg')
 
-export const QuizTimer = ({ progress }: QuizTimerProps) => {
+export const QuizTimer = memo(({ progress }: QuizTimerProps) => {
   return (
     <div className={timerBarContainerVariants()}>
       <motion.div
@@ -20,4 +21,4 @@ export const QuizTimer = ({ progress }: QuizTimerProps) => {
       />
     </div>
   )
-}
+})

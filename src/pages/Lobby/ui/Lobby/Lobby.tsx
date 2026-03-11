@@ -1,9 +1,10 @@
-import { Container, Typography, Grid } from 'shared/ui'
-import { PageWrapper } from '../QRCodeCard/styled'
+import { Container, Typography, Grid, Box } from 'shared/ui'
 import { useLobby } from '../../hooks/useLobby'
 import { LobbyHeader } from '../LobbyHeader'
 import { PlayerGrid } from '../PlayerGrid'
 import { QRCodeCard } from '../QRCodeCard/QRCodeCard'
+
+const PageWrapper = (props: any) => <Box $minHeight="100vh" $bg="surfaceLight" {...props} />
 
 export const Lobby = () => {
   const { room, players, isLoading, handleStartGame, copyLink } = useLobby()

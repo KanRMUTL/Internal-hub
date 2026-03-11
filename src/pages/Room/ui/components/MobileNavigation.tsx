@@ -1,7 +1,7 @@
 import { Users, History } from 'lucide-react'
 import { Typography } from 'shared/ui'
 import { cva } from 'class-variance-authority'
-import { cn } from 'shared/utils'
+import { cn } from 'shared/lib/utils'
 
 interface MobileNavigationProps {
   activeMobileSection: 'wheel' | 'history'
