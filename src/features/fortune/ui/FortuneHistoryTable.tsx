@@ -1,7 +1,7 @@
 import { useMemo, useRef, useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Typography, Box } from 'shared/ui'
+import { Typography } from 'shared/ui'
 import { useFortuneHistory } from 'features/fortune/hooks'
 import { FortuneHistoryEntry, FortuneHistoryTableProps } from 'features/fortune/model/fortuneHistoryTypes'
 import FortuneHistoryDataBoundary from './FortuneHistoryDataBoundary'
@@ -180,7 +180,7 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
                     animate={{ scale: 1 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Typography $weight="medium" $size="sm">
+                    <Typography weight="medium" size="sm">
                       {spinNumber}
                     </Typography>
                   </motion.div>
@@ -191,7 +191,7 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
                     animate={{ scale: 1, x: 0 }}
                     transition={{ duration: 0.4, delay: 0.1 }}
                   >
-                    <Typography $weight="medium" $size="sm">
+                    <Typography weight="medium" size="sm">
                       {row.winnerName}
                     </Typography>
                   </motion.div>
@@ -202,7 +202,7 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                   >
-                    <Typography $size="sm" $color="grey">
+                    <Typography size="sm" color="muted">
                       <span className="inline sm:hidden">{formattedDate}</span>
                       <span className="hidden sm:inline">{dayjs(row.createdAt).format('MMM D')}</span>
                     </Typography>
@@ -226,7 +226,7 @@ const FortuneHistoryTable = ({ roomId, className }: FortuneHistoryTableProps) =>
         {history.length === 0 ? (
           <div className="p-12 text-center text-gray-600 bg-surface-light dark:bg-surface-dark rounded-lg sm:p-8 before:content-['🎲'] before:block before:text-5xl before:mb-4 before:opacity-60 sm:before:text-4xl sm:before:mb-2">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-              <Typography $size="base" $color="grey">
+              <Typography size="base" color="muted">
                 No fortune history yet. Spin the wheel to get started!
               </Typography>
             </motion.div>

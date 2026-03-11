@@ -64,32 +64,32 @@ const PerformanceMonitor = ({
 
       {isVisible && (
         <div className="absolute top-full right-0 mt-2 bg-black/90 border border-white/10 rounded-lg p-3 min-w-[200px] backdrop-blur-md text-white">
-          <Typography $size="sm" $weight="medium">
+          <Typography size="sm" weight="medium">
             Performance Monitor
           </Typography>
 
           <div className="flex justify-between items-center my-1">
-            <Typography $size="xs">FPS:</Typography>
-            <Typography $size="xs" $color={metrics.fps >= 50 ? 'success' : 'danger'}>
+            <Typography size="xs">FPS:</Typography>
+            <Typography size="xs" color={metrics.fps >= 50 ? 'success' : 'danger'}>
               {Math.round(metrics.fps)}
             </Typography>
           </div>
 
           <div className="flex justify-between items-center my-1">
-            <Typography $size="xs">Frame Time:</Typography>
-            <Typography $size="xs">{metrics.frameTime.toFixed(1)}ms</Typography>
+            <Typography size="xs">Frame Time:</Typography>
+            <Typography size="xs">{metrics.frameTime.toFixed(1)}ms</Typography>
           </div>
 
           <div className="flex justify-between items-center my-1">
-            <Typography $size="xs">Dropped Frames:</Typography>
-            <Typography $size="xs" $color={metrics.droppedFrames > 5 ? 'warning' : 'success'}>
+            <Typography size="xs">Dropped Frames:</Typography>
+            <Typography size="xs" color={metrics.droppedFrames > 5 ? 'warning' : 'success'}>
               {metrics.droppedFrames}
             </Typography>
           </div>
 
           <div className="flex justify-between items-center my-1">
-            <Typography $size="xs">Performance:</Typography>
-            <Typography $size="xs" $color={metrics.isPerformant ? 'success' : 'danger'}>
+            <Typography size="xs">Performance:</Typography>
+            <Typography size="xs" color={metrics.isPerformant ? 'success' : 'danger'}>
               {metrics.isPerformant ? 'Good' : 'Poor'}
             </Typography>
           </div>
@@ -97,25 +97,25 @@ const PerformanceMonitor = ({
           {showDetails && (
             <>
               <hr className="border-none border-t border-white/20 my-2" />
-              <Typography $size="xs" $weight="medium">
+              <Typography size="xs" weight="medium">
                 Device Info
               </Typography>
 
               <div className="flex justify-between items-center my-1">
-                <Typography $size="xs">Hardware Accel:</Typography>
-                <Typography $size="xs" $color={capabilities.supportsHardwareAcceleration ? 'success' : 'warning'}>
+                <Typography size="xs">Hardware Accel:</Typography>
+                <Typography size="xs" color={capabilities.supportsHardwareAcceleration ? 'success' : 'warning'}>
                   {capabilities.supportsHardwareAcceleration ? 'Yes' : 'No'}
                 </Typography>
               </div>
 
               <div className="flex justify-between items-center my-1">
-                <Typography $size="xs">Device Ratio:</Typography>
-                <Typography $size="xs">{capabilities.devicePixelRatio}x</Typography>
+                <Typography size="xs">Device Ratio:</Typography>
+                <Typography size="xs">{capabilities.devicePixelRatio}x</Typography>
               </div>
 
               <div className="flex justify-between items-center my-1">
-                <Typography $size="xs">Low-End Device:</Typography>
-                <Typography $size="xs" $color={capabilities.isLowEndDevice ? 'warning' : 'success'}>
+                <Typography size="xs">Low-End Device:</Typography>
+                <Typography size="xs" color={capabilities.isLowEndDevice ? 'warning' : 'success'}>
                   {capabilities.isLowEndDevice ? 'Yes' : 'No'}
                 </Typography>
               </div>

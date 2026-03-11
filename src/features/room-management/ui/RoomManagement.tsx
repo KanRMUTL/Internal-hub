@@ -64,23 +64,23 @@ const RoomManagement = ({ onClickAddItem }: RoomManagementProps) => {
 
   if (error) {
     return (
-      <Box $flex $justify="center" $align="center" $p="xl">
-        <Alert $type="danger">Failed to load rooms. Please try again.</Alert>
+      <Box flex justify="center" align="center" p="xl">
+        <Alert type="danger">Failed to load rooms. Please try again.</Alert>
       </Box>
     )
   }
 
   return (
-    <Box $flex $direction="column" $align="center" $gap="xl" $p="lg" $minHeight="100vh">
+    <Box flex direction="column" align="center" gap="xl" p="lg">
       {/* Flash alert */}
       <FlashAlert
-        type={flashState.state.type}
+        type={flashState.state.type as any}
         message={flashState.state.message}
         visible={flashVisible}
         onClose={() => setFlashVisible(false)}
       />
       {/* Main content area */}
-      <Box $flex $justify="center" $align="center" $gap="lg">
+      <Box flex justify="center" align="center" gap="lg">
         <RoomList
           rooms={rooms}
           removedIds={removedIds}

@@ -15,6 +15,7 @@ const containerVariants = cva('w-full', {
       lg: 'max-w-screen-lg',
       xl: 'max-w-screen-xl',
       full: 'max-w-full',
+      '1200px': 'max-w-[1200px]',
     },
     centered: {
       true: 'mx-auto',

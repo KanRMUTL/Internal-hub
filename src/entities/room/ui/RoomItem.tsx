@@ -26,21 +26,21 @@ const RoomItem = ({ id, title, description, onClick, onClickAdd, onClickRemove }
 
   return (
     <MotionDiv {...motionProps}>
-      <Card $interactive $padding="lg" $shadow="md" $rounded="lg" onClick={() => onClick(id)}>
-        <Box $flex $direction="column" $justify="space-between" $gap="lg" $minHeight="200px" $touchTargets>
+      <Card interactive padding="lg" shadow="md" rounded="lg" onClick={() => onClick(id)}>
+        <Box flex direction="column" justify="space-between" gap="lg">
           {/* Header section with better visual hierarchy */}
-          <Box $flex $direction="column" $gap="sm" $p="sm">
-            <Box $flex $align="center" $justify="space-between">
-              <Typography $size="xl" $weight="semibold" $pointer>
+          <Box flex direction="column" gap="sm" p="sm">
+            <Box flex align="center" justify="space-between">
+              <Typography size="xl" weight="semibold" pointer>
                 {title}
               </Typography>
               <ArrowRight size={20} color="currentColor" opacity={0.6} />
             </Box>
 
             <Typography
-              $color="disabled"
-              $size="sm"
-              $pointer
+              color="muted"
+              size="sm"
+              pointer
               style={{
                 lineHeight: '1.5',
                 display: '-webkit-box',
@@ -55,20 +55,19 @@ const RoomItem = ({ id, title, description, onClick, onClickAdd, onClickRemove }
 
           {/* Action buttons with improved responsive styling */}
           <Box
-            $flex
-            $direction="row"
-            $tabletDirection="row"
-            $justify="space-between"
-            $gap="sm"
-            $pt="sm"
+            flex
+            direction="row"
+            justify="space-between"
+            gap="sm"
+            pt="sm"
             style={{
               borderTop: '1px solid var(--border-color, #e5e7eb)',
             }}
           >
             <MotionDiv {...buttonInteractionProps} style={{ flex: 1 }}>
               <Button
-                $variant="info"
-                $size="sm"
+                variant="info"
+                size="sm"
                 onClick={(e) => {
                   e.stopPropagation()
                   onClickAdd(id, title)
@@ -78,9 +77,9 @@ const RoomItem = ({ id, title, description, onClick, onClickAdd, onClickRemove }
                   minHeight: '44px', // Ensure touch-friendly size
                 }}
               >
-                <Box $flex $align="center" $justify="center" $gap="xs">
+                <Box flex align="center" justify="center" gap="xs">
                   <UserPlus size={16} />
-                  <Typography $color="white" $size="sm">
+                  <Typography color="white" size="sm">
                     Add Member
                   </Typography>
                 </Box>
@@ -89,8 +88,8 @@ const RoomItem = ({ id, title, description, onClick, onClickAdd, onClickRemove }
 
             <MotionDiv {...buttonInteractionProps}>
               <Button
-                $variant="danger"
-                $size="sm"
+                variant="danger"
+                size="sm"
                 onClick={(e) => {
                   e.stopPropagation()
                   onClickRemove(id)

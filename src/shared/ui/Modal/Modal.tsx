@@ -7,7 +7,6 @@ import { X } from 'lucide-react'
 import { cva } from 'class-variance-authority'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import Typography from '../Typography'
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -36,25 +35,15 @@ interface ModalProps {
   isOpen: boolean
   onClose: () => void
   children: ReactNode
-  $size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'fullscreen'
-  $closeOnBackdrop?: boolean
-  $showCloseButton?: boolean
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'fullscreen'
   title?: string
 }
 
-const Modal = ({
-  isOpen,
-  onClose,
-  children,
-  $size = 'md',
-  $closeOnBackdrop = true,
-  $showCloseButton = true,
-  title,
-}: ModalProps) => {
+const Modal = ({ isOpen, onClose, children, size = 'md', title }: ModalProps) => {
   const prefersReducedMotion = useMotionPreference()
 
   const handleBackdropClick = (e: MouseEvent<HTMLDivElement>) => {
-    if ($closeOnBackdrop && e.target === e.currentTarget) {
+    if (e.target === e.currentTarget) {
       onClose()
     }
   }
@@ -102,11 +91,11 @@ const Modal = ({
           onClick={handleBackdropClick}
           {...backdropProps}
         >
-          <FocusTrap isActive={isOpen} initialFocus={$showCloseButton ? '[aria-label="Close modal"]' : undefined}>
+          <FocusTrap isActive={isOpen} initialFocus={'[aria-label="Close modal"]'}>
             <motion.div
               className={cn(
-                modalVariants({ size: $size }),
-                $size !== 'fullscreen' &&
+                modalVariants({ size }),
+                size !== 'fullscreen' &&
                   'max-md:w-screen max-md:h-screen max-md:max-w-none max-md:max-h-none max-md:rounded-none max-md:m-0'
               )}
               {...modalProps}
@@ -124,20 +113,16 @@ const Modal = ({
                     {title}
                   </h2>
                 )}
-                {$showCloseButton && (
-                  <>
-                    <Typography></Typography>
-                    <motion.button
-                      className="w-8 h-8 border-none bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-md flex items-center justify-center justify-self-end text-xl font-bold cursor-pointer z-10 transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 focus:outline-none"
-                      onClick={onClose}
-                      aria-label="Close modal"
-                      {...closeButtonProps}
-                      transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.15 }}
-                    >
-                      <X size={18} />
-                    </motion.button>
-                  </>
-                )}
+
+                <motion.button
+                  className="w-8 h-8 border-none bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-md flex items-center justify-center justify-self-end text-xl font-bold cursor-pointer z-10 transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 focus:outline-none"
+                  onClick={onClose}
+                  aria-label="Close modal"
+                  {...closeButtonProps}
+                  transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.15 }}
+                >
+                  <X size={18} />
+                </motion.button>
               </div>
 
               <div

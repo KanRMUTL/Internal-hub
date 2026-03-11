@@ -156,7 +156,7 @@ describe('Cross-Browser Compatibility Tests', () => {
 
         it('handles CSS features properly', () => {
           renderWithTheme(
-            <Button $variant="primary" $size="md">
+            <Button variant="primary" size="md">
               CSS Feature Test
             </Button>
           )
@@ -225,7 +225,7 @@ describe('Cross-Browser Compatibility Tests', () => {
         })
 
         it('renders components for mobile viewport', () => {
-          renderWithTheme(<Button $size="md">Mobile Test</Button>)
+          renderWithTheme(<Button size="md">Mobile Test</Button>)
 
           const button = screen.getByRole('button')
           expect(button).toBeInTheDocument()
@@ -249,7 +249,7 @@ describe('Cross-Browser Compatibility Tests', () => {
         })
 
         it('maintains proper touch target sizes', () => {
-          renderWithTheme(<Button $size="md">Touch Target</Button>)
+          renderWithTheme(<Button size="md">Touch Target</Button>)
 
           const button = screen.getByRole('button')
 
@@ -261,7 +261,7 @@ describe('Cross-Browser Compatibility Tests', () => {
         it('adapts layout for mobile screens', () => {
           renderWithTheme(
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <Button $fullWidth>Full Width Mobile Button</Button>
+              <Button fullWidth>Full Width Mobile Button</Button>
             </div>
           )
 
@@ -418,7 +418,7 @@ describe('Device-Specific Testing', () => {
       })
 
       it('renders components appropriately for device', () => {
-        renderWithTheme(<Button $size="md">Device Test</Button>)
+        renderWithTheme(<Button size="md">Device Test</Button>)
 
         const button = screen.getByRole('button')
         expect(button).toBeInTheDocument()
@@ -453,7 +453,7 @@ describe('Device-Specific Testing', () => {
         renderWithTheme(
           <div>
             {Array.from({ length: 5 }, (_, i) => (
-              <Button key={i} $variant="primary">
+              <Button key={i} variant="primary">
                 Performance Test {i + 1}
               </Button>
             ))}

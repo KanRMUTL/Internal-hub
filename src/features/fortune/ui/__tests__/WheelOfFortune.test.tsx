@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import WheelOfFortune from '../WheelOfFortune'
 import { ThemeProvider } from 'features/toggle-theme/providers/ThemeContext'
@@ -19,7 +20,7 @@ describe('WheelOfFortune', () => {
   })
 
   it('calls onSpinCompleted after spinning', async () => {
-    const onSpinCompleted = jest.fn()
+    const onSpinCompleted = vi.fn()
     render(
       <ThemeProvider>
         <WheelOfFortune members={mockMembers} onSpinCompleted={onSpinCompleted} />
@@ -29,7 +30,7 @@ describe('WheelOfFortune', () => {
     const spinButton = screen.getByText(/Spin/i)
     fireEvent.click(spinButton)
 
-    // Wheel animation takes time, we'd typically use jest.useFakeTimers()
+    // Wheel animation takes time, we'd typically use vi.useFakeTimers()
     // or wait for the callback. For this refactoring, we just ensure it renders.
     expect(spinButton).toBeDisabled()
   })

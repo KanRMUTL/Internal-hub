@@ -30,10 +30,10 @@ export const QuestionItem = ({
   return (
     <QuestionCard $isExpanded={isExpanded}>
       <QuestionHeader onClick={() => toggleQuestion(index)}>
-        <Box $display="flex" $align="center" $gap="sm">
+        <Box display="flex" align="center" gap="sm">
           <Badge>#{index + 1}</Badge>
           <Typography
-            $weight="medium"
+            weight="medium"
             style={{
               whiteSpace: 'nowrap',
               overflow: 'hidden',
@@ -44,16 +44,16 @@ export const QuestionItem = ({
             {questionText}
           </Typography>
         </Box>
-        <Box $display="flex" $align="center" $gap="sm">
+        <Box display="flex" align="center" gap="sm">
           {showRemove && (
             <Button
               type="button"
-              $variant="danger"
+              variant="danger"
               onClick={(e) => {
                 e.stopPropagation()
                 remove(index)
               }}
-              $size="sm"
+              size="sm"
               style={{ padding: '0.25rem 0.5rem' }}
             >
               <Trash2 size={14} />
@@ -64,8 +64,8 @@ export const QuestionItem = ({
       </QuestionHeader>
 
       <QuestionBody $isOpen={isExpanded}>
-        <Box $display="flex" $gap="md" $mb="lg">
-          <Box $width="100%">
+        <Box display="flex" gap="md" mb="lg">
+          <Box width="100%">
             <Input
               label="Question Text"
               placeholder="e.g. What is the capital of France?"
@@ -73,7 +73,7 @@ export const QuestionItem = ({
               autoFocus={isExpanded}
             />
           </Box>
-          <Box $width="150px">
+          <Box width="150px">
             <Input
               type="number"
               label="Time (sec)"
@@ -82,7 +82,7 @@ export const QuestionItem = ({
           </Box>
         </Box>
 
-        <Typography $weight="medium" $size="sm" $color="secondary" style={{ marginBottom: '0.5rem', display: 'block' }}>
+        <Typography weight="medium" size="sm" color="secondary" style={{ marginBottom: '0.5rem', display: 'block' }}>
           Answer Options (Select correct one)
         </Typography>
 
@@ -119,7 +119,7 @@ export const QuestionItem = ({
                 value={String(isCorrect)}
               />
 
-              <Box $width="100%">
+              <Box width="100%">
                 <Input
                   placeholder={`Option ${optIndex + 1}`}
                   {...register(`questions.${index}.options.${optIndex}.text`, { required: true })}

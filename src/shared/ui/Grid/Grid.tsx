@@ -57,25 +57,25 @@ const gridVariants = cva('grid', {
 })
 
 export interface GridProps extends HTMLAttributes<HTMLDivElement> {
-  $columns?: string
-  $rows?: string
-  $gap?: SpacingKeys
-  $rowGap?: SpacingKeys
-  $columnGap?: SpacingKeys
-  $alignItems?: 'start' | 'center' | 'end' | 'stretch'
-  $justifyItems?: 'start' | 'center' | 'end' | 'stretch'
-  $pointer?: boolean
+  columns?: string
+  rows?: string
+  gap?: SpacingKeys
+  rowGap?: SpacingKeys
+  columnGap?: SpacingKeys
+  alignItems?: 'start' | 'center' | 'end' | 'stretch'
+  justifyItems?: 'start' | 'center' | 'end' | 'stretch'
+  pointer?: boolean
 }
 
 const Grid = ({
-  $columns,
-  $rows,
-  $gap,
-  $rowGap,
-  $columnGap,
-  $alignItems,
-  $justifyItems,
-  $pointer,
+  columns,
+  rows,
+  gap,
+  rowGap,
+  columnGap,
+  alignItems,
+  justifyItems,
+  pointer,
   className,
   style,
   ...props
@@ -84,18 +84,18 @@ const Grid = ({
     <div
       className={cn(
         gridVariants({
-          alignItems: $alignItems,
-          justifyItems: $justifyItems,
-          pointer: $pointer,
-          gap: $gap,
-          rowGap: $rowGap,
-          columnGap: $columnGap,
+          alignItems: alignItems,
+          justifyItems: justifyItems,
+          pointer: pointer,
+          gap: gap,
+          rowGap: rowGap,
+          columnGap: columnGap,
         }),
         className
       )}
       style={{
-        gridTemplateColumns: $columns || 'none',
-        gridTemplateRows: $rows || 'none',
+        gridTemplateColumns: columns || 'none',
+        gridTemplateRows: rows || 'none',
         ...style,
       }}
       {...props}

@@ -54,7 +54,7 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
 
   return (
     <Box
-      $position="fixed"
+      position="fixed"
       style={{
         inset: 0,
         background: 'rgba(0, 0, 0, 0.8)',
@@ -98,14 +98,14 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
         }}
       >
         <Box
-          $flex
-          $direction="column"
-          $align="center"
-          $gap="lg"
-          $bg="surface"
-          $radius="xl"
-          $shadow="xl"
-          $position="relative"
+          flex
+          direction="column"
+          align="center"
+          gap="lg"
+          bg="surfaceLight"
+          radius="lg"
+          shadow="xl"
+          position="relative"
           style={{ background: 'rgba(0,0,0,0)' }}
         >
           <motion.div
@@ -144,13 +144,13 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
                 >
                   <Typography
                     id="winner-title"
-                    $size="xl"
-                    $weight="bold"
-                    $color="white"
-                    $pointer
+                    size="xl"
+                    weight="bold"
+                    color="default"
+                    pointer
                     role="heading"
                     aria-level={1}
-                    $noWrap
+                    noWrap
                   >
                     <ScreenReaderOnly>Winner: </ScreenReaderOnly>
                     <span aria-hidden="true" className="text-2xl md:text-3xl font-bold tracking-wide drop-shadow-md">
@@ -163,16 +163,16 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
           </motion.div>
 
           {saveError && (
-            <Box $width="100%" $maxWidth="350px">
-              <Alert $type="danger">
-                <Box $flex $direction="column" $gap="sm" $align="center">
-                  <Box $flex $align="center" $gap="sm">
+            <Box width="100%">
+              <Alert type="danger">
+                <Box flex direction="column" gap="sm" align="center">
+                  <Box flex align="center" gap="sm">
                     <AlertTriangle size={16} />
-                    <Typography $size="sm" $weight="medium">
+                    <Typography size="sm" weight="medium">
                       {saveError}
                     </Typography>
                   </Box>
-                  <Button $variant="info" $size="sm" onClick={handleRetry} disabled={saving}>
+                  <Button variant="info" size="sm" onClick={handleRetry} disabled={saving}>
                     Try Again
                   </Button>
                 </Box>
@@ -181,10 +181,10 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
           )}
 
           <Box
-            $flex
-            $gap="md"
-            $width="100%"
-            $justify="center"
+            flex
+            gap="md"
+            width="100%"
+            justify="center"
             style={{
               flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
             }}
@@ -196,9 +196,9 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
                 aria-label={
                   saving ? `Saving ${winner.name} as winner` : `Accept ${winner.name} as winner and save to history`
                 }
-                $loadingText={`Saving ${winner.name} as winner`}
+                loadingText={`Saving ${winner.name} as winner`}
               >
-                <Box $flex $align="center" $gap="sm">
+                <Box flex align="center" gap="sm">
                   {saving && (
                     <motion.div
                       animate={{ rotate: 360 }}
@@ -225,7 +225,7 @@ const LuckyModal = ({ winner, onAccept, onDiscard, onSaveFortuneHistory }: Lucky
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.8 }}>
               <Button
                 onClick={onDiscard}
-                $variant="danger"
+                variant="danger"
                 disabled={saving}
                 aria-label={`Discard ${winner.name} as winner and spin again`}
               >

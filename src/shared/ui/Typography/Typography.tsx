@@ -4,7 +4,7 @@ import { cn } from 'shared/lib/utils'
 
 const typographyVariants = cva('m-0 transition-colors duration-200', {
   variants: {
-    $color: {
+    color: {
       default: 'text-current',
       primary: 'text-primary',
       secondary: 'text-secondary',
@@ -16,7 +16,7 @@ const typographyVariants = cva('m-0 transition-colors duration-200', {
       black: 'text-black',
       muted: 'text-grey-500',
     },
-    $size: {
+    size: {
       xs: 'text-xs',
       sm: 'text-sm',
       base: 'text-base',
@@ -28,47 +28,51 @@ const typographyVariants = cva('m-0 transition-colors duration-200', {
       '4xl': 'text-4xl',
       '5xl': 'text-5xl',
     },
-    $weight: {
+    weight: {
       light: 'font-light',
       normal: 'font-normal',
       medium: 'font-medium',
       bold: 'font-bold',
+      semibold: 'font-semibold',
+      extrabold: 'font-extrabold',
     },
-    $align: {
+    align: {
       left: 'text-left',
       center: 'text-center',
       right: 'text-right',
     },
-    $inline: {
+    inline: {
       true: 'inline',
       false: 'block',
     },
-    $pointer: {
+    pointer: {
       true: 'cursor-pointer',
     },
-    $noWrap: {
+    noWrap: {
       true: 'whitespace-nowrap',
     },
   },
   defaultVariants: {
-    $color: 'default',
-    $size: 'base',
-    $weight: 'normal',
-    $align: 'left',
-    $inline: false,
+    color: 'default',
+    size: 'base',
+    weight: 'normal',
+    align: 'left',
+    inline: false,
   },
 })
 
-export interface TypographyProps extends HTMLAttributes<HTMLParagraphElement>, VariantProps<typeof typographyVariants> {
+export interface TypographyProps
+  extends Omit<HTMLAttributes<HTMLElement>, 'color'>,
+    VariantProps<typeof typographyVariants> {
   children: ReactNode
 }
 
 const Typography = forwardRef<HTMLParagraphElement, TypographyProps>(
-  ({ className, $color, $size, $weight, $align, $inline, $pointer, $noWrap, ...props }, ref) => {
+  ({ className, color, size, weight, align, inline, pointer, noWrap, ...props }, ref) => {
     return (
       <p
         ref={ref}
-        className={cn(typographyVariants({ $color, $size, $weight, $align, $inline, $pointer, $noWrap, className }))}
+        className={cn(typographyVariants({ color, size, weight, align, inline, pointer, noWrap, className }))}
         {...props}
       />
     )

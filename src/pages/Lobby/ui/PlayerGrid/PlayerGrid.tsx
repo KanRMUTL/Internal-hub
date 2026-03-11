@@ -21,9 +21,9 @@ const avatarVariants = cva(
 export const PlayerGrid = ({ players }: PlayerGridProps) => {
   return (
     <Box style={{ minHeight: '400px' }}>
-      <Card $padding="lg">
+      <Card padding="lg">
         <div className="flex justify-between items-center mb-6">
-          <Typography as="h2" $size="xl" $weight="bold">
+          <Typography size="xl" weight="bold">
             Players ({players.length})
           </Typography>
           <Users size={24} className="text-gray-500" />
@@ -32,7 +32,7 @@ export const PlayerGrid = ({ players }: PlayerGridProps) => {
         {players.length === 0 ? (
           <div className="flex flex-col justify-center items-center h-[300px] gap-4">
             <Users size={64} className="text-gray-200" />
-            <Typography $color="secondary" $size="lg" className="animate-pulse">
+            <Typography color="secondary" size="lg" className="animate-pulse">
               Waiting for players...
             </Typography>
           </div>
@@ -49,7 +49,7 @@ export const PlayerGrid = ({ players }: PlayerGridProps) => {
                   layout
                 >
                   <div className={avatarVariants()}>{player.nickname.substring(0, 2).toUpperCase()}</div>
-                  <Typography $size="sm" className="truncate">
+                  <Typography size="sm" className="truncate">
                     {player.nickname}
                   </Typography>
                 </motion.div>

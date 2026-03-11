@@ -102,8 +102,8 @@ const WheelOfFortune = memo(({ members, onSpinCompleted }: WheelOfFortuneProps) 
 
       <div className="flex justify-center">
         <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.8 }}>
-          <Button $variant="success" onClick={spin} disabled={spinning || members.length === 0}>
-            <Typography $color="white" $size="lg" $weight="semibold" $pointer>
+          <Button variant="success" onClick={spin} disabled={spinning || members.length === 0}>
+            <Typography color="white" size="lg" weight="semibold" pointer>
               🎯 Spin
             </Typography>
           </Button>

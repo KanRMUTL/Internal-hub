@@ -29,26 +29,39 @@ const skeletonVariants = cva(
 
 interface SkeletonProps extends VariantProps<typeof skeletonVariants> {
   $width?: string
+  width?: string
   $height?: string
+  height?: string
   $rounded?: BorderRadiusKeys
+  rounded?: BorderRadiusKeys
   $variant?: 'text' | 'rectangular' | 'circular'
+  variant?: 'text' | 'rectangular' | 'circular'
   className?: string
 }
 
 const Skeleton = ({
   $width = '100%',
+  width,
   $height = '1rem',
+  height,
   $rounded = 'md',
+  rounded,
   $variant = 'rectangular',
+  variant,
   className,
   ...props
 }: SkeletonProps) => {
+  const finalWidth = width || $width
+  const finalHeight = height || $height
+  const finalRounded = rounded || $rounded
+  const finalVariant = variant || $variant
+
   return (
     <div
-      className={cn(skeletonVariants({ variant: $variant, rounded: $rounded, className }))}
+      className={cn(skeletonVariants({ variant: finalVariant, rounded: finalRounded, className }))}
       style={{
-        width: $width,
-        height: $variant === 'text' ? undefined : $height,
+        width: finalWidth,
+        height: finalVariant === 'text' ? undefined : finalHeight,
       }}
       {...props}
     />

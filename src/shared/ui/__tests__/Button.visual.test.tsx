@@ -18,31 +18,31 @@ describe('Button Visual Regression Tests', () => {
       expect(button).toHaveTextContent('Default Button')
 
       // Test primary variant
-      rerender(<Button $variant="primary">Primary Button</Button>)
+      rerender(<Button variant="primary">Primary Button</Button>)
       expect(screen.getByRole('button')).toHaveTextContent('Primary Button')
 
       // Test secondary variant
-      rerender(<Button $variant="secondary">Secondary Button</Button>)
+      rerender(<Button variant="secondary">Secondary Button</Button>)
       expect(screen.getByRole('button')).toHaveTextContent('Secondary Button')
 
       // Test danger variant
-      rerender(<Button $variant="danger">Danger Button</Button>)
+      rerender(<Button variant="danger">Danger Button</Button>)
       expect(screen.getByRole('button')).toHaveTextContent('Danger Button')
     })
 
     it('renders with correct sizes', () => {
-      const { rerender } = renderWithTheme(<Button $size="sm">Small</Button>, { theme })
+      const { rerender } = renderWithTheme(<Button size="sm">Small</Button>, { theme })
 
       let button = screen.getByRole('button')
       expect(button).toBeInTheDocument()
 
       // Test medium size
-      rerender(<Button $size="md">Medium</Button>)
+      rerender(<Button size="md">Medium</Button>)
       button = screen.getByRole('button')
       expect(validateTouchTarget(button)).toBe(true)
 
       // Test large size
-      rerender(<Button $size="lg">Large</Button>)
+      rerender(<Button size="lg">Large</Button>)
       button = screen.getByRole('button')
       expect(validateTouchTarget(button)).toBe(true)
     })
@@ -56,7 +56,7 @@ describe('Button Visual Regression Tests', () => {
     })
 
     it('handles loading state correctly', () => {
-      renderWithTheme(<Button $loading>Loading Button</Button>, { theme })
+      renderWithTheme(<Button loading>Loading Button</Button>, { theme })
 
       const button = screen.getByRole('button')
       expect(button).toBeDisabled()

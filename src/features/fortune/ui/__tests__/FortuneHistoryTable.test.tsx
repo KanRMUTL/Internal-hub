@@ -1,19 +1,20 @@
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import FortuneHistoryTable from '../FortuneHistoryTable'
 import { ThemeProvider } from 'features/toggle-theme/providers/ThemeContext'
 import { useFortuneHistory } from 'features/fortune/hooks'
 
-jest.mock('features/fortune/hooks')
+vi.mock('features/fortune/hooks')
 
 const mockHistory = [{ id: '1', winnerName: 'Winner 1', createdAt: new Date().toISOString() }]
 
 describe('FortuneHistoryTable', () => {
   it('renders history entries', () => {
-    ;(useFortuneHistory as jest.Mock).mockReturnValue({
+    ;(useFortuneHistory as any).mockReturnValue({
       history: mockHistory,
       loading: false,
       error: null,
-      retry: jest.fn(),
+      retry: vi.fn(),
     })
 
     render(
@@ -26,11 +27,11 @@ describe('FortuneHistoryTable', () => {
   })
 
   it('renders empty state when no history', () => {
-    ;(useFortuneHistory as jest.Mock).mockReturnValue({
+    ;(useFortuneHistory as any).mockReturnValue({
       history: [],
       loading: false,
       error: null,
-      retry: jest.fn(),
+      retry: vi.fn(),
     })
 
     render(

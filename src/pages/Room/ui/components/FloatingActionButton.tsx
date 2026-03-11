@@ -12,7 +12,7 @@ const FloatingActionButton = ({ onClick }: FloatingActionButtonProps) => {
   return (
     <div className={fabContainerVariants()}>
       {withMotion(
-        <CircularButton $size={56} $variant="info" onClick={onClick} aria-label="Manage members">
+        <CircularButton size={56} variant="info" onClick={onClick} aria-label="Manage members">
           <Users size={24} />
         </CircularButton>
       )}

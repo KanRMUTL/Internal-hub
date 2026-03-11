@@ -49,15 +49,15 @@ const FortuneHistoryDataBoundary = ({
           transition={{ duration: 0.4 }}
         >
           <ErrorState>
-            <Alert $type="danger">
-              <Box $flex $direction="column" $gap="md" $align="center">
-                <Typography $size="sm" $weight="medium">
+            <Alert type="danger">
+              <Box flex direction="column" gap="md" align="center">
+                <Typography size="sm" weight="medium">
                   {getErrorMessage(error)}
                 </Typography>
                 {onRetry && (
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button $variant="info" $size="sm" onClick={handleRetry} disabled={retrying}>
-                      <Box $flex $align="center" $gap="sm">
+                    <Button variant="info" size="sm" onClick={handleRetry} disabled={retrying}>
+                      <Box flex align="center" gap="sm">
                         <motion.div
                           animate={retrying ? { rotate: 360 } : {}}
                           transition={{

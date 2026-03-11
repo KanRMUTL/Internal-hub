@@ -1,4 +1,4 @@
-import { Container, Typography, Box, Button, Input } from 'shared/ui'
+import { Container, Typography, Button, Input } from 'shared/ui'
 import { LogIn } from 'lucide-react'
 import { useJoinGame } from '../../hooks/useJoinGame'
 import { cva } from 'class-variance-authority'
@@ -12,16 +12,16 @@ export const JoinQuizeGame = () => {
 
   return (
     <div className={pageWrapperVariants()}>
-      <Container $maxWidth="sm">
+      <Container maxWidth="sm">
         <div className="flex justify-center mb-8">
-          <Typography as="h1" $size="3xl" $weight="bold" $color="white">
+          <Typography size="4xl" weight="bold" color="white">
             Quiz Game
           </Typography>
         </div>
 
         <div className={joinCardVariants()}>
           <div className="flex justify-center mb-6">
-            <Typography as="h2" $size="xl" $weight="bold">
+            <Typography size="xl" weight="bold">
               Join the Fun!
             </Typography>
           </div>
@@ -33,7 +33,7 @@ export const JoinQuizeGame = () => {
                 placeholder="Enter 4-digit PIN"
                 {...register('pin', { required: 'Room PIN is required' })}
                 error={errors.pin?.message}
-                $variant="filled"
+                variant="filled"
               />
             </div>
 
@@ -43,19 +43,19 @@ export const JoinQuizeGame = () => {
                 placeholder="Enter your nickname"
                 {...register('nickname', { required: 'Nickname is required', maxLength: 15 })}
                 error={errors.nickname?.message}
-                $variant="filled"
+                variant="filled"
               />
             </div>
 
             {error && (
               <div className="mb-4">
-                <Typography $color="danger" $size="sm" $align="center">
+                <Typography color="danger" size="sm" align="center">
                   {error}
                 </Typography>
               </div>
             )}
 
-            <Button type="submit" $fullWidth $size="lg" disabled={isLoading}>
+            <Button type="submit" fullWidth size="lg" disabled={isLoading}>
               {isLoading ? 'Joining...' : 'Join Game'}
               {!isLoading && <LogIn size={20} className="ml-2" />}
             </Button>

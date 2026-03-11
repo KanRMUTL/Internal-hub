@@ -44,7 +44,7 @@ describe('Card Visual Regression Tests', () => {
 
     it('renders with proper elevation and shadows', () => {
       renderWithTheme(
-        <Card $shadow="md">
+        <Card shadow="md">
           <p>Elevated Card</p>
         </Card>,
         { theme }
@@ -61,7 +61,7 @@ describe('Card Visual Regression Tests', () => {
 
     it('supports different padding variants', () => {
       const { rerender } = renderWithTheme(
-        <Card $padding="sm">
+        <Card padding="sm">
           <p>Small Padding</p>
         </Card>,
         { theme }
@@ -71,7 +71,7 @@ describe('Card Visual Regression Tests', () => {
       expect(card).toBeInTheDocument()
 
       rerender(
-        <Card $padding="lg">
+        <Card padding="lg">
           <p>Large Padding</p>
         </Card>
       )

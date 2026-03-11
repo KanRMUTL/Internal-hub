@@ -35,12 +35,12 @@ const RoomModal = ({ isOpen, onClose, onSubmit, defaultValues, title = 'New Room
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
-      <Box $flex $direction="column" $justify="center" $align="center" $p="sm" $gap="sm">
-        <Typography $size="xl" $weight="bold" $color="primary">
+      <Box flex direction="column" justify="center" align="center" p="sm" gap="sm">
+        <Typography size="xl" weight="bold" color="primary">
           {title}
         </Typography>
         <form onSubmit={handleSubmit(handleFormSubmit)} style={{ width: '100%' }}>
-          <Box $flex $direction="column" $justify="center" $align="center" $gap="md">
+          <Box flex direction="column" justify="center" align="center" gap="md">
             <Input
               placeholder="Enter room name..."
               error={errors.name?.message}

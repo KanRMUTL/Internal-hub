@@ -29,14 +29,9 @@ const FortuneHistoryTable = ({ roomId }: FortuneHistoryTableProps) => {
 
   if (loading) {
     return (
-      <Box
-        $p="md"
-        $maxHeight="60vh"
-        $overflowY="auto"
-        style={{ maxHeight: window.innerWidth >= 1024 ? 'calc(100vh - 200px)' : '60vh' }}
-      >
-        <Box $flex $justify="center" $direction="column" $gap="sm">
-          <Typography $size="lg" $color="disabled" $align="center" $weight="medium">
+      <Box p="md" style={{ maxHeight: window.innerWidth >= 1024 ? 'calc(100vh - 200px)' : '60vh' }}>
+        <Box flex justify="center" direction="column" gap="sm">
+          <Typography size="lg" color="muted" align="center" weight="medium">
             Loading History...
           </Typography>
         </Box>
@@ -46,14 +41,9 @@ const FortuneHistoryTable = ({ roomId }: FortuneHistoryTableProps) => {
 
   if (error) {
     return (
-      <Box
-        $p="md"
-        $maxHeight="60vh"
-        $overflowY="auto"
-        style={{ maxHeight: window.innerWidth >= 1024 ? 'calc(100vh - 200px)' : '60vh' }}
-      >
-        <Box $flex $justify="center" $direction="column" $gap="sm">
-          <Typography $size="lg" $color="disabled" $align="center" $weight="medium">
+      <Box p="md" style={{ maxHeight: window.innerWidth >= 1024 ? 'calc(100vh - 200px)' : '60vh' }}>
+        <Box flex justify="center" direction="column" gap="sm">
+          <Typography size="lg" color="muted" align="center" weight="medium">
             Failed to load history
           </Typography>
         </Box>
@@ -63,14 +53,9 @@ const FortuneHistoryTable = ({ roomId }: FortuneHistoryTableProps) => {
 
   if (enhancedHistory.length === 0) {
     return (
-      <Box
-        $p="md"
-        $maxHeight="60vh"
-        $overflowY="auto"
-        style={{ maxHeight: window.innerWidth >= 1024 ? 'calc(100vh - 200px)' : '60vh' }}
-      >
-        <Box $flex $justify="center" $direction="column" $gap="sm">
-          <Typography $size="lg" $color="disabled" $align="center" $weight="medium">
+      <Box p="md" style={{ maxHeight: window.innerWidth >= 1024 ? 'calc(100vh - 200px)' : '60vh' }}>
+        <Box flex justify="center" direction="column" gap="sm">
+          <Typography size="lg" color="muted" align="center" weight="medium">
             🎲 No Fortune History yet
           </Typography>
         </Box>
@@ -79,13 +64,8 @@ const FortuneHistoryTable = ({ roomId }: FortuneHistoryTableProps) => {
   }
 
   return (
-    <Box
-      $p="md"
-      $maxHeight="60vh"
-      $overflowY="auto"
-      style={{ maxHeight: window.innerWidth >= 1024 ? 'calc(100vh - 200px)' : '60vh' }}
-    >
-      <Box $flex $direction="column" $gap="md">
+    <Box p="md" style={{ maxHeight: window.innerWidth >= 1024 ? 'calc(100vh - 200px)' : '60vh' }}>
+      <Box flex direction="column" gap="md">
         <AnimatePresence mode="popLayout">
           {enhancedHistory.map((entry, index) => (
             <motion.div
@@ -100,17 +80,11 @@ const FortuneHistoryTable = ({ roomId }: FortuneHistoryTableProps) => {
               }}
               layout
             >
-              <Card
-                $padding="md"
-                $interactive
-                $rounded="md"
-                $shadow="sm"
-                $border={{ width: 'thin', color: 'success', style: 'solid' }}
-              >
-                <Box $flex $align="center" $gap="md">
+              <Card padding="md" interactive rounded="md" shadow="sm">
+                <Box flex align="center" gap="md">
                   <PartyPopper width={48} height={48} color="#FFC600" />
 
-                  <Box $flex $direction="column" $gap="xs" style={{ flex: 1 }}>
+                  <Box flex direction="column" gap="xs" style={{ flex: 1 }}>
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -119,11 +93,11 @@ const FortuneHistoryTable = ({ roomId }: FortuneHistoryTableProps) => {
                         delay: index === 0 ? 0.3 : 0.2,
                       }}
                     >
-                      <Typography $size="lg" $color="success" $weight="semibold" $pointer>
+                      <Typography size="lg" color="success" weight="semibold" pointer>
                         {entry.winnerName}
                       </Typography>
                     </motion.div>
-                    <Box $flex $direction="column" style={{ gap: '2px' }}>
+                    <Box flex direction="column" style={{ gap: '2px' }}>
                       <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -132,13 +106,13 @@ const FortuneHistoryTable = ({ roomId }: FortuneHistoryTableProps) => {
                           delay: index === 0 ? 0.4 : 0.3,
                         }}
                       >
-                        <Box $flex $align="center" $gap="xs">
+                        <Box flex align="center" gap="xs">
                           <Clock
                             width={16}
                             height={16}
                             color={mode === 'LIGHT' ? 'rgba(0, 0, 0, 0.3) ' : 'rgba(255, 255, 255, 0.3)'}
                           />
-                          <Typography $size="base" $color="disabled" $pointer>
+                          <Typography size="base" color="muted" pointer>
                             {entry.relativeTime}
                           </Typography>
                         </Box>

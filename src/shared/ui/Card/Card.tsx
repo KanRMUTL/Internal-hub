@@ -1,5 +1,5 @@
-import { ReactNode, ComponentProps } from 'react'
-import { motion, HTMLMotionProps } from 'motion/react'
+import { ReactNode } from 'react'
+import { motion } from 'motion/react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { twMerge } from 'tailwind-merge'
 import { clsx, type ClassValue } from 'clsx'
@@ -8,50 +8,48 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-const cardVariants = cva(
-  'relative bg-white border border-grey-200 transition-all duration-200 dark:bg-surface-dark dark:border-grey-700',
-  {
-    variants: {
-      shadow: {
-        none: 'shadow-none',
-        sm: 'shadow-sm',
-        md: 'shadow-md',
-        lg: 'shadow-lg',
-      },
-      rounded: {
-        none: 'rounded-none',
-        sm: 'rounded-sm',
-        md: 'rounded-md',
-        lg: 'rounded-lg',
-        full: 'rounded-full',
-      },
-      padding: {
-        none: 'p-0',
-        sm: 'p-sm',
-        md: 'p-md',
-        lg: 'p-lg',
-      },
-      interactive: {
-        true: 'cursor-pointer hover:filter hover:brightness-105 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary active:shadow-sm dark:hover:border-grey-600',
-        false: '',
-      },
+const cardVariants = cva('relative bg-white transition-all duration-200 dark:bg-surface-dark', {
+  variants: {
+    shadow: {
+      none: 'shadow-none',
+      sm: 'shadow-sm',
+      md: 'shadow-md',
+      lg: 'shadow-lg',
     },
-    defaultVariants: {
-      shadow: 'md',
-      rounded: 'lg',
-      padding: 'md',
-      interactive: false,
+    rounded: {
+      none: 'rounded-none',
+      sm: 'rounded-sm',
+      md: 'rounded-md',
+      lg: 'rounded-lg',
+      full: 'rounded-full',
     },
-  }
-)
+    padding: {
+      none: 'p-0',
+      sm: 'p-sm',
+      md: 'p-md',
+      lg: 'p-lg',
+    },
+    interactive: {
+      true: 'cursor-pointer hover:filter hover:brightness-105 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary active:shadow-sm',
+      false: '',
+    },
+  },
+  defaultVariants: {
+    shadow: 'md',
+    rounded: 'lg',
+    padding: 'md',
+    interactive: false,
+  },
+})
 
-export interface CardProps extends Omit<ComponentProps<'div'>, 'onClick'>, VariantProps<typeof cardVariants> {
+export interface CardProps extends VariantProps<typeof cardVariants> {
   children?: ReactNode
   className?: string
   onClick?: () => void
+  style?: React.CSSProperties
 }
 
-const Card = ({ shadow, rounded, padding, interactive, children, className, onClick, ...props }: CardProps) => {
+const Card = ({ shadow, rounded, padding, interactive, children, className, onClick, style }: CardProps) => {
   const Component = interactive ? motion.div : 'div'
 
   const motionProps = interactive
@@ -79,8 +77,8 @@ const Card = ({ shadow, rounded, padding, interactive, children, className, onCl
           onClick()
         }
       }}
-      {...(motionProps as HTMLMotionProps<'div'>)}
-      {...props}
+      {...(interactive ? motionProps : {})}
+      style={style}
     >
       {children}
     </Component>

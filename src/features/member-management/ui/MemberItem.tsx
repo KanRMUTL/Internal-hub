@@ -1,9 +1,8 @@
 import { motion } from 'framer-motion'
-import { Card, Typography, TypographyProps, BoxProps, Box, CircularButton } from 'shared/ui'
+import { Typography, CircularButton } from 'shared/ui'
 import { X, Edit, User, UserCheck } from 'lucide-react'
 import { ReactNode } from 'react'
 import { cva } from 'class-variance-authority'
-import { cn } from 'shared/lib/utils'
 
 interface MemberItemProps {
   id: string
@@ -13,8 +12,7 @@ interface MemberItemProps {
   onEdit?: (id: string) => void
   showDelete?: boolean
   onDelete?: (id: string) => void
-  typography?: TypographyProps
-  box?: BoxProps
+
   active?: boolean
 }
 
@@ -57,8 +55,7 @@ const MemberItem = ({
   onEdit,
   showDelete = false,
   onDelete,
-  typography,
-  box,
+
   active = true,
 }: MemberItemProps) => {
   return (
@@ -75,12 +72,12 @@ const MemberItem = ({
     >
       <div className={styledCardVariants({ active })} onClick={() => onClick?.(id)}>
         <div className="flex items-center gap-4 w-full min-h-[44px]">
-          <CircularButton $variant={active ? 'success' : 'disabled'}>
+          <CircularButton variant={active ? 'success' : 'secondary'}>
             {active ? <UserCheck size={16} /> : <User size={16} />}
           </CircularButton>
 
           <div className="flex flex-col gap-[2px] flex-1 min-w-0">
-            <Typography $size="lg" $weight="semibold" $color={active ? 'primary' : 'disabled'} $pointer {...typography}>
+            <Typography size="lg" weight="semibold" color={active ? 'primary' : 'muted'} pointer>
               {name}
             </Typography>
 

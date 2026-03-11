@@ -9,11 +9,11 @@ describe('Accessibility Visual Regression Tests', () => {
       it('validates text contrast ratios meet WCAG AA standards', () => {
         renderWithTheme(
           <div>
-            <Typography $size="2xl" $weight="bold">
+            <Typography size="3xl" weight="bold">
               Main Heading
             </Typography>
-            <Typography $size="base">Body text content</Typography>
-            <Typography $size="sm">Small text content</Typography>
+            <Typography size="base">Body text content</Typography>
+            <Typography size="sm">Small text content</Typography>
           </div>,
           { theme }
         )
@@ -38,9 +38,9 @@ describe('Accessibility Visual Regression Tests', () => {
       it('validates button contrast ratios in all states', () => {
         renderWithTheme(
           <div>
-            <Button $variant="primary">Primary Button</Button>
-            <Button $variant="secondary">Secondary Button</Button>
-            <Button $variant="danger">Danger Button</Button>
+            <Button variant="primary">Primary Button</Button>
+            <Button variant="secondary">Secondary Button</Button>
+            <Button variant="danger">Danger Button</Button>
           </div>,
           { theme }
         )
@@ -94,7 +94,7 @@ describe('Accessibility Visual Regression Tests', () => {
       // Test light theme
       const { rerender } = renderWithTheme(
         <Card>
-          <Typography $size="base">Theme contrast test</Typography>
+          <Typography size="base">Theme contrast test</Typography>
         </Card>,
         { theme: 'light' }
       )
@@ -107,12 +107,12 @@ describe('Accessibility Visual Regression Tests', () => {
       // Test dark theme
       rerender(
         <Card>
-          <Typography $size="base">Theme contrast test</Typography>
+          <Typography size="base">Theme contrast test</Typography>
         </Card>
       )
       renderWithTheme(
         <Card>
-          <Typography $size="base">Theme contrast test</Typography>
+          <Typography size="base">Theme contrast test</Typography>
         </Card>,
         { theme: 'dark' }
       )
@@ -247,13 +247,13 @@ describe('Accessibility Visual Regression Tests', () => {
       it('maintains proper heading hierarchy', () => {
         renderWithTheme(
           <div>
-            <Typography $size="3xl" $weight="bold" as="h1">
+            <Typography size="4xl" weight="bold">
               Main Title
             </Typography>
-            <Typography $size="2xl" $weight="semibold" as="h2">
+            <Typography size="3xl" weight="semibold">
               Section Title
             </Typography>
-            <Typography $size="xl" $weight="medium" as="h3">
+            <Typography size="xl" weight="medium">
               Subsection Title
             </Typography>
           </div>,

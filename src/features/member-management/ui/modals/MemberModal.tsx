@@ -55,13 +55,13 @@ const MemberModal = ({ isOpen, defaultValues = { name: '' }, onClose, onSubmit }
   const isEditing = Boolean(defaultValues.name)
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} $size="sm">
+    <Modal isOpen={isOpen} onClose={handleClose} size="sm">
       <div className="w-[300px]" onKeyDown={handleKeyDown}>
         <div className="flex items-center gap-4 pb-4">
           <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500 text-white">
             <User size={20} />
           </div>
-          <Typography $size="xl" $weight="semibold">
+          <Typography size="xl" weight="semibold">
             {isEditing ? 'Edit Member' : 'Add Member'}
           </Typography>
         </div>
@@ -84,16 +84,11 @@ const MemberModal = ({ isOpen, defaultValues = { name: '' }, onClose, onSubmit }
           />
 
           <div className="flex gap-4 justify-end pt-4 max-[480px]:flex-col-reverse max-[480px]:gap-2 max-[480px]:[&_button]:w-full">
-            <Button type="button" $variant="danger" onClick={handleClose} disabled={isSubmitting}>
+            <Button type="button" variant="danger" onClick={handleClose} disabled={isSubmitting}>
               <X size={16} />
               Cancel
             </Button>
-            <Button
-              type="submit"
-              $variant="info"
-              $loading={isSubmitting}
-              disabled={!isValid || !isDirty || isSubmitting}
-            >
+            <Button type="submit" variant="info" loading={isSubmitting} disabled={!isValid || !isDirty || isSubmitting}>
               <Save size={16} />
               {isEditing ? 'Update' : 'Add'}
             </Button>

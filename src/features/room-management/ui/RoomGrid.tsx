@@ -8,18 +8,17 @@ interface RoomGridProps {
 const RoomGrid = ({ children }: RoomGridProps) => {
   return (
     <Box
-      $grid
-      $gridColumns="1fr"
-      $tabletGridColumns="repeat(auto-fit, minmax(280px, 1fr))"
-      $desktopGridColumns="repeat(auto-fit, minmax(320px, 1fr))"
-      $gap="md"
-      $tabletGap="lg"
-      $desktopGap="xl"
-      $p="md"
-      $tabletP="lg"
-      $desktopP="xl"
-      $width="100%"
-      $maxWidth="1200px"
+      grid
+      gridColumns="1fr"
+      tabletGridColumns="repeat(auto-fit, minmax(280px, 1fr))"
+      desktopGridColumns="repeat(auto-fit, minmax(320px, 1fr))"
+      gap="md"
+      tabletGap="lg"
+      desktopGap="xl"
+      p="md"
+      tabletP="lg"
+      desktopP="xl"
+      width="100%"
       style={{
         margin: '0 auto',
         // Ensure minimum card width on mobile

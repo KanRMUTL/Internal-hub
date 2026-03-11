@@ -1,4 +1,3 @@
-import { RoomMember } from 'entities/room'
 import { DataBoundary, FlashAlert, SkipLinks, Box, PerformanceMonitor } from 'shared/ui'
 import { MemberModal } from 'features/member-management'
 import { WheelOfFortune, LuckyModal } from 'features/fortune'
@@ -47,7 +46,7 @@ const RoomPage = () => {
         loadingMessage="Loading room information..."
         errorMessage="Failed to load room information..."
       >
-        <Box $minHeight="100vh" $tabletP="lg" $position="relative">
+        <Box tabletP="lg" position="relative">
           {/* Mobile Navigation */}
           <MobileNavigation
             activeMobileSection={activeMobileSection}
@@ -59,23 +58,13 @@ const RoomPage = () => {
           <FloatingActionButton onClick={openMembersModal} />
 
           {/* Two Column Layout */}
-          <Box
-            $flex
-            $direction="column"
-            $gap="lg"
-            $grid={false}
-            $tabletDisplay="grid"
-            $gridColumns="1fr 1fr"
-            $tabletGap="xl"
-            $desktopGridColumns="2fr 1fr"
-            role="main"
-          >
+          <Box flex direction="column" gap="lg" grid={false} role="main">
             {/* Wheel Section */}
 
             <WheelOfFortune members={memberNames} onSpinCompleted={handleSpinComplete} />
 
             {/* History Section */}
-            <HistorySection roomId={roomId} active={activeMobileSection === 'history'} />
+            <HistorySection roomId={roomId} />
           </Box>
 
           {winner && (
@@ -106,14 +95,14 @@ const RoomPage = () => {
           />
 
           <FlashAlert
-            type={flashState.state.type}
+            type={flashState.state.type as any}
             message={flashState.state.message}
             visible={flashAlert.isOpen}
             onClose={flashAlert.close}
           />
 
           <FlashAlert
-            type={fortuneFlashState.state.type}
+            type={fortuneFlashState.state.type as any}
             message={fortuneFlashState.state.message}
             visible={fortuneFlashVisible}
             onClose={closeFortuneFlash}

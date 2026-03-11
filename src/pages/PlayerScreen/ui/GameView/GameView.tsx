@@ -26,21 +26,21 @@ export const GameView = ({ room, player, handleAnswer, selectedOption, hasAnswer
 
   return (
     <div className={pageWrapperVariants()}>
-      <Container $maxWidth="sm">
+      <Container maxWidth="sm">
         <div className={headerVariants()}>
           <Box>
-            <Typography $size="xs" $weight="bold" className="opacity-80">
+            <Typography size="xs" weight="bold" className="opacity-80">
               QUESTION
             </Typography>
-            <Typography $weight="bold" $size="lg">
+            <Typography weight="bold" size="lg">
               {room.currentQuestionIndex + 1} / {room.questions.length}
             </Typography>
           </Box>
           <Box className="text-right">
-            <Typography $size="xs" $weight="bold" className="opacity-80">
+            <Typography size="xs" weight="bold" className="opacity-80">
               SCORE
             </Typography>
-            <Typography $weight="bold" $size="lg">
+            <Typography weight="bold" size="lg">
               {player.score}
             </Typography>
           </Box>
@@ -52,7 +52,7 @@ export const GameView = ({ room, player, handleAnswer, selectedOption, hasAnswer
           <div className={questionTextVariants()}>{currentQuestion.text}</div>
         </div>
 
-        <Grid $gap="md" $columns="1fr 1fr">
+        <Grid gap="md" columns="1fr 1fr">
           {currentQuestion.options.map((option, index) => (
             <OptionButton
               key={index}

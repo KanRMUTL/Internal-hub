@@ -13,9 +13,9 @@ const ModalConfirmRemoveMember = ({ room, isOpen, onConfirm, onCancel }: ModalCo
   <ModalConfirm
     isOpen={isOpen}
     title={
-      <Typography $size="xl" $weight="bold" $color="danger" $align="center" $inline $noWrap>
+      <Typography size="xl" weight="bold" color="danger" align="center" inline noWrap>
         {'🥹 Are you sure to remove '} <br />
-        <Typography $size="xl" $weight="bold" $color="primary" $inline>
+        <Typography size="xl" weight="bold" color="primary" inline>
           "{room.name}"
         </Typography>
         {' ?'}
@@ -25,15 +25,15 @@ const ModalConfirmRemoveMember = ({ room, isOpen, onConfirm, onCancel }: ModalCo
     onConfirm={onConfirm}
     onCancel={onCancel}
     confirmSection={withMotion(
-      <Button $size="md" $variant="info" onClick={onCancel}>
-        <Typography $size="base" $weight="semibold" $color="white" $pointer>
+      <Button size="md" variant="info" onClick={onCancel}>
+        <Typography size="base" weight="semibold" color="white" pointer>
           Not Sure
         </Typography>
       </Button>
     )}
     cancelSection={withMotion(
-      <Button $size="md" $variant="danger" onClick={onConfirm}>
-        <Typography $size="base" $weight="semibold" $color="white" $pointer>
+      <Button size="md" variant="danger" onClick={onConfirm}>
+        <Typography size="base" weight="semibold" color="white" pointer>
           Remove
         </Typography>
       </Button>

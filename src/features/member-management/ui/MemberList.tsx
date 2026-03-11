@@ -31,26 +31,26 @@ const MemberList = ({
   }
 
   return (
-    <Box $flex $direction="column" $gap="md" $width="100%">
+    <Box flex direction="column" gap="md" width="100%">
       {title && (
-        <Box $flex $align="center" $justify="space-between" $px="xs">
-          <Typography $size="lg" $weight="semibold" $color="primary">
+        <Box flex align="center" justify="space-between" px="xs">
+          <Typography size="lg" weight="semibold" color="primary">
             {title}
           </Typography>
-          <Typography $size="sm" $color="grey" $weight="medium">
+          <Typography size="sm" color="muted" weight="medium">
             {visibleMembers.length} {visibleMembers.length === 1 ? 'member' : 'members'}
           </Typography>
         </Box>
       )}
 
       <Box
-        $grid
-        $gridColumns="1fr"
-        $tabletGridColumns="repeat(auto-fill, minmax(250px, 1fr))"
-        $desktopGridColumns="repeat(auto-fill, minmax(280px, 1fr))"
-        $gap="sm"
-        $tabletGap="md"
-        $width="100%"
+        grid
+        gridColumns="1fr"
+        tabletGridColumns="repeat(auto-fill, minmax(250px, 1fr))"
+        desktopGridColumns="repeat(auto-fill, minmax(280px, 1fr))"
+        gap="sm"
+        tabletGap="md"
+        width="100%"
       >
         <AnimatePresence mode="popLayout">
           {visibleMembers.map((member) => (

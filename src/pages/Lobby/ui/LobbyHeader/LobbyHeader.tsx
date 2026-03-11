@@ -8,20 +8,20 @@ interface LobbyHeaderProps {
 
 export const LobbyHeader = ({ onStartGame, hasPlayers }: LobbyHeaderProps) => {
   return (
-    <Box $display="flex" $justify="space-between" $align="center" $mb="xl">
+    <Box display="flex" justify="space-between" align="center" mb="xl">
       <Box>
-        <Typography as="h1" $size="3xl" $weight="bold" $color="white">
+        <Typography size="4xl" weight="bold" color="white">
           Quiz Lobby
         </Typography>
-        <Typography $color="white" style={{ opacity: 0.8 }}>
+        <Typography color="white" style={{ opacity: 0.8 }}>
           Waiting for players to join...
         </Typography>
       </Box>
       <Button
-        $variant="secondary"
+        variant="secondary"
         onClick={onStartGame}
         disabled={!hasPlayers}
-        $size="lg"
+        size="lg"
         style={{ paddingLeft: '2rem', paddingRight: '2rem' }}
       >
         <Play size={24} style={{ marginRight: '8px' }} />

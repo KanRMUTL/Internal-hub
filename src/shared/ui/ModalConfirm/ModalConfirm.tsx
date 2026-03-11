@@ -23,15 +23,15 @@ const ModalConfirm = ({
 }: ModalConfirmProps) => {
   return (
     <Modal isOpen={isOpen} onClose={onCancel}>
-      <Box $flex $direction="column" $align="center" $gap="lg">
+      <Box flex direction="column" align="center" gap="lg">
         {title}
         {description && (
-          <Typography $size="base" $color="grey">
+          <Typography size="base" color="muted">
             {description}
           </Typography>
         )}
 
-        <Box $flex $justify="center" $gap="md">
+        <Box flex justify="center" gap="md">
           {cancelSection}
           {confirmSection}
         </Box>

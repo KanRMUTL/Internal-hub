@@ -14,28 +14,28 @@ interface EmptyStateProps {
 
 const EmptyState = ({ title, description, actionLabel, onAction, icon }: EmptyStateProps) => {
   return (
-    <Box $flex $direction="column" $align="center" $justify="center" $gap="lg" $p="xl" $minHeight="300px">
+    <Box flex direction="column" align="center" justify="center" gap="lg" p="xl">
       {icon && (
-        <Box $flex $align="center" $justify="center" $mb="sm">
+        <Box flex align="center" justify="center" mb="sm">
           {icon}
         </Box>
       )}
 
-      <Box $flex $direction="column" $align="center" $gap="sm" $maxWidth="400px">
-        <Typography $size="xl" $weight="semibold" $align="center">
+      <Box flex direction="column" align="center" gap="sm">
+        <Typography size="xl" weight="semibold" align="center">
           {title}
         </Typography>
-        <Typography $color="grey" $size="base" $align="center">
+        <Typography color="muted" size="base" align="center">
           {description}
         </Typography>
       </Box>
 
       {actionLabel && onAction && (
-        <Box $mt="md">
-          <Button $variant="primary" onClick={onAction}>
-            <Box $flex $align="center" $gap="sm">
+        <Box mt="md">
+          <Button variant="primary" onClick={onAction}>
+            <Box flex align="center" gap="sm">
               <Plus size={16} />
-              <Typography $color="white" $size="sm">
+              <Typography color="white" size="sm">
                 {actionLabel}
               </Typography>
             </Box>

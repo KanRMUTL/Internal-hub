@@ -39,7 +39,7 @@ describe('Animation Visual Regression Tests', () => {
       })
 
       it('provides loading state animations', async () => {
-        renderWithTheme(<Button $loading>Loading Test</Button>, { theme })
+        renderWithTheme(<Button loading>Loading Test</Button>, { theme })
 
         const button = screen.getByText('Loading Test')
         expect(button).toHaveAttribute('aria-busy', 'true')

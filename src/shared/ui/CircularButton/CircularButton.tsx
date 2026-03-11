@@ -9,17 +9,17 @@ const circularButtonVariants = cva('p-0 rounded-full flex items-center justify-c
 })
 
 interface CircularButtonProps extends Omit<ComponentProps<typeof Button>, 'size'> {
-  $size?: number
+  size?: number
 }
 
 const CircularButton = forwardRef<HTMLButtonElement, CircularButtonProps>(
-  ({ $size = 36, className, style, variant = 'primary', ...props }, ref) => {
+  ({ size = 36, className, style, variant = 'primary', ...props }, ref) => {
     return (
       <Button
         ref={ref}
         variant={variant}
         className={cn(circularButtonVariants({ className }))}
-        style={{ width: $size, height: $size, ...style }}
+        style={{ width: size, height: size, ...style }}
         {...props}
       />
     )

@@ -18,11 +18,11 @@ const modalHeaderVariants = cva('flex justify-end p-1')
 
 const MembersModal = ({ isOpen, onClose, onAddMember, roomId, members }: MembersModalProps) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Manage Members" $size="xl">
+    <Modal isOpen={isOpen} onClose={onClose} title="Manage Members" size="xl">
       <div className={modalContentVariants()}>
         <div className={modalHeaderVariants()}>
           {withMotion(
-            <CircularButton $size={40} $variant="info" onClick={onAddMember} aria-label="Add new member">
+            <CircularButton size={40} variant="info" onClick={onAddMember} aria-label="Add new member">
               <Plus size={20} />
             </CircularButton>
           )}

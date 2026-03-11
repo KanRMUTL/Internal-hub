@@ -161,11 +161,11 @@ export const HostScreen = () => {
 
     return (
       <div className={pageWrapperVariants()}>
-        <Container $maxWidth="md">
-          <Card $padding="lg">
+        <Container maxWidth="md">
+          <Card padding="lg">
             <div className="mb-8 flex flex-col items-center">
               <Trophy size={64} className="text-yellow-400 mb-4" />
-              <Typography as="h1" $size="3xl" $weight="bold">
+              <Typography size="4xl" weight="bold">
                 Game Over!
               </Typography>
             </div>
@@ -226,10 +226,10 @@ export const HostScreen = () => {
                         {player.nickname.substring(0, 2).toUpperCase()}
                       </div>
                       <div className={rankBadgeVariants()}>#{rank}</div>
-                      <Typography $weight="bold" $size="lg" className="mt-2">
+                      <Typography weight="bold" size="lg" className="mt-2">
                         {player.nickname}
                       </Typography>
-                      <Typography $size="sm" className="opacity-90">
+                      <Typography size="sm" className="opacity-90">
                         {player.score} pts
                       </Typography>
                     </motion.div>
@@ -239,15 +239,15 @@ export const HostScreen = () => {
             </div>
 
             <div className="mt-12">
-              <Typography as="h2" $size="xl" $align="center" $weight="bold" className="mb-4">
+              <Typography size="xl" align="center" weight="bold" className="mb-4">
                 Full Leaderboard
               </Typography>
               {sortedPlayers.slice(3).map((player, index) => (
                 <div key={player.id} className="flex justify-between p-4 bg-gray-100 dark:bg-gray-700 rounded-lg mb-2">
-                  <Typography $weight="bold">
+                  <Typography weight="bold">
                     #{index + 4} {player.nickname}
                   </Typography>
-                  <Typography $weight="bold">{player.score} pts</Typography>
+                  <Typography weight="bold">{player.score} pts</Typography>
                 </div>
               ))}
             </div>
@@ -259,10 +259,10 @@ export const HostScreen = () => {
 
   return (
     <div className={pageWrapperVariants()}>
-      <Container $maxWidth="lg">
+      <Container maxWidth="lg">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <Typography $size="xl" $weight="bold" $color="white">
+            <Typography size="xl" weight="bold" color="white">
               Question {room.currentQuestionIndex + 1} / {room.questions.length}
             </Typography>
           </div>
@@ -279,16 +279,16 @@ export const HostScreen = () => {
                 strokeDashoffset={strokeDashoffset}
               />
             </svg>
-            <Typography $weight="bold" $color="white" className="absolute text-[1.2rem]">
+            <Typography weight="bold" color="white" className="absolute text-[1.2rem]">
               {Math.ceil(timeLeft)}
             </Typography>
           </div>
 
           <div className="text-right">
-            <Typography $color="white" $weight="medium">
+            <Typography color="white" weight="medium">
               {players.length} Players
             </Typography>
-            <Typography $color="white" $size="sm" $align="center" className="opacity-80">
+            <Typography color="white" size="sm" align="center" className="opacity-80">
               {players.filter((p) => p.answers[currentQuestion.id]).length} Answered
             </Typography>
           </div>
@@ -305,14 +305,14 @@ export const HostScreen = () => {
             {isResultState ? (
               <div>
                 <div className="mb-12 flex justify-center">
-                  <Typography as="h2" $size="3xl" $weight="bold" $color="white">
+                  <Typography size="4xl" weight="bold" color="white">
                     Round Results
                   </Typography>
                 </div>
 
-                <Grid $gap="lg" $columns="1fr 1fr">
+                <Grid gap="lg" columns="1fr 1fr">
                   <Box>
-                    <Typography $size="xl" $weight="bold" $color="white" className="mb-4">
+                    <Typography size="xl" weight="bold" color="white" className="mb-4">
                       Correct Answer
                     </Typography>
                     {currentQuestion.options.map(
@@ -325,7 +325,7 @@ export const HostScreen = () => {
                     )}
                   </Box>
                   <Box>
-                    <Typography $size="xl" $weight="bold" $color="white" className="mb-4">
+                    <Typography size="xl" weight="bold" color="white" className="mb-4">
                       Top Players
                     </Typography>
                     {players
@@ -350,7 +350,7 @@ export const HostScreen = () => {
                 </Grid>
 
                 <div className="mt-12 flex justify-center">
-                  <Button $variant="primary" onClick={handleNextQuestion} $size="lg">
+                  <Button variant="primary" onClick={handleNextQuestion} size="lg">
                     <SkipForward size={20} className="mr-2" />
                     Next Question
                   </Button>
@@ -360,13 +360,13 @@ export const HostScreen = () => {
               <>
                 <div className="mb-12">
                   <div className={questionCardVariants()}>
-                    <Typography as="h2" $size="3xl" $weight="bold">
+                    <Typography size="4xl" weight="bold">
                       {currentQuestion?.text}
                     </Typography>
                   </div>
                 </div>
 
-                <Grid $gap="lg" $columns="1fr 1fr">
+                <Grid gap="lg" columns="1fr 1fr">
                   {currentQuestion?.options.map((option, index) => (
                     <motion.div
                       key={index}
@@ -376,13 +376,13 @@ export const HostScreen = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: index * 0.1 }}
                     >
-                      <Typography $size="xl">{option.text}</Typography>
+                      <Typography size="xl">{option.text}</Typography>
                     </motion.div>
                   ))}
                 </Grid>
 
                 <div className="mt-12 flex justify-center">
-                  <Button $variant="secondary" onClick={handleShowResults} $size="lg">
+                  <Button variant="secondary" onClick={handleShowResults} size="lg">
                     <BarChart2 size={20} className="mr-2" />
                     Show Results Early
                   </Button>

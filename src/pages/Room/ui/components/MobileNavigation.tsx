@@ -1,7 +1,6 @@
 import { Users, History } from 'lucide-react'
 import { Typography } from 'shared/ui'
 import { cva } from 'class-variance-authority'
-import { cn } from 'shared/lib/utils'
 
 interface MobileNavigationProps {
   activeMobileSection: 'wheel' | 'history'
@@ -35,13 +34,13 @@ const MobileNavigation = ({ activeMobileSection, onSectionChange, onMembersClick
         className={navButtonVariants({ active: activeMobileSection === 'wheel' })}
         onClick={() => onSectionChange('wheel')}
       >
-        <Typography $size="sm" $weight="medium" $inline $color={activeMobileSection === 'wheel' ? 'white' : 'inherit'}>
+        <Typography size="sm" weight="medium" inline color={activeMobileSection === 'wheel' ? 'white' : 'default'}>
           Wheel
         </Typography>
       </button>
       <button className={navButtonVariants({ active: false })} onClick={onMembersClick}>
         <Users size={16} />
-        <Typography $size="sm" $weight="medium" $inline>
+        <Typography size="sm" weight="medium" inline>
           Members
         </Typography>
       </button>
@@ -50,12 +49,7 @@ const MobileNavigation = ({ activeMobileSection, onSectionChange, onMembersClick
         onClick={() => onSectionChange('history')}
       >
         <History size={16} />
-        <Typography
-          $size="sm"
-          $weight="medium"
-          $inline
-          $color={activeMobileSection === 'history' ? 'white' : 'inherit'}
-        >
+        <Typography size="sm" weight="medium" inline color={activeMobileSection === 'history' ? 'white' : 'default'}>
           History
         </Typography>
       </button>

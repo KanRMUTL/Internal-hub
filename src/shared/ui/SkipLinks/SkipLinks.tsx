@@ -1,4 +1,4 @@
-import { cva, type VariantProps } from 'class-variance-authority'
+import { cva } from 'class-variance-authority'
 
 const skipLinksContainerVariants = cva('absolute -top-[100px] left-0 z-[9999] flex gap-1')
 

@@ -14,8 +14,8 @@ const Lobby = lazy(() => import('pages/Lobby').then((module) => ({ default: modu
 const PlayerScreen = lazy(() => import('pages/PlayerScreen').then((module) => ({ default: module.PlayerScreen })))
 
 const LoadingFallback = () => (
-  <Box $flex $align="center" $justify="center" $height="100vh">
-    <Spinner size="lg" />
+  <Box flex align="center" justify="center" height="screen">
+    <Spinner size={32} />
   </Box>
 )
 

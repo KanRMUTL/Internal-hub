@@ -32,31 +32,31 @@ const MotionDemo = ({ className }: { className?: string }) => {
 
   return (
     <div className={cn(containerVariants({ className }))}>
-      <Typography $size="lg" $weight="medium" $align="center">
+      <Typography size="lg" weight="medium" align="center">
         Motion Preferences Demo
       </Typography>
 
       <div className={statusBoxVariants()}>
-        <Typography $size="sm" $color={prefersReducedMotion ? 'danger' : 'success'}>
+        <Typography size="sm" color={prefersReducedMotion ? 'danger' : 'success'}>
           Reduced Motion: {prefersReducedMotion ? 'ON' : 'OFF'}
         </Typography>
-        <Typography $size="sm" $color={shouldAnimate ? 'success' : 'danger'}>
+        <Typography size="sm" color={shouldAnimate ? 'success' : 'danger'}>
           Animations: {shouldAnimate ? 'ENABLED' : 'DISABLED'}
         </Typography>
       </div>
 
-      <Box $flex $direction="column" $gap="md" $align="center">
+      <Box flex direction="column" gap="md" align="center">
         <Button onClick={() => setIsVisible(!isVisible)}>{isVisible ? 'Hide' : 'Show'} Demo Card</Button>
 
         {isVisible && (
           <MotionDiv {...cardMotionProps}>
             <div className={demoCardVariants()}>
-              <Typography $weight="medium">Animated Card</Typography>
-              <Typography $size="sm" $color="muted">
+              <Typography weight="medium">Animated Card</Typography>
+              <Typography size="sm" color="muted">
                 This card respects your motion preferences
               </Typography>
 
-              <Box $flex $gap="sm" $justify="center" $pt="md">
+              <Box flex gap="sm" justify="center" pt="md">
                 <MotionDiv {...buttonInteractionProps}>
                   <Button size="sm" variant="primary">
                     Hover Me
@@ -75,7 +75,7 @@ const MotionDemo = ({ className }: { className?: string }) => {
       </Box>
 
       <div className={instructionsBoxVariants()}>
-        <Typography $size="xs" $color="muted" $align="center">
+        <Typography size="xs" color="muted" align="center">
           To test: Go to your browser settings and toggle "Reduce motion" preference, or use the accessibility settings
           in your OS.
         </Typography>

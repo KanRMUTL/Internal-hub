@@ -14,27 +14,26 @@ const ModalConfirmRemoveMember = ({ selectedMember, isOpen, onConfirm, onCancel 
   <ModalConfirm
     isOpen={isOpen}
     title={
-      <Box $flex $align="flex-start" $gap="md">
+      <Box flex align="flex-start" gap="md">
         <Box
-          $flex
-          $align="center"
-          $justify="center"
-          $width="48px"
-          $height="48px"
-          $radius="lg"
+          flex
+          align="center"
+          justify="center"
+          radius="lg"
           style={{ color: 'white', flexShrink: 0 }}
+          className="w-12 h-12"
         >
-          <Typography $color="danger">
+          <Typography color="danger">
             <AlertTriangle size={40} />
           </Typography>
         </Box>
-        <Box $flex $justify="center" $direction="column" $gap="xs">
-          <Typography $size="xl" $weight="semibold" $color="danger">
+        <Box flex justify="center" direction="column" gap="xs">
+          <Typography size="xl" weight="semibold" color="danger">
             Remove Member
           </Typography>
-          <Typography $size="base" $color="grey">
+          <Typography size="base" color="muted">
             Are you sure you want to remove{' '}
-            <Typography $size="base" $weight="semibold" $color="primary" $inline>
+            <Typography size="base" weight="semibold" color="primary" inline>
               "{selectedMember.name}"
             </Typography>
             ?
@@ -44,14 +43,14 @@ const ModalConfirmRemoveMember = ({ selectedMember, isOpen, onConfirm, onCancel 
     }
     description={
       <Box
-        $p="md"
-        $radius="md"
+        p="md"
+        radius="md"
         style={{
           backgroundColor: 'var(--bg-grey-50, #f9fafb)',
           borderLeft: '4px solid var(--color-warning, #f59e0b)',
         }}
       >
-        <Typography $size="sm" $color="grey">
+        <Typography size="sm" color="muted">
           This action cannot be undone. The member will be permanently removed from this room.
         </Typography>
       </Box>
@@ -60,7 +59,7 @@ const ModalConfirmRemoveMember = ({ selectedMember, isOpen, onConfirm, onCancel 
     onCancel={onCancel}
     confirmSection={
       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.15 }}>
-        <Button $size="lg" $variant="secondary" onClick={onCancel}>
+        <Button size="lg" variant="secondary" onClick={onCancel}>
           <X size={18} />
           Cancel
         </Button>
@@ -68,7 +67,7 @@ const ModalConfirmRemoveMember = ({ selectedMember, isOpen, onConfirm, onCancel 
     }
     cancelSection={
       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.15 }}>
-        <Button $size="lg" $variant="danger" onClick={onConfirm}>
+        <Button size="lg" variant="danger" onClick={onConfirm}>
           <Trash2 size={18} />
           Yes Remove
         </Button>

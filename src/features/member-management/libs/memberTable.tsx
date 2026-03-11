@@ -25,12 +25,11 @@ export const createMemberColumns = ({
         id={member.id}
         name={member.name}
         description={
-          <Typography $size="sm" $color={member.isEligibleRandom ? 'success' : 'disabled'} $weight="normal" $pointer>
+          <Typography size="sm" color={member.isEligibleRandom ? 'success' : 'muted'} weight="normal" pointer>
             {member.isEligibleRandom ? 'Eligible for selection' : 'Not eligible'}
           </Typography>
         }
         onClick={() => {}}
-        typography={{ $weight: 'semibold', $size: 'lg' }}
         active={member.isEligibleRandom}
       />
     ),
@@ -57,7 +56,7 @@ export const createMemberColumns = ({
     align: 'center',
     render: (_, member) =>
       withMotion(
-        <CircularButton $variant="info" onClick={() => handleEdit(member.id)}>
+        <CircularButton variant="info" onClick={() => handleEdit(member.id)}>
           <Edit color="#fff" size={18} />
         </CircularButton>
       ),
@@ -69,7 +68,7 @@ export const createMemberColumns = ({
     align: 'center',
     render: (_, member) =>
       withMotion(
-        <CircularButton $variant="danger" onClick={() => handleDelete(member.id)}>
+        <CircularButton variant="danger" onClick={() => handleDelete(member.id)}>
           <Trash color="#fff" size={20} />
         </CircularButton>
       ),

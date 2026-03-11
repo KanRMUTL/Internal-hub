@@ -16,7 +16,7 @@ const Home = () => {
         ]}
       />
 
-      <Container $maxWidth="1200px" $centered $px="lg">
+      <Container maxWidth="1200px" centered px="lg">
         {/* Main content */}
         <main id="main-content" role="main">
           <section id="room-management" aria-labelledby="room-management-heading">
@@ -41,7 +41,7 @@ const Home = () => {
 
         {/* Flash alerts */}
         <FlashAlert
-          type={flashState.state.type}
+          type={flashState.state.type as any}
           message={flashState.state.message}
           visible={flashAlert.isOpen}
           onClose={flashAlert.close}

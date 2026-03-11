@@ -18,18 +18,18 @@ export const GameOverView = ({ player, allPlayers }: GameOverViewProps) => {
 
   return (
     <div className={pageWrapperVariants()}>
-      <Container $maxWidth="sm">
+      <Container maxWidth="sm">
         <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
           <div className={statusCardVariants()}>
-            <Typography as="h2" $size="2xl" $weight="bold">
+            <Typography size="3xl" weight="bold">
               Game Over
             </Typography>
-            <Typography $size="lg">You placed</Typography>
-            <Typography $size="3xl" $weight="bold" $color="primary">
+            <Typography size="lg">You placed</Typography>
+            <Typography size="4xl" weight="bold" color="primary">
               #{rank}
             </Typography>
-            <Box $mt="lg">
-              <Typography $weight="bold">Score: {player.score}</Typography>
+            <Box mt="lg">
+              <Typography weight="bold">Score: {player.score}</Typography>
             </Box>
           </div>
         </motion.div>

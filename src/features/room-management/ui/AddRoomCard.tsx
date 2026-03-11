@@ -21,45 +21,37 @@ const AddRoomCard = ({ onClick }: AddRoomCardProps) => {
 
   return (
     <MotionDiv {...motionProps}>
-      <Card
-        $interactive
-        $padding="lg"
-        $shadow="md"
-        $rounded="lg"
-        $border={{ color: 'info', width: 'medium', style: 'dashed' }}
-        onClick={onClick}
-      >
-        <Box $flex $direction="column" $justify="space-between" $gap="lg" $minHeight="200px" $touchTargets>
+      <Card interactive padding="lg" shadow="md" rounded="lg" onClick={onClick}>
+        <Box flex direction="column" justify="space-between" gap="lg" minHeight="200px">
           {/* Header section matching RoomItem */}
-          <Box $flex $direction="column" $gap="sm" $p="sm">
-            <Box $flex $align="center" $justify="space-between">
-              <Typography $size="xl" $weight="semibold" $color="info" $pointer>
+          <Box flex direction="column" gap="sm" p="sm">
+            <Box flex align="center" justify="space-between">
+              <Typography size="xl" weight="semibold" color="info" pointer>
                 Create Room
               </Typography>
               <PlusCircle size={24} color="#209cee" opacity={0.6} />
             </Box>
 
-            <Typography $color="disabled" $size="sm" $pointer>
+            <Typography color="muted" size="sm" pointer>
               Click to create a new room for your fortune wheel
             </Typography>
           </Box>
 
           {/* Action button matching RoomItem */}
           <Box
-            $flex
-            $direction="row"
-            $tabletDirection="row"
-            $justify="center"
-            $gap="sm"
-            $pt="sm"
+            flex
+            direction="row"
+            justify="center"
+            gap="sm"
+            pt="sm"
             style={{
               borderTop: '1px dashed var(--border-color, #e5e7eb)',
             }}
           >
             <MotionDiv {...buttonInteractionProps} style={{ flex: 1 }}>
               <Button
-                $variant="info"
-                $size="sm"
+                variant="info"
+                size="sm"
                 onClick={(e) => {
                   e.stopPropagation()
                   onClick()
@@ -69,9 +61,9 @@ const AddRoomCard = ({ onClick }: AddRoomCardProps) => {
                   minHeight: '44px',
                 }}
               >
-                <Box $flex $align="center" $justify="center" $gap="xs">
+                <Box flex align="center" justify="center" gap="xs">
                   <Plus size={16} />
-                  <Typography $color="white" $size="sm">
+                  <Typography color="white" size="sm">
                     Create Room
                   </Typography>
                 </Box>

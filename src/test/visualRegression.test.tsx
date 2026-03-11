@@ -15,27 +15,27 @@ describe('Visual Regression Tests - Core Components', () => {
       })
 
       it('handles different variants', () => {
-        const { rerender } = renderWithTheme(<Button $variant="primary">Primary</Button>, { theme })
+        const { rerender } = renderWithTheme(<Button variant="primary">Primary</Button>, { theme })
 
         let button = screen.getByRole('button')
         expect(button).toHaveTextContent('Primary')
 
-        rerender(<Button $variant="secondary">Secondary</Button>)
+        rerender(<Button variant="secondary">Secondary</Button>)
         button = screen.getByRole('button')
         expect(button).toHaveTextContent('Secondary')
       })
 
       it('handles different sizes', () => {
-        const { rerender } = renderWithTheme(<Button $size="sm">Small</Button>, { theme })
+        const { rerender } = renderWithTheme(<Button size="sm">Small</Button>, { theme })
 
         let button = screen.getByRole('button')
         expect(button).toBeInTheDocument()
 
-        rerender(<Button $size="md">Medium</Button>)
+        rerender(<Button size="md">Medium</Button>)
         button = screen.getByRole('button')
         expect(button).toBeInTheDocument()
 
-        rerender(<Button $size="lg">Large</Button>)
+        rerender(<Button size="lg">Large</Button>)
         button = screen.getByRole('button')
         expect(button).toBeInTheDocument()
       })
@@ -48,7 +48,7 @@ describe('Visual Regression Tests - Core Components', () => {
       })
 
       it('handles loading state', () => {
-        renderWithTheme(<Button $loading>Loading</Button>, { theme })
+        renderWithTheme(<Button loading>Loading</Button>, { theme })
 
         const button = screen.getByRole('button')
         expect(button).toBeDisabled()
@@ -117,7 +117,7 @@ describe('Visual Regression Tests - Core Components', () => {
 
       it('supports loading state accessibility', () => {
         renderWithTheme(
-          <Button $loading $loadingText="Saving changes">
+          <Button loading loadingText="Saving changes">
             Save
           </Button>,
           { theme }
@@ -139,7 +139,7 @@ describe('Visual Regression Tests - Core Components', () => {
         value: 375,
       })
 
-      const { unmount } = renderWithTheme(<Button $size="md">Mobile Button</Button>)
+      const { unmount } = renderWithTheme(<Button size="md">Mobile Button</Button>)
 
       const mobileButton = screen.getByRole('button')
       expect(mobileButton).toBeInTheDocument()
@@ -153,7 +153,7 @@ describe('Visual Regression Tests - Core Components', () => {
         value: 1024,
       })
 
-      renderWithTheme(<Button $size="md">Desktop Button</Button>)
+      renderWithTheme(<Button size="md">Desktop Button</Button>)
 
       const desktopButton = screen.getByRole('button')
       expect(desktopButton).toBeInTheDocument()

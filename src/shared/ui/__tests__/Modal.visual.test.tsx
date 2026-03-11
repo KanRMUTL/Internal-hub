@@ -101,7 +101,7 @@ describe('Modal Visual Regression Tests', () => {
 
     it('supports different sizes', () => {
       const { rerender } = renderWithTheme(
-        <Modal isOpen={true} onClose={() => {}} $size="sm">
+        <Modal isOpen={true} onClose={() => {}} size="sm">
           <p>Small Modal</p>
         </Modal>,
         { theme }
@@ -111,7 +111,7 @@ describe('Modal Visual Regression Tests', () => {
       expect(modal).toBeInTheDocument()
 
       rerender(
-        <Modal isOpen={true} onClose={() => {}} $size="lg">
+        <Modal isOpen={true} onClose={() => {}} size="lg">
           <p>Large Modal</p>
         </Modal>
       )

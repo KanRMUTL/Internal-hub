@@ -33,17 +33,17 @@ export const HostCreateQuiz = () => {
     <div className={pageWrapperVariants()}>
       <form onSubmit={submit}>
         <div className={headerVariants()}>
-          <Container $maxWidth="md">
-            <Box $display="flex" $justify="space-between" $align="center">
+          <Container maxWidth="md">
+            <Box display="flex" justify="space-between" align="center">
               <Box>
-                <Typography as="h1" $size="2xl" $weight="bold">
+                <Typography size="3xl" weight="bold">
                   Create Quiz
                 </Typography>
-                <Typography $color="secondary" $size="sm">
+                <Typography color="secondary" size="sm">
                   Design your challenge
                 </Typography>
               </Box>
-              <Box $width="200px">
+              <Box width="200px">
                 <Input
                   label="Room PIN"
                   placeholder="1234"
@@ -57,12 +57,12 @@ export const HostCreateQuiz = () => {
           </Container>
         </div>
 
-        <Container $maxWidth="md">
-          <Box $mb="md" $display="flex" $justify="space-between" $align="center">
-            <Typography as="h2" $size="xl" $weight="bold">
+        <Container maxWidth="md">
+          <Box mb="md" display="flex" justify="space-between" align="center">
+            <Typography size="xl" weight="bold">
               Questions ({fields.length})
             </Typography>
-            <Button type="button" $variant="secondary" onClick={handleAddQuestion} $size="sm">
+            <Button type="button" variant="secondary" onClick={handleAddQuestion} size="sm">
               <Plus size={16} className="mr-2" />
               Add Question
             </Button>
@@ -80,8 +80,8 @@ export const HostCreateQuiz = () => {
         </Container>
 
         <div className={stickyFooterVariants()}>
-          <Container $maxWidth="md" style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-            <Button type="submit" disabled={isLoading} $size="lg">
+          <Container maxWidth="md" style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+            <Button type="submit" disabled={isLoading} size="lg">
               <Save size={18} className="mr-2" />
               {isLoading ? 'Creating...' : 'Create Room'}
             </Button>

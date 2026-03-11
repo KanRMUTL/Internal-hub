@@ -4,7 +4,7 @@ import { LobbyHeader } from '../LobbyHeader'
 import { PlayerGrid } from '../PlayerGrid'
 import { QRCodeCard } from '../QRCodeCard/QRCodeCard'
 
-const PageWrapper = (props: any) => <Box $minHeight="100vh" $bg="surfaceLight" {...props} />
+const PageWrapper = (props: any) => <Box bg="surfaceLight" {...props} />
 
 export const Lobby = () => {
   const { room, players, isLoading, handleStartGame, copyLink } = useLobby()
@@ -27,10 +27,10 @@ export const Lobby = () => {
 
   return (
     <PageWrapper>
-      <Container $maxWidth="lg">
+      <Container maxWidth="lg">
         <LobbyHeader onStartGame={handleStartGame} hasPlayers={players.length > 0} />
 
-        <Grid $gap="lg" $columns="1fr 350px">
+        <Grid gap="lg" columns="1fr 350px">
           <PlayerGrid players={players} />
           <QRCodeCard roomPassword={room.password} onCopyLink={copyLink} />
         </Grid>

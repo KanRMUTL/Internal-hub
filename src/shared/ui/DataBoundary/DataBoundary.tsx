@@ -20,7 +20,7 @@ const DataBoundary = ({
 }: DataBoundaryProps) => {
   if (loading) {
     return (
-      <Box $flex $justify="center" $align="center" $gap="xl" $p="lg">
+      <Box flex justify="center" align="center" gap="xl" p="lg">
         <Spinner label={loadingMessage} />
       </Box>
     )
@@ -28,8 +28,8 @@ const DataBoundary = ({
 
   if (error) {
     return (
-      <Box $flex $justify="center" $align="center" $gap="xl" $p="lg">
-        <Alert $type="danger">{errorMessage}</Alert>
+      <Box flex justify="center" align="center" gap="xl" p="lg">
+        <Alert type="danger">{errorMessage}</Alert>
       </Box>
     )
   }
