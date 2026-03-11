@@ -21,6 +21,10 @@ export { default as FlashAlert, useFlashAlert } from './FlashAlert'
 export { Skeleton } from './Skeleton'
 export { EmptyState } from './EmptyState'
 export { SuccessFeedback } from './SuccessFeedback'
+export { Badge, type BadgeProps } from './Badge/Badge'
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './Tooltip/Tooltip'
+export { Tabs, TabsList, TabsTrigger, TabsContent } from './Tabs/Tabs'
+export { Popover, PopoverTrigger, PopoverContent } from './Popover/Popover'
 
 // Responsive layout components
 export { ResponsiveGrid, type ResponsiveGridProps } from './ResponsiveGrid'

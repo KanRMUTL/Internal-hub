@@ -1,41 +1,43 @@
-# Batch 7: Performance Audit - Implementation Plan
+# Batch 8: Design System Expansion - Implementation Plan
 
-## 1. Bundle Size Audit
+## Objective
 
-- [ ] Run `npm run build` to generate chunks.
-- [ ] Analyze the output for large vendor libraries.
-- [ ] If `firebase` or `lucide-react` are too large, consider tree-shaking or dynamic imports.
+Implement new UI components (Badge, Tooltip, Tabs, Popover) in `src/shared/ui` using Tailwind CSS, CVA, and Radix UI/shadcn primitives, following FSD standards and WCAG AA accessibility.
 
-## 2. Code Splitting (Lazy Loading)
+## Steps
 
-- [ ] Modify `src/app/routes/AppRouter.tsx`.
-- [ ] Replace direct imports with `React.lazy()` for:
-  - `Room` (likely `RoomPage`)
-  - `Lobby`
-  - `HostCreateQuiz`
-  - `HostScreen`
-  - `PlayerScreen`
-- [ ] Wrap routes in `Suspense`.
+### 1. Component Implementation
 
-## 3. Firebase Optimization
+- [ ] **Badge**: Implement using CVA for status variants.
+- [ ] **Tooltip**: Implement using Radix UI/shadcn primitives.
+- [ ] **Tabs**: Implement using Radix UI/shadcn primitives.
+- [ ] **Popover**: Implement using Radix UI/shadcn primitives.
 
-- [ ] Audit `src/features/member-management/hooks/useMemberCollection.ts`.
-- [ ] Audit `src/features/quiz/hooks/useQuizRoom.ts`.
-- [ ] Ensure `onSnapshot` returns a clean-up function in `useEffect`.
+### 2. Architecture & Exports
 
-## 4. Render Optimization
+- [ ] Ensure all components are exported from `src/shared/ui/index.ts`.
+- [ ] Verify FSD standard compliance.
 
-- [ ] Wrap `src/features/fortune/ui/WheelOfFortune.tsx` with `React.memo`.
-- [ ] Wrap `src/features/quiz/ui/QuizTimer.tsx` with `React.memo`.
-- [ ] Verify if props passed to these components need `useMemo` or `useCallback` in their parents.
+### 3. Documentation
 
-## 5. A11y & Perf Sync
+- [ ] Update `design-system-spec.md` with new components, variants, and accessibility notes.
 
-- [ ] Inspect `src/pages/Room/ui/RoomPage.tsx`.
-- [ ] Verify `PerformanceMonitor` is implemented and tracking metrics.
+### 4. Verification
 
-## 6. Git Push
+- [ ] Check keyboard navigation.
+- [ ] Check ARIA labels.
+- [ ] Run build/lint (if available).
 
-- [ ] Stage changes.
-- [ ] Commit with "perf: execute Batch 7 Performance Audit optimizations".
-- [ ] Push to main.
+### 5. Git & Cleanup
+
+- [ ] Git commit and push to `main`.
+- [ ] Delete the cron job.
+- [ ] Final report.
+
+## Tech Stack
+
+- React
+- Tailwind CSS
+- class-variance-authority (CVA)
+- Radix UI (for Tooltip, Tabs, Popover)
+- Lucide React (for icons if needed)
