@@ -127,7 +127,7 @@ const WheelOfFortuneModern = ({ members, rotation, spinning, size = 'lg' }: Whee
   }
 
   return (
-    <Wrap $size={size}>
+    <Wrap $size={size} data-testid="wheel-container">
       <OuterRing
         animate={spinning ? { rotate: 360 } : { rotate: 0 }}
         transition={spinning ? { duration: 8, repeat: Infinity, ease: 'linear' } : { duration: 0.6 }}
