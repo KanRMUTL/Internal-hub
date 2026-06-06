@@ -488,10 +488,12 @@ const MemberManagementModalModern = ({
                 placeholder="Add a member by name…"
                 aria-label="Member name"
                 maxLength={40}
+                data-testid="member-add-input"
               />
               <AddBtn
                 type="submit"
                 disabled={!canAdd}
+                data-testid="member-add-btn"
                 whileTap={canAdd ? { scale: 0.97 } : undefined}
                 whileHover={canAdd ? { scale: 1.01 } : undefined}
               >
