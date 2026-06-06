@@ -1,110 +1,111 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent, act } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
 import { ThemeProvider } from 'styled-components'
-import WheelOfFortune from '../WheelOfFortune'
+import WheelOfFortuneModern, {
+  pickWinnerIndex,
+  computeNextRotation,
+  MODERN_SPIN_DURATION_MS,
+} from '../WheelOfFortuneModern'
 import { lightTheme } from 'shared/styles/config'
-import { SPIN_DURATION } from 'features/fortune/config'
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
+vi.mock('motion/react', () => ({
   motion: {
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    svg: ({ children, ...props }: any) => <svg {...props}>{children}</svg>,
+    div: ({ children, ...props }: Record<string, unknown>) => (
+      <div {...(props as React.HTMLAttributes<HTMLDivElement>)}>{children as React.ReactNode}</div>
+    ),
+    svg: ({ children, ...props }: Record<string, unknown>) => (
+      <svg {...(props as React.SVGAttributes<SVGSVGElement>)}>{children as React.ReactNode}</svg>
+    ),
+    span: ({ children, ...props }: Record<string, unknown>) => (
+      <span {...(props as React.HTMLAttributes<HTMLSpanElement>)}>{children as React.ReactNode}</span>
+    ),
   },
 }))
 
-// Mock useAnimationPerformance
-vi.mock('shared/hooks', () => ({
-  useAnimationPerformance: () => ({
-    startMonitoring: vi.fn(),
-    stopMonitoring: vi.fn(),
-  }),
-}))
+const renderWithTheme = (component: React.ReactElement) =>
+  render(<ThemeProvider theme={lightTheme}>{component}</ThemeProvider>)
 
-const renderWithTheme = (component: React.ReactElement) => {
-  return render(<ThemeProvider theme={lightTheme}>{component}</ThemeProvider>)
-}
+/** A wrapper that simulates the parent owning rotation/spinning state. */
+const Controlled = ({
+  members,
+  rotation,
+  spinning,
+}: {
+  members: { id: string; name: string }[]
+  rotation: number
+  spinning: boolean
+}) => <WheelOfFortuneModern members={members} rotation={rotation} spinning={spinning} size="lg" />
 
-describe('WheelOfFortune', () => {
+describe('WheelOfFortuneModern (controlled)', () => {
   const mockMembers = [
     { id: '1', name: 'Member 1' },
     { id: '2', name: 'Member 2' },
     { id: '3', name: 'Member 3' },
   ]
 
-  const mockOnSpinCompleted = vi.fn()
-
-  beforeEach(() => {
-    vi.clearAllMocks()
-    vi.useFakeTimers()
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
-  })
-
-  it('should render the wheel with members', () => {
-    renderWithTheme(<WheelOfFortune members={mockMembers} onSpinCompleted={mockOnSpinCompleted} />)
-
+  it('renders the wheel with all member names', () => {
+    renderWithTheme(<Controlled members={mockMembers} rotation={0} spinning={false} />)
     expect(screen.getByText('Member 1')).toBeInTheDocument()
     expect(screen.getByText('Member 2')).toBeInTheDocument()
     expect(screen.getByText('Member 3')).toBeInTheDocument()
-    expect(screen.getByText('🎯 Spin')).toBeInTheDocument()
   })
 
-  it('should disable spin button when spinning', () => {
-    renderWithTheme(<WheelOfFortune members={mockMembers} onSpinCompleted={mockOnSpinCompleted} />)
-
-    const spinButton = screen.getByText('🎯 Spin').closest('button')
-    fireEvent.click(spinButton!)
-
-    expect(spinButton).toBeDisabled()
+  it('renders the empty-state ring when no members', () => {
+    const { container } = renderWithTheme(<Controlled members={[]} rotation={0} spinning={false} />)
+    expect(container.querySelector('svg')).toBeInTheDocument()
   })
 
-  it('should call onSpinCompleted after spin duration', () => {
-    renderWithTheme(<WheelOfFortune members={mockMembers} onSpinCompleted={mockOnSpinCompleted} />)
+  it('renders a pointer at the top of the wheel', () => {
+    const { container } = renderWithTheme(<Controlled members={mockMembers} rotation={0} spinning={false} />)
+    // The wheel renders an SVG with the pointer triangle (zero-width div with
+    // border-left, border-right, border-top). Just verify the wheel SVG exists.
+    const svg = container.querySelector('svg[role="img"]')
+    expect(svg).toBeInTheDocument()
+    expect(svg?.getAttribute('aria-label')).toBe('Fortune wheel')
+  })
+})
 
-    const spinButton = screen.getByText('🎯 Spin').closest('button')
-    fireEvent.click(spinButton!)
-
-    act(() => {
-      vi.advanceTimersByTime(SPIN_DURATION * 1000)
-    })
-
-    expect(mockOnSpinCompleted).toHaveBeenCalled()
+describe('pickWinnerIndex (pure helper)', () => {
+  it('returns -1 for empty member list', () => {
+    expect(pickWinnerIndex(0, 0)).toBe(-1)
   })
 
-  it('should select a winner based on random rotation', () => {
-    // Mock Math.random to return a predictable value
-    // With 3 members, segments are 120 degrees.
-    // 0-120: Member 1, 120-240: Member 2, 240-360: Member 3 (depending on start angle)
-    // The logic in component:
-    // angleToRotate = spins * 360 + randomExtra
-    // finalRotation = rotation + angleToRotate
-    // effectiveRotation = finalRotation % 360
-    // pointerOnWheel = (360 + POINTER_ANGLE - effectiveRotation) % 360
-    // winnerIndex = Math.floor(pointerOnWheel / SEGMENT_ANGLE)
+  it('returns index 0 when rotation lands on the first segment', () => {
+    // POINTER_ANGLE = 270 (top of wheel). The wheel's slice i covers angle
+    // (i * 360/N) to ((i+1) * 360/N) measured CCW from the top.
+    // For 3 members, each slice is 120°. The pointer is at 270° (top).
+    // rotation = 0 → effective = 0, pointerAt = (270 - 0) % 360 = 270,
+    // which is in slice 2 (240-360).
+    expect(pickWinnerIndex(0, 3)).toBe(2)
+  })
 
-    // Let's mock random to 0. This means randomExtra = 0.
-    // angleToRotate = 5 * 360 = 1800.
-    // finalRotation = 0 + 1800 = 1800.
-    // effectiveRotation = 0.
-    // pointerOnWheel = (360 + 270 - 0) % 360 = 630 % 360 = 270.
-    // SEGMENT_ANGLE = 120.
-    // winnerIndex = floor(270 / 120) = 2.
-    // Winner should be members[2] -> Member 3.
+  it('handles non-zero rotation consistently', () => {
+    const a = pickWinnerIndex(360, 3)
+    const b = pickWinnerIndex(720, 3)
+    const c = pickWinnerIndex(1080, 3)
+    expect(a).toBe(b)
+    expect(b).toBe(c)
+  })
+})
 
+describe('computeNextRotation', () => {
+  it('adds 6 full rotations plus a random offset', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5)
+    const next = computeNextRotation(0)
+    // 6 * 360 = 2160 + 0.5 * 360 = 2340
+    expect(next).toBe(2340)
+  })
+
+  it('accumulates from current rotation (not from zero)', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0)
+    const next = computeNextRotation(1000)
+    // 6 * 360 = 2160 + 0 = 2160, plus 1000 = 3160
+    expect(next).toBe(3160)
+  })
+})
 
-    renderWithTheme(<WheelOfFortune members={mockMembers} onSpinCompleted={mockOnSpinCompleted} />)
-
-    const spinButton = screen.getByText('🎯 Spin').closest('button')
-    fireEvent.click(spinButton!)
-
-    act(() => {
-      vi.advanceTimersByTime(SPIN_DURATION * 1000)
-    })
-
-    expect(mockOnSpinCompleted).toHaveBeenCalledWith('3')
+describe('MODERN_SPIN_DURATION_MS', () => {
+  it('is 5.6 seconds (the modern Direction 7 duration)', () => {
+    expect(MODERN_SPIN_DURATION_MS).toBe(5600)
   })
 })

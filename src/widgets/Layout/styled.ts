@@ -6,13 +6,18 @@ export const Wrapper = styled.div`
   padding: 0;
 `
 
-export const Nav = styled.div<{ $light: boolean }>`
+export const Nav = styled.header`
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${({ theme }) => theme.spacing.xs};
-  box-shadow: ${({ theme }) => theme.shadow.md};
-  background: ${({ theme, $light }) => ($light ? theme.colors.info : theme.colors.black)};
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.background.surface};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[100]};
+  backdrop-filter: saturate(180%) blur(8px);
+  -webkit-backdrop-filter: saturate(180%) blur(8px);
 `
 
 export const Main = styled.div`

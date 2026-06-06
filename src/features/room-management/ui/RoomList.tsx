@@ -1,33 +1,23 @@
-import { EmptyState } from 'shared/ui'
+import { useNavigate } from 'react-router-dom'
 import { Room, RoomItem } from 'entities/room'
 import { AnimatePresence } from 'motion/react'
-import { Home } from 'lucide-react'
 import RoomGrid from './RoomGrid'
 import RoomCardSkeleton from './RoomCardSkeleton'
 import AddRoomCard from './AddRoomCard'
+import ModernEmptyState from './ModernEmptyState'
 
 interface RoomListProps {
   rooms: Room[]
   removedIds: string[]
   loading?: boolean
-  onClickAdd: (id: string, name: string) => void
-  onClickRoom: (id: string) => void
-  onClickRemove: (id: string) => void
   onCreateRoom?: () => void
+  onRemove?: (room: Room) => void
 }
 
-const RoomList = ({
-  rooms,
-  removedIds,
-  loading = false,
-  onClickRoom,
-  onClickAdd,
-  onClickRemove,
-  onCreateRoom,
-}: RoomListProps) => {
+const RoomList = ({ rooms, removedIds, loading = false, onCreateRoom, onRemove }: RoomListProps) => {
+  const navigate = useNavigate()
   const visibleRooms = rooms.filter((room) => !removedIds.includes(room.id))
 
-  // Show loading skeletons
   if (loading) {
     return (
       <RoomGrid>
@@ -38,31 +28,20 @@ const RoomList = ({
     )
   }
 
-  // Show empty state when no rooms
   if (visibleRooms.length === 0) {
-    return (
-      <EmptyState
-        title="No rooms yet"
-        description="Create your first room to get started with managing members and using the fortune wheel."
-        actionLabel="Create Room"
-        onAction={onCreateRoom}
-        icon={<Home size={48} color="currentColor" opacity={0.5} />}
-      />
-    )
+    return <ModernEmptyState onCreateRoom={onCreateRoom ?? (() => undefined)} />
   }
 
   return (
     <RoomGrid>
       <AnimatePresence>
-        {visibleRooms.map((room) => (
+        {visibleRooms.map((room, index) => (
           <RoomItem
             key={room.id}
-            id={room.id}
-            title={room.name}
-            description={room.description}
-            onClick={onClickRoom}
-            onClickAdd={onClickAdd}
-            onClickRemove={onClickRemove}
+            room={room}
+            index={index}
+            onClick={() => navigate(`/room/${room.id}`)}
+            onRemove={onRemove ? () => onRemove(room) : undefined}
           />
         ))}
         {onCreateRoom && <AddRoomCard onClick={onCreateRoom} />}

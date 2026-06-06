@@ -1,1 +1,0 @@
-export { QRCodeCard } from './QRCodeCard'

@@ -1,42 +1,42 @@
 import { Color } from 'shared/styles'
 
 export const colors: Color = {
-  // Brand colors
-  primary: '#00d1b2',
-  secondary: '#209cee',
+  // Brand
+  primary: 'oklch(72% 0.156 178)',
+  secondary: 'oklch(68% 0.13 230)',
 
-  // Semantic colors
-  info: '#209cee',
-  success: '#23d160',
-  warning: '#ffdd57',
-  danger: '#ff3860',
+  // Semantic
+  info: 'oklch(68% 0.13 230)',
+  success: 'oklch(70% 0.16 150)',
+  warning: 'oklch(80% 0.16 80)',
+  danger: 'oklch(62% 0.22 25)',
 
-  // Base colors
-  white: '#ffffff',
-  black: '#0a0a0a',
+  // Base
+  white: 'oklch(100% 0 0)',
+  black: 'oklch(18% 0.012 180)',
 
-  // Gray scale
+  // Neutrals, tinted toward the brand teal hue at low chroma
   grey: {
-    50: '#f9fafb',
-    100: '#f3f4f6',
-    200: '#e5e7eb',
-    300: '#d1d5db',
-    400: '#9ca3af',
-    500: '#6b7280',
-    600: '#4b5563',
-    700: '#374151',
-    800: '#1f2937',
-    900: '#111827',
+    50: 'oklch(98.5% 0.004 180)',
+    100: 'oklch(96.5% 0.006 180)',
+    200: 'oklch(92% 0.008 180)',
+    300: 'oklch(85% 0.01 180)',
+    400: 'oklch(70% 0.01 180)',
+    500: 'oklch(50% 0.012 180)',
+    600: 'oklch(42% 0.012 180)',
+    700: 'oklch(32% 0.012 180)',
+    800: 'oklch(24% 0.012 180)',
+    900: 'oklch(18% 0.012 180)',
   },
 
-  // Interactive states
-  hover: 'rgba(0, 209, 178, 0.1)',
-  focus: 'rgba(0, 209, 178, 0.2)',
-  focusRing: 'rgba(0, 209, 178, 0.4)', // High contrast focus ring
-  active: 'rgba(0, 209, 178, 0.3)',
-  disabled: 'rgba(0, 0, 0, 0.3)',
+  // Interactive states (derived from primary)
+  hover: 'oklch(72% 0.156 178 / 0.08)',
+  focus: 'oklch(72% 0.156 178 / 0.12)',
+  focusRing: 'oklch(72% 0.156 178 / 0.45)',
+  active: 'oklch(72% 0.156 178 / 0.18)',
+  disabled: 'oklch(80% 0.005 180 / 0.5)',
 
-  // Accessibility colors
-  focusVisible: '#005a4f', // High contrast focus color
-  skipLink: '#0066cc', // High contrast skip link color
+  // Accessibility
+  focusVisible: 'oklch(48% 0.18 178)',
+  skipLink: 'oklch(48% 0.18 230)',
 }

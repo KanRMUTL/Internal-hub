@@ -1,4 +1,16 @@
-export { WheelOfFortune, LuckyModal, FortuneHistoryTable } from './ui'
+// Modern (Direction 7) replacements for the old WheelOfFortune and
+// LuckyModal. The old names are kept as re-exports for backward compatibility.
+export {
+  WheelOfFortuneModern,
+  WheelOfFortune,
+  pickWinnerIndex,
+  computeNextRotation,
+  MODERN_SPIN_DURATION_MS,
+  type ModernWheelMember,
+} from './ui'
+export { WinnerModalModern } from './ui'
+export { HistoryListModern, FortuneHistoryListModern, type HistoryRow } from './ui'
+export { LuckyModal } from './ui'
 export { useFortuneHistory } from './hooks'
 export { getFortuneHistoryQuery, createFortuneHistoryEntry, clearFortuneHistory, getNextSpinNumber } from './services'
 export {
