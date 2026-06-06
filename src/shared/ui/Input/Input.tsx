@@ -8,6 +8,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   helperText?: string
   $floatingLabel?: boolean
   $variant?: 'default' | 'filled'
+  'data-testid'?: string
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -45,6 +46,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       <InputWrapper>
         <InputContainer $variant={$variant}>
           <StyledInput
+            data-testid={rest['data-testid']}
             id={finalId}
             name={name}
             $hasError={!!error}
