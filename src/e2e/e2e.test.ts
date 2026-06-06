@@ -11,7 +11,7 @@ test.describe('Create Room', () => {
   test('happy path — creates room and shows card in grid', async ({ page }) => {
     const roomName = `Test Room ${uniqueSuffix()}`
     await page.goto('/')
-    await page.waitForLoadState('networkidle')
+    await page.waitForLoadState('domcontentloaded')
 
     await page
       .getByRole('button', { name: /new room/i })
@@ -26,7 +26,7 @@ test.describe('Create Room', () => {
 
   test('empty name — submit is disabled', async ({ page }) => {
     await page.goto('/')
-    await page.waitForLoadState('networkidle')
+    await page.waitForLoadState('domcontentloaded')
     await page
       .getByRole('button', { name: /new room/i })
       .first()
@@ -37,7 +37,7 @@ test.describe('Create Room', () => {
 
   test('name at max length (20 chars) — submit is enabled', async ({ page }) => {
     await page.goto('/')
-    await page.waitForLoadState('networkidle')
+    await page.waitForLoadState('domcontentloaded')
     await page
       .getByRole('button', { name: /new room/i })
       .first()
@@ -49,7 +49,7 @@ test.describe('Create Room', () => {
 
   test('name exceeds 20 chars — submit is disabled', async ({ page }) => {
     await page.goto('/')
-    await page.waitForLoadState('networkidle')
+    await page.waitForLoadState('domcontentloaded')
     await page
       .getByRole('button', { name: /new room/i })
       .first()
@@ -218,7 +218,7 @@ test.describe('Remove Room', () => {
 test.describe('Theme Toggle', () => {
   test('toggling switch changes theme', async ({ page }) => {
     await page.goto('/')
-    await page.waitForLoadState('networkidle')
+    await page.waitForLoadState('domcontentloaded')
 
     const toggle = page.locator('.toggle-container').first()
     await toggle.click()

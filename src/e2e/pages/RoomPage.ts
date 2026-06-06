@@ -9,7 +9,7 @@ export class RoomPage {
 
   async goto(roomId: string) {
     await this.page.goto(`/room/${roomId}`)
-    await this.page.waitForLoadState('networkidle')
+    await this.page.waitForLoadState('domcontentloaded')
   }
 
   get spinBtn() {

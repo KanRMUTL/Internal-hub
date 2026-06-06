@@ -2,7 +2,7 @@ import { Page } from '@playwright/test'
 
 export async function createRoom(page: Page, name: string): Promise<string> {
   await page.goto('/')
-  await page.waitForLoadState('networkidle')
+  await page.waitForLoadState('domcontentloaded')
   await page
     .getByRole('button', { name: /new room/i })
     .first()
