@@ -14,6 +14,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   $fullWidth?: boolean
   $loading?: boolean
   $loadingText?: string
+  'data-testid'?: string
   children: ReactNode
 }
 
@@ -34,6 +35,7 @@ const Button = ({
 
   return (
     <StyledButton
+      data-testid={rest['data-testid']}
       $variant={$variant}
       $size={$size}
       $rounded={$rounded}
