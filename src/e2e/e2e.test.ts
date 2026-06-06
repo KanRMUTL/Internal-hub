@@ -1,15 +1,14 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 import { createRoom } from './flows/createRoom'
-import { addMember } from './flows/addMember'
-import { spinWheel } from './flows/spinWheel'
 
 const uniqueSuffix = () => `${Date.now()}-${Math.floor(Math.random() * 9999)}`
 
-// ─── Flow 1: Create Room ────────────────────────────────────────────────────
+const getRoomCard = (page: Page, roomName: string) =>
+  page.getByRole('button', { name: new RegExp(roomName, 'i') }).first()
 
 test.describe('Create Room', () => {
   test('happy path — creates room and shows card in grid', async ({ page }) => {
-    const roomName = `Test Room ${uniqueSuffix()}`
+    const roomName = `R ${uniqueSuffix()}`
     await page.goto('/')
     await page.waitForLoadState('domcontentloaded')
 
@@ -20,8 +19,9 @@ test.describe('Create Room', () => {
     await page.getByTestId('room-modal-name-input').waitFor({ state: 'visible' })
     await page.getByTestId('room-modal-name-input').fill(roomName)
     await page.getByTestId('room-modal-submit').click()
+    await page.waitForTimeout(2000)
 
-    await expect(page.getByRole('button', { name: new RegExp(roomName, 'i') })).toBeVisible()
+    await expect(getRoomCard(page, roomName)).toBeVisible()
   })
 
   test('empty name — submit stays enabled but form does not submit', async ({ page }) => {
@@ -66,14 +66,11 @@ test.describe('Create Room', () => {
   })
 })
 
-// ─── Flow 2: Add Member ─────────────────────────────────────────────────────
-
 test.describe('Add Member', () => {
   test('happy path — member appears in modal list', async ({ page }) => {
-    const roomName = `Room ${uniqueSuffix()}`
+    const roomName = `${uniqueSuffix()}`
     await createRoom(page, roomName)
-
-    await page.getByRole('button', { name: new RegExp(roomName, 'i') }).click()
+    await getRoomCard(page, roomName).click()
     await page.waitForURL(/\/room\/.+/)
     await page
       .getByRole('button', { name: /manage/i })
@@ -82,13 +79,13 @@ test.describe('Add Member', () => {
     await page.getByTestId('member-add-input').waitFor({ state: 'visible' })
     await page.getByTestId('member-add-input').fill('Alice')
     await page.getByTestId('member-add-btn').click()
-    await expect(page.getByText('Alice')).toBeVisible()
+    await expect(page.getByLabel('Members').getByText('Alice')).toBeVisible()
   })
 
   test('empty name — add button is disabled', async ({ page }) => {
-    const roomName = `Room ${uniqueSuffix()}`
+    const roomName = `${uniqueSuffix()}`
     await createRoom(page, roomName)
-    await page.getByRole('button', { name: new RegExp(roomName, 'i') }).click()
+    await getRoomCard(page, roomName).click()
     await page.waitForURL(/\/room\/.+/)
     await page
       .getByRole('button', { name: /manage/i })
@@ -99,13 +96,11 @@ test.describe('Add Member', () => {
   })
 })
 
-// ─── Flow 3: Spin Wheel ─────────────────────────────────────────────────────
-
 test.describe('Spin Wheel', () => {
   test('happy path — spin produces winner modal with Save option', async ({ page }) => {
-    const roomName = `Room ${uniqueSuffix()}`
+    const roomName = `${uniqueSuffix()}`
     await createRoom(page, roomName)
-    await page.getByRole('button', { name: new RegExp(roomName, 'i') }).click()
+    await getRoomCard(page, roomName).click()
     await page.waitForURL(/\/room\/.+/)
     await page
       .getByRole('button', { name: /manage/i })
@@ -114,17 +109,27 @@ test.describe('Spin Wheel', () => {
     await page.getByTestId('member-add-input').waitFor({ state: 'visible' })
     await page.getByTestId('member-add-input').fill('Alice')
     await page.getByTestId('member-add-btn').click()
-    await expect(page.getByText('Alice')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByLabel('Members').getByText('Alice')).toBeVisible({ timeout: 5000 })
     await page.getByTestId('member-add-input').fill('Bob')
     await page.getByTestId('member-add-btn').click()
-    await expect(page.getByText('Bob')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByLabel('Members').getByText('Bob')).toBeVisible({ timeout: 5000 })
 
     await page.keyboard.press('Escape')
+    await expect(page.getByRole('dialog', { name: 'Members' })).not.toBeVisible()
     await page.waitForTimeout(500)
 
     const spinBtn = page.getByRole('button', { name: /spin/i }).first()
     await spinBtn.waitFor({ state: 'visible' })
-    await spinBtn.waitFor({ state: 'enabled', timeout: 10000 })
+    await page.waitForFunction(
+      () => {
+        const btns = document.querySelectorAll('button')
+        for (const btn of btns) {
+          if (btn.textContent?.trim() === 'Spin the wheel' && !btn.hasAttribute('disabled')) return true
+        }
+        return false
+      },
+      { timeout: 10000 }
+    )
 
     await spinBtn.click()
     await page.getByTestId('winner-modal-save').waitFor({ state: 'visible', timeout: 10000 })
@@ -136,9 +141,9 @@ test.describe('Spin Wheel', () => {
   })
 
   test('less than 2 members — spin button is disabled', async ({ page }) => {
-    const roomName = `Room ${uniqueSuffix()}`
+    const roomName = `${uniqueSuffix()}`
     await createRoom(page, roomName)
-    await page.getByRole('button', { name: new RegExp(roomName, 'i') }).click()
+    await getRoomCard(page, roomName).click()
     await page.waitForURL(/\/room\/.+/)
     await page
       .getByRole('button', { name: /manage/i })
@@ -147,17 +152,18 @@ test.describe('Spin Wheel', () => {
     await page.getByTestId('member-add-input').waitFor({ state: 'visible' })
     await page.getByTestId('member-add-input').fill('Alice')
     await page.getByTestId('member-add-btn').click()
-    await expect(page.getByText('Alice')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByLabel('Members').getByText('Alice')).toBeVisible({ timeout: 5000 })
 
     await page.keyboard.press('Escape')
+    await expect(page.getByRole('dialog', { name: 'Members' })).not.toBeVisible()
     await page.waitForTimeout(500)
     await expect(page.getByRole('button', { name: /spin/i }).first()).toBeDisabled()
   })
 
   test('save winner — modal closes', async ({ page }) => {
-    const roomName = `Room ${uniqueSuffix()}`
+    const roomName = `${uniqueSuffix()}`
     await createRoom(page, roomName)
-    await page.getByRole('button', { name: new RegExp(roomName, 'i') }).click()
+    await getRoomCard(page, roomName).click()
     await page.waitForURL(/\/room\/.+/)
     await page
       .getByRole('button', { name: /manage/i })
@@ -166,17 +172,27 @@ test.describe('Spin Wheel', () => {
     await page.getByTestId('member-add-input').waitFor({ state: 'visible' })
     await page.getByTestId('member-add-input').fill('Alice')
     await page.getByTestId('member-add-btn').click()
-    await expect(page.getByText('Alice')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByLabel('Members').getByText('Alice')).toBeVisible({ timeout: 5000 })
     await page.getByTestId('member-add-input').fill('Bob')
     await page.getByTestId('member-add-btn').click()
-    await expect(page.getByText('Bob')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByLabel('Members').getByText('Bob')).toBeVisible({ timeout: 5000 })
 
     await page.keyboard.press('Escape')
+    await expect(page.getByRole('dialog', { name: 'Members' })).not.toBeVisible()
     await page.waitForTimeout(500)
 
     const spinBtn = page.getByRole('button', { name: /spin/i }).first()
     await spinBtn.waitFor({ state: 'visible' })
-    await spinBtn.waitFor({ state: 'enabled', timeout: 10000 })
+    await page.waitForFunction(
+      () => {
+        const btns = document.querySelectorAll('button')
+        for (const btn of btns) {
+          if (btn.textContent?.trim() === 'Spin the wheel' && !btn.hasAttribute('disabled')) return true
+        }
+        return false
+      },
+      { timeout: 10000 }
+    )
     await spinBtn.click()
     await page.getByTestId('winner-modal-save').waitFor({ state: 'visible', timeout: 10000 })
     await page.getByTestId('winner-modal-save').click()
@@ -185,9 +201,9 @@ test.describe('Spin Wheel', () => {
   })
 
   test('discard winner — modal closes without write', async ({ page }) => {
-    const roomName = `Room ${uniqueSuffix()}`
+    const roomName = `${uniqueSuffix()}`
     await createRoom(page, roomName)
-    await page.getByRole('button', { name: new RegExp(roomName, 'i') }).click()
+    await getRoomCard(page, roomName).click()
     await page.waitForURL(/\/room\/.+/)
     await page
       .getByRole('button', { name: /manage/i })
@@ -196,17 +212,27 @@ test.describe('Spin Wheel', () => {
     await page.getByTestId('member-add-input').waitFor({ state: 'visible' })
     await page.getByTestId('member-add-input').fill('Alice')
     await page.getByTestId('member-add-btn').click()
-    await expect(page.getByText('Alice')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByLabel('Members').getByText('Alice')).toBeVisible({ timeout: 5000 })
     await page.getByTestId('member-add-input').fill('Bob')
     await page.getByTestId('member-add-btn').click()
-    await expect(page.getByText('Bob')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByLabel('Members').getByText('Bob')).toBeVisible({ timeout: 5000 })
 
     await page.keyboard.press('Escape')
+    await expect(page.getByRole('dialog', { name: 'Members' })).not.toBeVisible()
     await page.waitForTimeout(500)
 
     const spinBtn = page.getByRole('button', { name: /spin/i }).first()
     await spinBtn.waitFor({ state: 'visible' })
-    await spinBtn.waitFor({ state: 'enabled', timeout: 10000 })
+    await page.waitForFunction(
+      () => {
+        const btns = document.querySelectorAll('button')
+        for (const btn of btns) {
+          if (btn.textContent?.trim() === 'Spin the wheel' && !btn.hasAttribute('disabled')) return true
+        }
+        return false
+      },
+      { timeout: 10000 }
+    )
     await spinBtn.click()
     await page.getByTestId('winner-modal-discard').waitFor({ state: 'visible', timeout: 10000 })
     await page.getByTestId('winner-modal-discard').click()
@@ -215,13 +241,11 @@ test.describe('Spin Wheel', () => {
   })
 })
 
-// ─── Flow 4: Toggle Member Active/Inactive ─────────────────────────────────
-
 test.describe('Toggle Member Active/Inactive', () => {
   test('toggle active member to inactive — button label changes', async ({ page }) => {
-    const roomName = `Room ${uniqueSuffix()}`
+    const roomName = `${uniqueSuffix()}`
     await createRoom(page, roomName)
-    await page.getByRole('button', { name: new RegExp(roomName, 'i') }).click()
+    await getRoomCard(page, roomName).click()
     await page.waitForURL(/\/room\/.+/)
     await page
       .getByRole('button', { name: /manage/i })
@@ -230,7 +254,7 @@ test.describe('Toggle Member Active/Inactive', () => {
     await page.getByTestId('member-add-input').waitFor({ state: 'visible' })
     await page.getByTestId('member-add-input').fill('Alice')
     await page.getByTestId('member-add-btn').click()
-    await expect(page.getByText('Alice')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByLabel('Members').getByText('Alice')).toBeVisible({ timeout: 5000 })
 
     const toggleBtn = page.getByRole('button', { name: /take alice off the wheel/i })
     await toggleBtn.waitFor({ state: 'visible', timeout: 5000 })
@@ -240,17 +264,15 @@ test.describe('Toggle Member Active/Inactive', () => {
   })
 })
 
-// ─── Flow 5: Remove Room ────────────────────────────────────────────────────
-
 test.describe('Remove Room', () => {
   test('happy path — confirm removes card from grid', async ({ page }) => {
-    const roomName = `Room ${uniqueSuffix()}`
+    const roomName = `${uniqueSuffix()}`
     await createRoom(page, roomName)
 
-    const card = page.getByRole('button', { name: new RegExp(roomName, 'i') }).first()
+    const card = getRoomCard(page, roomName)
     await card.hover()
-    await page.getByTestId('room-item-more-btn').click()
-    await page.getByTestId('room-item-remove-btn').click()
+    await card.getByTestId('room-item-more-btn').click()
+    await card.getByTestId('room-item-remove-btn').click()
     await page.getByRole('button', { name: /^remove$/i }).click()
 
     await page.waitForTimeout(800)
@@ -258,13 +280,13 @@ test.describe('Remove Room', () => {
   })
 
   test('cancel — modal closes and card remains', async ({ page }) => {
-    const roomName = `Room ${uniqueSuffix()}`
+    const roomName = `${uniqueSuffix()}`
     await createRoom(page, roomName)
 
-    const card = page.getByRole('button', { name: new RegExp(roomName, 'i') }).first()
+    const card = getRoomCard(page, roomName)
     await card.hover()
-    await page.getByTestId('room-item-more-btn').click()
-    await page.getByTestId('room-item-remove-btn').click()
+    await card.getByTestId('room-item-more-btn').click()
+    await card.getByTestId('room-item-remove-btn').click()
 
     await page.getByRole('button', { name: /not sure/i }).click()
     await page.waitForTimeout(500)
@@ -272,13 +294,13 @@ test.describe('Remove Room', () => {
   })
 
   test('backdrop click — modal closes and card remains', async ({ page }) => {
-    const roomName = `Room ${uniqueSuffix()}`
+    const roomName = `${uniqueSuffix()}`
     await createRoom(page, roomName)
 
-    const card = page.getByRole('button', { name: new RegExp(roomName, 'i') }).first()
+    const card = getRoomCard(page, roomName)
     await card.hover()
-    await page.getByTestId('room-item-more-btn').click()
-    await page.getByTestId('room-item-remove-btn').click()
+    await card.getByTestId('room-item-more-btn').click()
+    await card.getByTestId('room-item-remove-btn').click()
 
     await page.mouse.click(10, 10)
     await page.waitForTimeout(500)
@@ -286,17 +308,16 @@ test.describe('Remove Room', () => {
   })
 })
 
-// ─── Flow 6: Theme Toggle ────────────────────────────────────────────────────
-
 test.describe('Theme Toggle', () => {
   test('toggling switch changes theme', async ({ page }) => {
-    const roomName = `Room ${uniqueSuffix()}`
+    const roomName = `${uniqueSuffix()}`
     await createRoom(page, roomName)
-    await page.getByRole('button', { name: new RegExp(roomName, 'i') }).click()
+    await getRoomCard(page, roomName).click()
     await page.waitForURL(/\/room\/.+/)
     await page.waitForLoadState('domcontentloaded')
+    await expect(page.getByRole('heading', { level: 2, name: /who's up next/i })).toBeVisible()
 
-    const toggle = page.getByRole('button', { name: /switch to .+ mode/i })
+    const toggle = page.getByRole('button', { name: /switch to .+ mode/i }).first()
     await expect(toggle).toBeVisible()
     await toggle.click()
     await page.waitForTimeout(300)
