@@ -14,7 +14,7 @@ const useCreateNewMember = () => {
       await createMember(roomId, {
         name,
         joinAt: timestamp,
-        isEligibleRandom: false,
+        isEligibleRandom: true,
         createdAt: timestamp,
         updatedAt: timestamp,
       })
