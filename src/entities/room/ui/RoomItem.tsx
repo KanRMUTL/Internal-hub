@@ -499,6 +499,7 @@ const RoomItem = ({
             ref={moreRef}
             type="button"
             data-open={menuOpen}
+            data-testid="room-item-more-btn"
             aria-haspopup="menu"
             aria-expanded={menuOpen}
             aria-label={`More options for ${displayTitle}`}
@@ -523,6 +524,7 @@ const RoomItem = ({
                 <MenuItem
                   role="menuitem"
                   $danger
+                  data-testid="room-item-remove-btn"
                   onClick={(e) => {
                     e.stopPropagation()
                     setMenuOpen(false)
