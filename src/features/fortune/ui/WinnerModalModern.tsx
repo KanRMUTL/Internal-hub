@@ -363,17 +363,19 @@ const WinnerModalModern = ({ open, winner, onSave, onDiscard, onSpinAgain }: Win
                 ref={saveRef}
                 type="button"
                 onClick={onSave}
+                data-testid="winner-modal-save"
                 whileTap={{ scale: 0.97 }}
                 whileHover={{ scale: 1.01 }}
               >
                 Save to history
               </PrimaryBtn>
-              <GhostBtn type="button" onClick={onDiscard} whileTap={{ scale: 0.97 }}>
+              <GhostBtn type="button" onClick={onDiscard} data-testid="winner-modal-discard" whileTap={{ scale: 0.97 }}>
                 Discard
               </GhostBtn>
               <SpinAgainBtn
                 type="button"
                 onClick={onSpinAgain}
+                data-testid="winner-modal-spin-again"
                 aria-label="Spin again"
                 whileTap={{ scale: 0.94 }}
                 whileHover={{ rotate: 90 }}
