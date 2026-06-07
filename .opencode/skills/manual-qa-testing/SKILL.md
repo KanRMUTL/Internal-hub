@@ -1,5 +1,5 @@
 ---
-name: manual-qa-testing
+name: qa-test
 description: 'Drive the local dev server through one feature as an exploratory QA pass using Chrome DevTools MCP. Captures evidence (screenshots, snapshots, console, network, state probes), classifies findings P0-P3, and writes results into wiki/qa/, wiki/tasks/, and docs/qa/. Independent of the Playwright E2E suite.'
 ---
 
