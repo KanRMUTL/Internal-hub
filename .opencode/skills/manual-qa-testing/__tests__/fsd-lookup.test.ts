@@ -1,10 +1,24 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { lookupImplicatedFiles } from '../lib/fsd-lookup'
 import * as fs from 'fs/promises'
+import type { Dirent, Stats } from 'fs'
 
 vi.mock('fs/promises')
 
 const mocked = vi.mocked(fs)
+
+type DirentLike = Pick<Dirent, 'name' | 'isDirectory' | 'isFile'>
+
+const dirEntry = (name: string): DirentLike => ({
+  name,
+  isDirectory: () => true,
+  isFile: () => false,
+})
+const fileEntry = (name: string): DirentLike => ({
+  name,
+  isDirectory: () => false,
+  isFile: () => true,
+})
 
 describe('lookupImplicatedFiles', () => {
   beforeEach(() => {
@@ -17,28 +31,18 @@ describe('lookupImplicatedFiles', () => {
   })
 
   it('returns files whose contents include any of the identifiers', async () => {
-    mocked.stat.mockResolvedValue({ isDirectory: () => true } as any)
-    mocked.readdir.mockImplementation(async (p: any) => {
-      const dirEntry = (name: string) => ({
-        name,
-        isDirectory: () => true,
-        isFile: () => false,
-      })
-      const fileEntry = (name: string) => ({
-        name,
-        isDirectory: () => false,
-        isFile: () => true,
-      })
+    mocked.stat.mockResolvedValue({ isDirectory: () => true } as unknown as Stats)
+    mocked.readdir.mockImplementation(async (p: fs.PathLike): Promise<DirentLike[]> => {
       if (String(p).endsWith('features')) {
-        return [dirEntry('fortune')] as any
+        return [dirEntry('fortune')]
       }
       if (String(p).endsWith('fortune')) {
-        return [dirEntry('ui')] as any
+        return [dirEntry('ui')]
       }
       if (String(p).endsWith('fortune/ui')) {
-        return [fileEntry('WheelOfFortuneModern.tsx')] as any
+        return [fileEntry('WheelOfFortuneModern.tsx')]
       }
-      return [] as any
+      return []
     })
     mocked.readFile.mockResolvedValue('// data-testid="spin-button" appears here')
 
@@ -47,28 +51,18 @@ describe('lookupImplicatedFiles', () => {
   })
 
   it('deduplicates results', async () => {
-    mocked.stat.mockResolvedValue({ isDirectory: () => true } as any)
-    mocked.readdir.mockImplementation(async (p: any) => {
-      const dirEntry = (name: string) => ({
-        name,
-        isDirectory: () => true,
-        isFile: () => false,
-      })
-      const fileEntry = (name: string) => ({
-        name,
-        isDirectory: () => false,
-        isFile: () => true,
-      })
+    mocked.stat.mockResolvedValue({ isDirectory: () => true } as unknown as Stats)
+    mocked.readdir.mockImplementation(async (p: fs.PathLike): Promise<DirentLike[]> => {
       if (String(p).endsWith('features')) {
-        return [dirEntry('fortune')] as any
+        return [dirEntry('fortune')]
       }
       if (String(p).endsWith('fortune')) {
-        return [dirEntry('ui')] as any
+        return [dirEntry('ui')]
       }
       if (String(p).endsWith('fortune/ui')) {
-        return [fileEntry('WheelOfFortuneModern.tsx')] as any
+        return [fileEntry('WheelOfFortuneModern.tsx')]
       }
-      return [] as any
+      return []
     })
     mocked.readFile.mockResolvedValue('spin-button and spin-button both here')
 
@@ -77,8 +71,8 @@ describe('lookupImplicatedFiles', () => {
   })
 
   it('skips identifiers that are empty or whitespace-only', async () => {
-    mocked.stat.mockResolvedValue({ isDirectory: () => true } as any)
-    mocked.readdir.mockResolvedValue([] as any)
+    mocked.stat.mockResolvedValue({ isDirectory: () => true } as unknown as Stats)
+    mocked.readdir.mockResolvedValue([] as unknown as DirentLike[])
 
     const result = await lookupImplicatedFiles(['', '   '])
     expect(result).toEqual([])
