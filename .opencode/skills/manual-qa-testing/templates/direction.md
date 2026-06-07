@@ -2,7 +2,7 @@
 type: direction
 title: 'Direction: Manual QA Sweep'
 status: active
-created: { { date } }
+created: {{date}}
 ---
 
 # Manual QA Sweep
@@ -13,7 +13,6 @@ A long-running QA initiative. The [[Module: Manual QA Testing|manual-qa-testing]
 
 | Feature | Last tested | P0  | P1  | P2  | P3  | Status |
 | ------- | ----------- | --- | --- | --- | --- | ------ |
-
 {{rows}}
 
 ## Active tasks

@@ -1,8 +1,8 @@
 ---
 type: qa
-feature: { { feature } }
-last_tested: { { date } }
-status: { { status } }
+feature: {{feature}}
+last_tested: {{date}}
+status: {{status}}
 ---
 
 # QA — {{feature}}
