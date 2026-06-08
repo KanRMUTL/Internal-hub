@@ -6,3 +6,11 @@ coverage
 # QA skill templates use {{placeholder}} syntax in YAML frontmatter
 # that prettier mangles (treats as flow mapping). Don't reformat.
 .opencode/skills/manual-qa-testing/templates/
+
+# .claude/skills/ contains symlinks to the canonical skill files in
+# .agents/skills/ (and mirrors under .opencode/skills/, .github/skills/).
+# Not tracked by git. Prettier refuses to follow symlinks for security
+# and aborts the whole run if any staged file resolves through one, so
+# prettier must not touch anything in here. The real files still get
+# formatted through their canonical paths.
+.claude/skills/
