@@ -1,17 +1,61 @@
-import { Wrapper, Nav, Main } from './styled'
+import styled from 'styled-components'
 import { useTheme } from 'features/toggle-theme'
 import { Outlet } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { masterLogo } from 'shared/assets'
-import styled from 'styled-components'
 import { motion } from 'motion/react'
 import { Sun, Moon } from 'lucide-react'
+import { PageHeaderProvider, usePageHeader } from './PageHeaderContext'
+
+const Shell = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+`
+
+const NavBar = styled.header`
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.md};
+  height: 56px;
+  padding: 0 ${({ theme }) => theme.spacing.xl};
+  background: ${({ theme }) => theme.background.surface};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[100]};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: 0 ${({ theme }) => theme.spacing.md};
+  }
+`
+
+const NavSlot = styled.div<{ $align: 'start' | 'end' }>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  min-width: 0;
+  flex: 1 1 auto;
+  justify-content: ${({ $align }) => ($align === 'end' ? 'flex-end' : 'flex-start')};
+`
+
+const Main = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: ${({ theme }) => theme.spacing['3xl']} ${({ theme }) => theme.spacing.xl};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.xl} ${({ theme }) => theme.spacing.md};
+  }
+`
 
 const LogoLink = styled.button`
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 10px 6px 8px;
+  gap: ${({ theme }) => theme.spacing.xs};
+  padding: ${({ theme }) => theme.spacing['2xs']};
   border: 0;
   border-radius: ${({ theme }) => theme.borderRadius.md};
   background: transparent;
@@ -32,37 +76,21 @@ const LogoLink = styled.button`
   }
 `
 
-const LogoLockup = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 10px 4px 6px;
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  background: ${({ theme }) => theme.background.surface};
-  border: 1px solid ${({ theme }) => theme.colors.grey[100]};
-`
-
-const Hat = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  background: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.white};
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.02em;
-`
-
 const Wordmark = styled.span`
-  font-size: 14px;
-  font-weight: 600;
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
   letter-spacing: -0.02em;
   color: ${({ theme }) => theme.text};
   font-feature-settings: 'cv11', 'ss01', 'ss03';
+`
+
+const LogoImage = styled.img`
+  display: block;
+  height: 22px;
+`
+
+const ToggleIconWrap = styled(motion.span)`
+  display: inline-flex;
 `
 
 const ThemeToggle = styled(motion.button)`
@@ -96,43 +124,54 @@ const ThemeToggle = styled(motion.button)`
   }
 `
 
-const Layout = () => {
-  const { mode, toggleTheme } = useTheme()
+const Brand = () => {
   const navigate = useNavigate()
-  const isDark = mode === 'DARK'
-
   return (
-    <Wrapper>
-      <Nav>
-        <LogoLink type="button" onClick={() => navigate('/')} aria-label="Go to home">
-          <LogoLockup>
-            <img src={masterLogo} height={22} alt="" style={{ display: 'block' }} />
-            <Hat aria-hidden="true">H</Hat>
-            <Wordmark>Internal Hub</Wordmark>
-          </LogoLockup>
-        </LogoLink>
-        <ThemeToggle
-          type="button"
-          onClick={toggleTheme}
-          aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-          whileTap={{ scale: 0.94 }}
-        >
-          <motion.span
-            key={mode}
-            initial={{ opacity: 0, rotate: -45 }}
-            animate={{ opacity: 1, rotate: 0 }}
-            transition={{ duration: 0.2 }}
-            style={{ display: 'inline-flex' }}
-          >
-            {isDark ? <Sun size={16} strokeWidth={1.75} /> : <Moon size={16} strokeWidth={1.75} />}
-          </motion.span>
-        </ThemeToggle>
-      </Nav>
+    <LogoLink type="button" onClick={() => navigate('/')} aria-label="Go to home">
+      <LogoImage src={masterLogo} alt="" />
+      <Wordmark>Internal Hub</Wordmark>
+    </LogoLink>
+  )
+}
+
+const ThemeToggleButton = () => {
+  const { mode, toggleTheme } = useTheme()
+  const isDark = mode === 'DARK'
+  return (
+    <ThemeToggle
+      type="button"
+      onClick={toggleTheme}
+      aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+      whileTap={{ scale: 0.94 }}
+    >
+      <ToggleIconWrap key={mode} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }}>
+        {isDark ? <Sun size={16} strokeWidth={1.75} /> : <Moon size={16} strokeWidth={1.75} />}
+      </ToggleIconWrap>
+    </ThemeToggle>
+  )
+}
+
+const NavContent = () => {
+  const { slots } = usePageHeader()
+  const hasCustomLeft = slots.left !== undefined
+  const hasCustomRight = slots.right !== undefined
+  return (
+    <NavBar>
+      <NavSlot $align="start">{hasCustomLeft ? slots.left : <Brand />}</NavSlot>
+      <NavSlot $align="end">{hasCustomRight ? slots.right : <ThemeToggleButton />}</NavSlot>
+    </NavBar>
+  )
+}
+
+const Layout = () => (
+  <PageHeaderProvider>
+    <Shell>
+      <NavContent />
       <Main>
         <Outlet />
       </Main>
-    </Wrapper>
-  )
-}
+    </Shell>
+  </PageHeaderProvider>
+)
 
 export default Layout

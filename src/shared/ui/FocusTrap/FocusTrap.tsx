@@ -1,13 +1,17 @@
-import { ReactNode, useEffect, useRef } from 'react'
+import { ReactNode, CSSProperties, useEffect, useRef } from 'react'
 
 interface FocusTrapProps {
   children: ReactNode
   isActive: boolean
   restoreFocus?: boolean
   initialFocus?: string // CSS selector for initial focus element
+  // Pass-through layout props. The trap itself is layout-agnostic — it just
+  // wraps children in a plain <div> — so callers can opt into flex, grid, etc.
+  className?: string
+  style?: CSSProperties
 }
 
-const FocusTrap = ({ children, isActive, restoreFocus = true, initialFocus }: FocusTrapProps) => {
+const FocusTrap = ({ children, isActive, restoreFocus = true, initialFocus, className, style }: FocusTrapProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const previousActiveElement = useRef<HTMLElement | null>(null)
 
@@ -98,7 +102,11 @@ const FocusTrap = ({ children, isActive, restoreFocus = true, initialFocus }: Fo
     }
   }, [isActive, initialFocus, restoreFocus])
 
-  return <div ref={containerRef}>{children}</div>
+  return (
+    <div ref={containerRef} className={className} style={style}>
+      {children}
+    </div>
+  )
 }
 
 export default FocusTrap

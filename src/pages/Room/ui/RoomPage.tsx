@@ -1,25 +1,30 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
+import { doc } from 'firebase/firestore'
 import styled from 'styled-components'
 import { motion } from 'motion/react'
-import { ArrowLeft, Sun, Moon, Sparkles, Users, History as HistoryIcon, Dices } from 'lucide-react'
+import { Users, History as HistoryIcon, Dices, DoorOpen } from 'lucide-react'
 
 import { DataBoundary, FlashAlert } from 'shared/ui'
+import { db } from 'shared/config'
+import { useFirestoreDocument } from 'shared/hooks'
 import {
   useMemberCollection,
   useCreateNewMember,
+  useMemberToggleOptimistic,
   MemberManagementModalModern,
+  MemberChipModern,
   type MemberManagementMember,
 } from 'features/member-management'
 import {
   WheelOfFortuneModern,
-  pickWinnerIndex,
-  computeNextRotation,
-  MODERN_SPIN_DURATION_MS,
+  useWheelSpin,
   WinnerModalModern,
   createFortuneHistoryEntry,
   FortuneHistoryListModern,
 } from 'features/fortune'
+import { memberAvatarBackground, memberWedgeFill } from 'entities/member'
+import { type Room } from 'entities/room'
 
 const Page = styled.div`
   min-height: 100vh;
@@ -37,89 +42,10 @@ const Page = styled.div`
   transition: background-color 300ms ${({ theme }) => theme.motion.easing.easeOut};
 `
 
-const TopBar = styled.header`
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme }) => theme.background.surface};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[100]};
-  backdrop-filter: saturate(180%) blur(8px);
-`
-
-const TopLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.md};
-`
-
-const BackLink = styled.button`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border: 0;
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  background: transparent;
-  color: ${({ theme }) => theme.colors.grey[500]};
-  font-family: inherit;
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: ${({ theme }) => theme.fontWeight.medium};
-  cursor: pointer;
-  transition:
-    background-color 180ms ${({ theme }) => theme.motion.easing.easeOut},
-    color 180ms ${({ theme }) => theme.motion.easing.easeOut};
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.hover};
-    color: ${({ theme }) => theme.colors.primary};
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: ${({ theme }) => theme.shadow.focusVisible};
-  }
-`
-
-const TopActions = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.xs};
-`
-
-const IconButton = styled(motion.button)`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  background: ${({ theme }) => theme.background.surface};
-  color: ${({ theme }) => theme.text};
-  cursor: pointer;
-  transition:
-    background-color 180ms ${({ theme }) => theme.motion.easing.easeOut},
-    border-color 180ms ${({ theme }) => theme.motion.easing.easeOut};
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.hover};
-    border-color: ${({ theme }) => theme.colors.grey[300]};
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: ${({ theme }) => theme.shadow.focusVisible};
-  }
-`
-
 const Main = styled.main`
   max-width: 1180px;
   margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing.xl} ${({ theme }) => theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.lg};
 
   @media (max-width: 720px) {
     padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.md};
@@ -139,53 +65,14 @@ const Layout = styled.div`
 
 const HeroCard = styled.section`
   position: relative;
-  padding: ${({ theme }) => theme.spacing.xxl} ${({ theme }) => theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing['3xl']} ${({ theme }) => theme.spacing.lg};
   background: ${({ theme }) => theme.background.surface};
   border: 1px solid ${({ theme }) => theme.colors.grey[100]};
   border-radius: ${({ theme }) => theme.borderRadius.xl};
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.lg};
-`
-
-const HeroEyebrow = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  font-size: 11px;
-  font-weight: ${({ theme }) => theme.fontWeight.semibold};
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.primary};
-  background: ${({ theme }) => theme.colors.focus};
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-`
-
-const HeroTitle = styled.h2`
-  margin: 0;
-  font-size: ${({ theme }) => theme.fontSizes.xl};
-  font-weight: ${({ theme }) => theme.fontWeight.semibold};
-  letter-spacing: -0.02em;
-  color: ${({ theme }) => theme.text};
-  text-align: center;
-  text-wrap: balance;
-`
-
-const WinnerBanner = styled(motion.div)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${({ theme }) => theme.spacing.sm};
-  padding: ${({ theme }) => theme.spacing.md};
-  background: ${({ theme }) => theme.colors.focus};
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: ${({ theme }) => theme.fontWeight.semibold};
-  letter-spacing: -0.005em;
+  gap: ${({ theme }) => theme.spacing['2xl']};
 `
 
 const HeroMeta = styled.div`
@@ -194,6 +81,42 @@ const HeroMeta = styled.div`
   gap: ${({ theme }) => theme.spacing.md};
   font-size: ${({ theme }) => theme.fontSizes.sm};
   color: ${({ theme }) => theme.colors.grey[500]};
+`
+
+// Room name sits at the top of the hero card. Centered like the rest of the
+// hero contents, with an eyebrow + title pattern so the room name reads as
+// the page's primary identifier (above the meta strip and the wheel).
+const RoomNameBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  text-align: center;
+  width: 100%;
+`
+
+const RoomEyebrow = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: ${({ theme }) => theme.fontSizes.micro};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.interactive};
+`
+
+const RoomName = styled.h1`
+  margin: 0;
+  font-size: ${({ theme }) => theme.fontSizes['2xl']};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: ${({ theme }) => theme.text};
+  text-wrap: balance;
+  /* Cap the title so a long room name wraps before it overflows the hero
+     card's content area. */
+  max-width: 32ch;
 `
 
 const MetaItem = styled.span`
@@ -240,7 +163,7 @@ const SpinCta = styled(motion.button)`
 const SideColumn = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.xl};
 `
 
 const SideCard = styled.section`
@@ -275,10 +198,10 @@ const ManageBtn = styled(motion.button)`
   gap: 4px;
   height: 28px;
   padding: 0 10px;
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  border: 0;
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  background: ${({ theme }) => theme.background.surface};
-  color: ${({ theme }) => theme.colors.grey[600]};
+  background: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
   font-family: inherit;
   font-size: ${({ theme }) => theme.fontSizes.caption};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
@@ -286,18 +209,20 @@ const ManageBtn = styled(motion.button)`
   cursor: pointer;
   transition:
     background-color 180ms ${({ theme }) => theme.motion.easing.easeOut},
-    border-color 180ms ${({ theme }) => theme.motion.easing.easeOut},
-    color 180ms ${({ theme }) => theme.motion.easing.easeOut};
+    box-shadow 180ms ${({ theme }) => theme.motion.easing.easeOut};
 
-  &:hover {
-    background: ${({ theme }) => theme.colors.hover};
-    border-color: ${({ theme }) => theme.colors.grey[300]};
-    color: ${({ theme }) => theme.colors.primary};
+  &:hover:not(:disabled) {
+    box-shadow: 0 6px 16px ${({ theme }) => theme.colors.focusRing};
   }
 
   &:focus-visible {
     outline: none;
     box-shadow: ${({ theme }) => theme.shadow.focusVisible};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `
 
@@ -309,74 +234,46 @@ const Chips = styled.div`
 
 const RoomPage = () => {
   const { id = '' } = useParams<{ id: string }>()
-  const [mode, setMode] = useState<'light' | 'dark'>('light')
-  const [spinning, setSpinning] = useState(false)
-  const [rotation, setRotation] = useState(0)
-  const [winnerId, setWinnerId] = useState<string | null>(null)
-  const [showWinnerModal, setShowWinnerModal] = useState(false)
   const [showMembersModal, setShowMembersModal] = useState(false)
 
   const { members, loading, error, eligibleRandomMembers } = useMemberCollection(id)
   const { flashAlert, flashState, handleCreateMember } = useCreateNewMember()
 
-  // Deterministic hue per member name (production data has no hue field)
-  const memberHue = (name: string): number => {
-    let h = 0
-    for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % 360
-    return h
-  }
+  // Subscribe to the room doc so the page can show the room name. `Room.name`
+  // lives at `room/{id}`; production data has it. We subscribe (not just
+  // fetch once) so a rename in another tab reflects here.
+  const roomRef = useMemo(() => (id ? doc(db, 'room', id) : null), [id])
+  const { data: room } = useFirestoreDocument<Room>(roomRef)
 
-  // Light/dark theme (local to this preview, mirrors app theme)
-  useEffect(() => {
-    document.documentElement.style.colorScheme = mode
-  }, [mode])
-
-  // Active members are the only ones drawn in the wheel.
-  // We use `isEligibleRandom` from the production data model and
-  // generate a deterministic hue per member from their name (the production
-  // data doesn't carry a hue field, but the visual needs it).
-
-  const membersWithHue = useMemo(
-    () => members.map((m) => ({ ...m, hue: memberHue(m.name) })),
-    // members reference may change on every render; depend on length + ids
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [members.length, members.map((m) => m.id).join(',')]
-  )
-
-  const eligibleWithHue = useMemo(
-    () => eligibleRandomMembers.map((m) => ({ ...m, hue: memberHue(m.name) })),
+  // Per-member color comes from the canonical 10-preset palette in
+  // entities/member. Production data has no color field; the entity derives
+  // it from the name. The wheel takes `memberWedgeFill` (darker) and the
+  // avatar/chip surfaces take `memberAvatarBackground` (lighter) — they
+  // share the same hue, so the same person is the same color across all
+  // surfaces.
+  const eligibleWithColor = useMemo(
+    () => eligibleRandomMembers.map((m) => ({ ...m, color: memberWedgeFill(m.name) })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [eligibleRandomMembers.length, eligibleRandomMembers.map((m) => m.id).join(',')]
   )
 
-  const activeMembers = useMemo(() => eligibleWithHue.filter((m) => m.isEligibleRandom), [eligibleWithHue])
+  const activeMembers = useMemo(() => eligibleWithColor.filter((m) => m.isEligibleRandom), [eligibleWithColor])
 
-  const winner = useMemo(
-    () => (winnerId ? (membersWithHue.find((m) => m.id === winnerId) ?? null) : null),
-    [winnerId, membersWithHue]
-  )
+  const { rotation, spinning, winner, showWinnerModal, startSpin, dismissWinner } = useWheelSpin({
+    members: activeMembers,
+    disabled: showMembersModal,
+  })
 
-  const handleSpin = () => {
-    if (spinning || activeMembers.length < 2 || showWinnerModal || showMembersModal) return
-    setShowWinnerModal(false)
-    setWinnerId(null)
-    const nextRotation = computeNextRotation(rotation)
-    setRotation(nextRotation)
-    const idx = pickWinnerIndex(nextRotation, activeMembers.length)
-    const picked = activeMembers[idx]
-    if (!picked) {
-      setSpinning(false)
-      return
-    }
-    setSpinning(true)
-    window.setTimeout(() => {
-      setSpinning(false)
-      setWinnerId(picked.id)
-      setShowWinnerModal(true)
-    }, MODERN_SPIN_DURATION_MS)
-  }
+  const { displayMembers, removeMember, toggleActive } = useMemberToggleOptimistic({
+    roomId: id,
+    members,
+    onError: (message) => {
+      flashState.set({ type: 'danger', message })
+      flashAlert.open()
+    },
+  })
 
-  const handleSaveWinner = async () => {
+  const handleSaveWinner = useCallback(async () => {
     if (!winner) return
     try {
       await createFortuneHistoryEntry({
@@ -387,50 +284,35 @@ const RoomPage = () => {
     } catch (err) {
       console.error('Failed to save fortune history', err)
     }
-    setShowWinnerModal(false)
-  }
+    dismissWinner()
+  }, [winner, id, dismissWinner])
 
-  const handleDiscardWinner = () => {
-    setShowWinnerModal(false)
-    setWinnerId(null)
-  }
-
-  const handleSpinAgain = () => {
-    setShowWinnerModal(false)
-    setWinnerId(null)
-    // Re-spin after the modal close animation settles
-    window.setTimeout(() => handleSpin(), 200)
-  }
-
-  // Manage members locally (preview-only state for the active/inactive toggle)
-  const [localMembers, setLocalMembers] = useState<typeof members | null>(null)
-  useEffect(() => {
-    setLocalMembers(members)
-  }, [members])
-  const displayMembers = localMembers ?? members
+  const handleAddMember = useCallback(
+    async (name: string) => {
+      await handleCreateMember(id, name)
+    },
+    [id, handleCreateMember]
+  )
 
   const membersForModal: MemberManagementMember[] = useMemo(
     () =>
-      (localMembers ?? members).map((m) => ({
-        id: m.id,
-        name: m.name,
-        hue: memberHue(m.name),
-        active: m.isEligibleRandom,
-      })),
-    [localMembers, members]
+      // Newest-first: the manage list surfaces the most recent additions at
+      // the top so the user doesn't have to scroll past old entries. Firestore
+      // returns members oldest-first (orderBy('createdAt', 'asc')), so we
+      // reverse locally. createdAt is a `dayjs().toString()` value (e.g.
+      // "Sun, 07 Jun 2026 23:30:00 GMT") — that string is NOT
+      // lexicographically sortable because the weekday prefix dominates
+      // ("Fri" < "Mon"), so we compare via Date#getTime.
+      [...displayMembers]
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .map((m) => ({
+          id: m.id,
+          name: m.name,
+          color: memberAvatarBackground(m.name),
+          active: m.isEligibleRandom,
+        })),
+    [displayMembers]
   )
-
-  const handleAddMember = async (name: string) => {
-    await handleCreateMember(id, name)
-  }
-  const handleRemoveMember = (memberId: string) => {
-    setLocalMembers((prev) => (prev ?? members).filter((m) => m.id !== memberId))
-  }
-  const handleToggleActive = (memberId: string) => {
-    setLocalMembers((prev) =>
-      (prev ?? members).map((m) => (m.id === memberId ? { ...m, isEligibleRandom: !m.isEligibleRandom } : m))
-    )
-  }
 
   // Keyboard shortcut: Space to spin
   useEffect(() => {
@@ -440,66 +322,15 @@ const RoomPage = () => {
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return
       if (e.key === ' ') {
         e.preventDefault()
-        handleSpin()
+        startSpin()
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [spinning, showWinnerModal, showMembersModal, rotation, activeMembers.length])
+  }, [spinning, showWinnerModal, showMembersModal, startSpin, activeMembers.length])
 
   return (
     <Page>
-      <TopBar>
-        <TopLeft>
-          <BackLink type="button">
-            <ArrowLeft size={14} strokeWidth={2} aria-hidden="true" />
-            <span>Rooms</span>
-          </BackLink>
-          <div>
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-                color: 'var(--primary)',
-              }}
-            >
-              Room
-            </div>
-            <div
-              style={{
-                fontSize: 18,
-                fontWeight: 600,
-                letterSpacing: '-0.015em',
-                color: 'var(--text)',
-              }}
-            >
-              {displayMembers[0]?.name ? 'Current room' : 'Loading…'}
-            </div>
-          </div>
-        </TopLeft>
-        <TopActions>
-          <IconButton
-            type="button"
-            onClick={() => setMode((m) => (m === 'light' ? 'dark' : 'light'))}
-            aria-label={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}
-            whileTap={{ scale: 0.94 }}
-          >
-            <motion.span
-              key={mode}
-              initial={{ opacity: 0, rotate: -45 }}
-              animate={{ opacity: 1, rotate: 0 }}
-              transition={{ duration: 0.2 }}
-              style={{ display: 'inline-flex' }}
-            >
-              {mode === 'light' ? <Moon size={16} strokeWidth={1.75} /> : <Sun size={16} strokeWidth={1.75} />}
-            </motion.span>
-          </IconButton>
-        </TopActions>
-      </TopBar>
-
       <Main>
         <DataBoundary
           loading={loading}
@@ -509,40 +340,31 @@ const RoomPage = () => {
         >
           <Layout>
             <HeroCard>
-              <HeroEyebrow>
-                <Sparkles size={11} strokeWidth={2.25} aria-hidden="true" />
-                Fortune wheel
-              </HeroEyebrow>
-              <HeroTitle>Who's up next?</HeroTitle>
-
-              {winner && !spinning && !showWinnerModal && (
-                <WinnerBanner
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <Sparkles size={14} strokeWidth={2} aria-hidden="true" />
-                  <span>{winner.name} is up</span>
-                </WinnerBanner>
+              {room?.name && (
+                <RoomNameBlock>
+                  <RoomEyebrow>
+                    <DoorOpen size={11} strokeWidth={2.25} aria-hidden="true" />
+                    Room
+                  </RoomEyebrow>
+                  <RoomName>{room.name}</RoomName>
+                  <HeroMeta>
+                    <MetaItem>
+                      <Users size={14} strokeWidth={1.75} aria-hidden="true" />
+                      <span>{members.length} in pool</span>
+                    </MetaItem>
+                    <MetaItem>
+                      <HistoryIcon size={14} strokeWidth={1.75} aria-hidden="true" />
+                      <span>{activeMembers.length} eligible</span>
+                    </MetaItem>
+                  </HeroMeta>
+                </RoomNameBlock>
               )}
 
               <WheelOfFortuneModern members={activeMembers} rotation={rotation} spinning={spinning} size="lg" />
 
-              <HeroMeta>
-                <MetaItem>
-                  <Users size={14} strokeWidth={1.75} aria-hidden="true" />
-                  <span>{activeMembers.length} in pool</span>
-                </MetaItem>
-                <MetaItem>
-                  <HistoryIcon size={14} strokeWidth={1.75} aria-hidden="true" />
-                  <span>{activeMembers.length} eligible</span>
-                </MetaItem>
-              </HeroMeta>
-
               <SpinCta
                 type="button"
-                onClick={handleSpin}
+                onClick={startSpin}
                 disabled={spinning || activeMembers.length < 2}
                 whileHover={!spinning && activeMembers.length >= 2 ? { scale: 1.02 } : undefined}
                 whileTap={!spinning && activeMembers.length >= 2 ? { scale: 0.98 } : undefined}
@@ -565,39 +387,13 @@ const RoomPage = () => {
                 </SideHeader>
                 <Chips>
                   {displayMembers.map((m) => (
-                    <span
+                    <MemberChipModern
                       key={m.id}
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 6,
-                        padding: '6px 12px 6px 6px',
-                        borderRadius: 999,
-                        background: winner?.id === m.id ? 'var(--focus)' : 'var(--surface)',
-                        border: '1px solid var(--grey-200)',
-                        fontSize: 13,
-                        fontWeight: 500,
-                        opacity: m.isEligibleRandom ? 1 : 0.55,
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: 24,
-                          height: 24,
-                          borderRadius: '50%',
-                          background: `oklch(78% 0.10 ${memberHue(m.name)})`,
-                          color: `oklch(30% 0.08 ${memberHue(m.name)})`,
-                          fontSize: 11,
-                          fontWeight: 600,
-                        }}
-                      >
-                        {m.name.charAt(0).toUpperCase()}
-                      </span>
-                      {m.name}
-                    </span>
+                      name={m.name}
+                      color={memberAvatarBackground(m.name)}
+                      isHighlighted={winner?.id === m.id}
+                      isActive={m.isEligibleRandom}
+                    />
                   ))}
                 </Chips>
               </SideCard>
@@ -612,7 +408,7 @@ const RoomPage = () => {
                 <FortuneHistoryListModern
                   roomId={id ?? ''}
                   membersById={Object.fromEntries(
-                    displayMembers.map((m) => [m.id, { name: m.name, hue: memberHue(m.name) }])
+                    displayMembers.map((m) => [m.id, { name: m.name, color: memberAvatarBackground(m.name) }])
                   )}
                 />
               </SideCard>
@@ -623,10 +419,9 @@ const RoomPage = () => {
 
       <WinnerModalModern
         open={showWinnerModal}
-        winner={winner ? { id: winner.id, name: winner.name, hue: memberHue(winner.name) } : null}
+        winner={winner ? { id: winner.id, name: winner.name, color: memberAvatarBackground(winner.name) } : null}
         onSave={handleSaveWinner}
-        onDiscard={handleDiscardWinner}
-        onSpinAgain={handleSpinAgain}
+        onDiscard={dismissWinner}
       />
 
       <MemberManagementModalModern
@@ -634,8 +429,8 @@ const RoomPage = () => {
         members={membersForModal}
         onClose={() => setShowMembersModal(false)}
         onAdd={handleAddMember}
-        onRemove={handleRemoveMember}
-        onToggleActive={handleToggleActive}
+        onRemove={removeMember}
+        onToggleActive={toggleActive}
       />
 
       <FlashAlert

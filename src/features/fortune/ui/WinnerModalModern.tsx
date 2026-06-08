@@ -12,7 +12,6 @@ interface WinnerModalModernProps {
   winner: { id: string; name: string; color: string } | null
   onSave: () => void
   onDiscard: () => void
-  onSpinAgain: () => void
 }
 
 const Backdrop = styled(MotionWrapper).attrs({ as: 'div' })`
@@ -205,35 +204,6 @@ const SecondaryBtn = styled(motion.button)`
   }
 `
 
-const SpinAgainBtn = styled(motion.button)`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 44px;
-  width: 44px;
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  background: ${({ theme }) => theme.background.surface};
-  color: ${({ theme }) => theme.text};
-  font-family: inherit;
-  cursor: pointer;
-  flex-shrink: 0;
-  align-self: center;
-  transition:
-    background-color 180ms ${({ theme }) => theme.motion.easing.easeOut},
-    border-color 180ms ${({ theme }) => theme.motion.easing.easeOut};
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.hover};
-    border-color: ${({ theme }) => theme.colors.grey[300]};
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: ${({ theme }) => theme.shadow.focusVisible};
-  }
-`
-
 const Shortcuts = styled.div`
   display: flex;
   align-items: center;
@@ -261,7 +231,7 @@ const Kbd = styled.kbd`
   margin-right: 4px;
 `
 
-const WinnerModalModern = ({ open, winner, onSave, onDiscard, onSpinAgain }: WinnerModalModernProps) => {
+const WinnerModalModern = ({ open, winner, onSave, onDiscard }: WinnerModalModernProps) => {
   // The dialog is aria-modal but lives in a portal-less tree, so the page
   // behind it would still scroll. Lock body scroll while the modal is open.
   useBodyScrollLock(open)
@@ -278,14 +248,11 @@ const WinnerModalModern = ({ open, winner, onSave, onDiscard, onSpinAgain }: Win
       } else if (e.key === 'Enter') {
         e.preventDefault()
         onSave()
-      } else if (e.key.toLowerCase() === 's') {
-        e.preventDefault()
-        onSpinAgain()
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [open, onSave, onDiscard, onSpinAgain])
+  }, [open, onSave, onDiscard])
 
   return (
     <AnimatePresence>
@@ -355,24 +322,11 @@ const WinnerModalModern = ({ open, winner, onSave, onDiscard, onSpinAgain }: Win
                 >
                   Discard
                 </SecondaryBtn>
-                <SpinAgainBtn
-                  type="button"
-                  onClick={onSpinAgain}
-                  data-testid="winner-modal-spin-again"
-                  aria-label="Spin again"
-                  whileTap={{ scale: 0.94 }}
-                  whileHover={{ rotate: 90 }}
-                >
-                  <Dices size={16} strokeWidth={1.75} aria-hidden="true" />
-                </SpinAgainBtn>
               </Actions>
 
               <Shortcuts>
                 <span>
                   <Kbd>⏎</Kbd>save
-                </span>
-                <span>
-                  <Kbd>S</Kbd>spin again
                 </span>
                 <span>
                   <Kbd>Esc</Kbd>discard

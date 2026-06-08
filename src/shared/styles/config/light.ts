@@ -29,6 +29,10 @@ export const lightTheme: Theme = {
     focus: '0 0 0 3px oklch(72% 0.156 178 / 0.25)',
     focusVisible: '0 0 0 3px oklch(48% 0.18 178 / 0.6)',
     hover: '0 6px 20px oklch(20% 0.01 180 / 0.08)',
+    menu: '0 6px 18px oklch(20% 0.01 180 / 0.08), 0 1px 2px oklch(20% 0.01 180 / 0.04)',
+    modal: '0 24px 64px oklch(20% 0.012 180 / 0.18), 0 1px 2px oklch(20% 0.01 180 / 0.04)',
+    popover: '0 12px 32px oklch(20% 0.01 180 / 0.06), 0 1px 0 oklch(20% 0.01 180 / 0.04)',
+    pointer: 'drop-shadow(0 2px 4px oklch(20% 0.012 180 / 0.18))',
   },
   background: {
     primary: 'oklch(98.5% 0.004 180)',

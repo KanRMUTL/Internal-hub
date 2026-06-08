@@ -3,7 +3,7 @@ import { motion, MotionProps } from 'motion/react'
 import { useMotionPreference } from 'shared/hooks'
 
 interface MotionWrapperProps extends Omit<MotionProps, 'children'> {
-  children: ReactNode
+  children?: ReactNode
   as?: keyof typeof motion
   fallbackOpacity?: boolean
 }

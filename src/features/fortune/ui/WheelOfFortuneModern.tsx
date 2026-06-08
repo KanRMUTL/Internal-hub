@@ -1,11 +1,18 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import { motion } from 'motion/react'
-import { MODERN_WHEEL_COLORS, MODERN_WHEEL_RADIUS, MODERN_WHEEL_SPIN_DURATION, MODERN_WHEEL_SPINS } from './wheelModern'
+import { MotionSpan } from 'shared/ui/MotionWrapper'
+import { MODERN_WHEEL_RADIUS, MODERN_WHEEL_SPIN_DURATION } from './wheelModern'
 
 export interface ModernWheelMember {
   id: string
   name: string
+  /**
+   * Per-member wheel-wedge fill color. Computed by the page (via
+   * `memberWedgeFill` in entities/member) so the same person is the same color
+   * here as on the chip, modal avatar, history row, and winner modal.
+   */
+  color: string
 }
 
 interface WheelOfFortuneModernProps {
@@ -16,7 +23,6 @@ interface WheelOfFortuneModernProps {
 }
 
 const SVG_SIZE = MODERN_WHEEL_RADIUS * 2
-const POINTER_ANGLE_DEG = 270 // top of the wheel
 
 const Wrap = styled.div<{ $size: 'md' | 'lg' }>`
   position: relative;
@@ -26,31 +32,15 @@ const Wrap = styled.div<{ $size: 'md' | 'lg' }>`
   isolation: isolate;
 `
 
-const OuterRing = styled(motion.div)`
-  position: absolute;
-  inset: -8px;
-  border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    ${({ theme }) => theme.colors.primary} 0deg,
-    ${({ theme }) => theme.colors.secondary} 120deg,
-    ${({ theme }) => theme.colors.success} 240deg,
-    ${({ theme }) => theme.colors.primary} 360deg
-  );
-  opacity: 0.18;
-  filter: blur(8px);
-  z-index: -1;
-`
-
+// Brand mandate: no decorative halos. The wheel IS the brand moment; the
+// chrome around it stays quiet (hairline border, no shadow, no gradient).
 const WheelSvg = styled(motion.svg)`
   width: 100%;
   height: 100%;
   display: block;
   border-radius: 50%;
   background: ${({ theme }) => theme.background.surface};
-  box-shadow:
-    0 1px 0 ${({ theme }) => theme.colors.grey[200]},
-    0 12px 32px rgba(0, 0, 0, 0.06);
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
 `
 
 const Hub = styled.div`
@@ -66,15 +56,14 @@ const Hub = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   z-index: 2;
 `
 
-const HubDot = styled(motion.span)`
+const HubDot = styled(MotionSpan)`
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.danger};
 `
 
 const Pointer = styled.div`
@@ -86,8 +75,7 @@ const Pointer = styled.div`
   height: 0;
   border-left: 14px solid transparent;
   border-right: 14px solid transparent;
-  border-top: 22px solid ${({ theme }) => theme.colors.primary};
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
+  border-top: 22px solid ${({ theme }) => theme.colors.danger};
   z-index: 3;
 `
 
@@ -95,9 +83,7 @@ const WheelOfFortuneModern = ({ members, rotation, spinning, size = 'lg' }: Whee
   const segmentAngle = members.length > 0 ? 360 / members.length : 0
   const center = SVG_SIZE / 2
 
-  const colorAssignments = useMemo(() => {
-    return members.map((_, i) => MODERN_WHEEL_COLORS[i % MODERN_WHEEL_COLORS.length])
-  }, [members])
+  const colorAssignments = useMemo(() => members.map((m) => m.color), [members])
 
   if (members.length === 0) {
     return (
@@ -128,11 +114,6 @@ const WheelOfFortuneModern = ({ members, rotation, spinning, size = 'lg' }: Whee
 
   return (
     <Wrap $size={size} data-testid="wheel-container">
-      <OuterRing
-        animate={spinning ? { rotate: 360 } : { rotate: 0 }}
-        transition={spinning ? { duration: 8, repeat: Infinity, ease: 'linear' } : { duration: 0.6 }}
-        aria-hidden="true"
-      />
       <Pointer aria-hidden="true" />
       <WheelSvg
         viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}
@@ -153,14 +134,22 @@ const WheelOfFortuneModern = ({ members, rotation, spinning, size = 'lg' }: Whee
           const largeArc = segmentAngle > 180 ? 1 : 0
           const midAngle = startAngle + segmentAngle / 2
           const midRad = toRad(midAngle)
-          const labelR = MODERN_WHEEL_RADIUS * 0.72
+          // Center the label in the segment along the radial direction (not at
+          // the rim) and shrink it inward as member count grows, so crowded
+          // wheels don't push long names off the inner edge of the wedge.
+          const labelR = MODERN_WHEEL_RADIUS * (members.length > 12 ? 0.48 : members.length > 8 ? 0.55 : 0.62)
+          const fontSize = members.length > 12 ? 9 : members.length > 8 ? 10 : 11
           const tx = center + labelR * Math.cos(midRad)
           const ty = center + labelR * Math.sin(midRad)
           const rotationDeg = midAngle + 90
           const flip = rotationDeg > 90 && rotationDeg < 270
-          const finalRotation = flip ? rotationDeg + 180 : rotationDeg
-          const anchorX = flip ? tx + 4 : tx - 4
-          const shortName = member.name.length > 10 ? member.name.slice(0, 9) + '…' : member.name
+          // Left-rotate 90° from the current radial style so labels run along
+          // the arc (tangential) instead of reading outward from the hub.
+          const finalRotation = (flip ? rotationDeg + 180 : rotationDeg) - 90
+          // Center each label on the segment midpoint. Rotation pivots around
+          // (tx, ty) so the text spins about its own center.
+          const anchorX = tx
+
           return (
             <g key={member.id}>
               <path
@@ -172,15 +161,19 @@ const WheelOfFortuneModern = ({ members, rotation, spinning, size = 'lg' }: Whee
               <text
                 x={anchorX}
                 y={ty}
-                textAnchor={flip ? 'start' : 'end'}
+                textAnchor="middle"
                 dominantBaseline="middle"
-                fontSize="11"
+                fontSize={fontSize}
                 fontWeight="600"
-                fill="rgba(20, 30, 35, 0.9)"
+                fill="rgba(255, 255, 255, 0.96)"
+                stroke="rgba(20, 30, 35, 0.55)"
+                strokeWidth="1.5"
+                paintOrder="stroke fill"
+                strokeLinejoin="round"
                 transform={`rotate(${finalRotation} ${anchorX} ${ty})`}
                 style={{ fontFeatureSettings: '"cv11", "ss01"' }}
               >
-                {shortName}
+                {member.name}
               </text>
             </g>
           )
@@ -196,26 +189,9 @@ const WheelOfFortuneModern = ({ members, rotation, spinning, size = 'lg' }: Whee
   )
 }
 
-/**
- * Pure helper: given the current rotation, pick the winning member index.
- * Used by the parent (e.g. RoomPage) after the spin animation completes.
- */
-export const pickWinnerIndex = (rotation: number, memberCount: number): number => {
-  if (memberCount === 0) return -1
-  const effective = rotation % 360
-  const pointerAt = (360 + POINTER_ANGLE_DEG - effective + 360) % 360
-  const segAngle = 360 / memberCount
-  return Math.floor(pointerAt / segAngle)
-}
-
-/**
- * Compute the next rotation value to spin to. The parent tracks the current
- * rotation and adds a fresh full-revolution + random offset to keep accumulating.
- */
-export const computeNextRotation = (currentRotation: number): number => {
-  return currentRotation + MODERN_WHEEL_SPINS * 360 + Math.random() * 360
-}
-
-export const MODERN_SPIN_DURATION_MS = MODERN_WHEEL_SPIN_DURATION * 1000
+// Spin lifecycle helpers live in ./wheelModern and are re-exported here for
+// backward compatibility with existing imports of the form
+// `import { pickWinnerIndex } from 'features/fortune'`.
+export { pickWinnerIndex, computeNextRotation, MODERN_SPIN_DURATION_MS } from './wheelModern'
 
 export default WheelOfFortuneModern

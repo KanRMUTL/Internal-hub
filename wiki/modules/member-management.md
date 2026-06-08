@@ -31,18 +31,16 @@ CRUD for room members. Each member belongs to a room and is eligible for the whe
 ```
 src/features/member-management/
 ├── ui/
-│   ├── MemberItem.tsx
-│   ├── MemberList.tsx
-│   ├── MemberManagementV2.tsx
-│   └── modals/
-├── hooks/                       # useMemberCollection, useCreateNewMember
-├── services/                    # createMember, removeMember
+│   ├── MemberChipModern.tsx          # Single chip primitive (avatar + name + optional Sparkles/EyeOff)
+│   └── MemberManagementModalModern.tsx  # Full CRUD dialog (add form + active/inactive rows + remove)
+├── hooks/                            # useMemberCollection, useCreateNewMember, useMemberToggleOptimistic
+├── services/                         # createMember, removeMember, switchEligibleMember
 └── index.ts
 ```
 
 ## Public API
 
-`MemberItem`, `MemberList`, `MemberManagement`, `useMemberCollection`, `useCreateNewMember`, `MemberModal`
+`MemberManagementModalModern`, `MemberChipModern`, `useMemberCollection`, `useCreateNewMember`, `useMemberToggleOptimistic`, `MemberManagementMember`.
 
 ## Data Model
 
@@ -61,13 +59,20 @@ interface RoomMember {
 
 `rooms/{roomId}/members/{memberId}` (subcollection)
 
+## Hooks
+
+- **`useMemberCollection(roomId)`** — subscribes to the room's members, partitions by `isEligibleRandom`. Returns `{ members, loading, error, eligibleRandomMembers, normalMembers }`.
+- **`useCreateNewMember()`** — owns the add flow: `useModal` for the new-member modal, `useFlashAlert` for success/error feedback, `handleCreateMember(roomId, name)`.
+- **`useMemberToggleOptimistic({ roomId, members, onError })`** — owns the local member list and the optimistic eligibility toggle. Returns `{ displayMembers, removeMember, toggleActive }`. On toggle failure, the local state reverts and `onError(message)` is invoked for the page to surface a flash alert.
+
 ## Modernization Status (Direction 7)
 
-| Aspect                  | Status          | Task                                                         |
-| ----------------------- | --------------- | ------------------------------------------------------------ |
-| Member list visual      | ❌ Preview only | [[Task: Wire MemberManagementModalModern over MembersModal]] |
-| Member management modal | ❌ Preview only | [[Task: Wire MemberManagementModalModern over MembersModal]] |
-| Active/inactive toggle  | ❌ Preview only | (part of the member management modal task)                   |
+| Aspect                  | Status        | Notes                                                                                                                  |
+| ----------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Member management modal | ✅ Production | `MemberManagementModalModern` — the only CRUD surface                                                                  |
+| Member chip             | ✅ Production | `MemberChipModern` — used by `RoomPage` for the chip rail                                                              |
+| Active/inactive toggle  | ✅ Production | `useMemberToggleOptimistic` owns the optimistic update                                                                 |
+| Legacy table view       | ✅ Removed    | `MemberList`, `MemberManagementV2`, `MemberItem`, `modals/*`, `libs/*`, `useMemberManagement` deleted; see [[ADR-005]] |
 
 The new feature is: members can be **on or off the wheel** without being removed from the room. The wheel reflects only active members; the "X in pool" count shows active count.
 
@@ -76,3 +81,4 @@ The new feature is: members can be **on or off the wheel** without being removed
 - [[Module: fortune]] — consumes members (filtered by active)
 - [[Module: room-management]] — provides roomId
 - [[Flow: Member Toggle Active/Inactive]] (upcoming)
+- [[ADR-005: The Modern Path Replaces Legacy UI]]

@@ -37,6 +37,22 @@ dist-ssr
 .opencode/package.json
 .opencode/skills/gitnexus/
 
+# Claude Code local install artifacts. .claude/skills/ contains a mix
+# of real directories (duplicates of files also tracked under
+# .agents/skills/, .opencode/skills/, .github/skills/) and 6 symlinks
+# (feature-sliced-design, grill-me, grill-with-docs,
+# improve-codebase-architecture, to-issues, to-prd) that the installer
+# creates locally. The symlinks can't be passed to prettier (it
+# refuses to follow symlinks for security and aborts the whole
+# lint-staged run), so they must never be staged. Listed by name to
+# leave the real .claude/skills/ files unblocked.
+.claude/skills/feature-sliced-design
+.claude/skills/grill-me
+.claude/skills/grill-with-docs
+.claude/skills/improve-codebase-architecture
+.claude/skills/to-issues
+.claude/skills/to-prd
+
 # Playwright MCP cache
 .playwright-mcp/
 
@@ -44,3 +60,7 @@ dist-ssr
 room-v6.png
 room-winner.png
 *.local-screenshot.png
+
+.impeccable
+playwright-report
+docs

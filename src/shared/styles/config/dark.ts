@@ -29,6 +29,10 @@ export const darkTheme: Theme = {
     focus: '0 0 0 3px oklch(78% 0.14 178 / 0.3)',
     focusVisible: '0 0 0 3px oklch(82% 0.16 178 / 0.7)',
     hover: '0 6px 20px oklch(0% 0 0 / 0.4)',
+    menu: '0 6px 18px oklch(0% 0 0 / 0.4), 0 1px 2px oklch(0% 0 0 / 0.2)',
+    modal: '0 24px 64px oklch(0% 0 0 / 0.5), 0 1px 2px oklch(0% 0 0 / 0.3)',
+    popover: '0 12px 32px oklch(0% 0 0 / 0.4), 0 1px 0 oklch(0% 0 0 / 0.2)',
+    pointer: 'drop-shadow(0 2px 4px oklch(0% 0 0 / 0.4))',
   },
   background: {
     primary: 'oklch(12% 0.008 180)',

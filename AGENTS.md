@@ -173,7 +173,7 @@ None of the agents are siloed. They share the wiki as their source of truth and 
 
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **Internal-hub** (1862 symbols, 2285 relationships, 8 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **Internal-hub** (2359 symbols, 2845 relationships, 9 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 

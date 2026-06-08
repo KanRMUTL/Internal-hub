@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import styled from 'styled-components'
-import { motion } from 'motion/react'
+import { MotionWrapper } from 'shared/ui/MotionWrapper'
+import { LiveRegion } from 'shared/ui'
 import HistoryListModern, { HistoryRow } from './HistoryListModern'
 import FortuneHistoryDataBoundary from './FortuneHistoryDataBoundary'
 import { useFortuneHistory } from 'features/fortune/hooks'
@@ -12,19 +13,21 @@ dayjs.extend(relativeTime)
 
 interface FortuneHistoryListModernProps {
   roomId: string
-  membersById: Record<string, { name: string; hue: number }>
+  membersById: Record<string, { name: string; color: string }>
   className?: string
 }
 
-const Container = styled.div`
-  width: 100%;
+/**
+ * Scroll-only wrapper. The visual boundary (border, background, border-radius,
+ * padding) is owned by the parent `SideCard` in `RoomPage` — rendering it here
+ * caused a nested-card anti-pattern that overflowed the SideCard's right edge
+ * under the project's default `box-sizing: content-box`.
+ */
+const ScrollArea = styled.div`
   max-height: 400px;
   overflow-y: auto;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  background: ${({ theme }) => theme.background.surface};
   scroll-behavior: smooth;
-  padding: ${({ theme }) => theme.spacing.md};
+  box-sizing: border-box;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     max-height: 350px;
@@ -39,17 +42,17 @@ const Container = styled.div`
   }
 
   &::-webkit-scrollbar-track {
-    background: ${({ theme }) => theme.background.elevated};
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.grey[400]};
+    background: ${({ theme }) => theme.colors.grey[300]};
     border-radius: ${({ theme }) => theme.borderRadius.sm};
   }
 `
 
-const EmptyState = styled(motion.div)`
-  padding: ${({ theme }) => theme.spacing.xl} ${({ theme }) => theme.spacing.md};
+const EmptyState = styled(MotionWrapper).attrs({ as: 'div' })`
+  padding: ${({ theme }) => theme.spacing.lg} 0;
   text-align: center;
   color: ${({ theme }) => theme.colors.grey[600]};
   font-size: ${({ theme }) => theme.fontSizes.sm};
@@ -59,6 +62,7 @@ const FortuneHistoryListModern = ({ roomId, membersById, className }: FortuneHis
   const { history, loading, error, retry } = useFortuneHistory(roomId)
   const previousHistoryIdsRef = useRef<Set<string>>(new Set())
   const [highlightId, setHighlightId] = useState<string | undefined>(undefined)
+  const [liveMessage, setLiveMessage] = useState('')
 
   useEffect(() => {
     if (loading || history.length === 0) return
@@ -72,10 +76,16 @@ const FortuneHistoryListModern = ({ roomId, membersById, className }: FortuneHis
     })
 
     if (newIds.length > 0) {
+      const newEntry = history.find((e) => e.id === newIds[0])
       setHighlightId(newIds[0])
+      setLiveMessage(newEntry ? `${newEntry.winnerName} just won` : 'New spin recorded')
       const timer = window.setTimeout(() => setHighlightId(undefined), 2000)
+      const msgTimer = window.setTimeout(() => setLiveMessage(''), 5000)
       previousHistoryIdsRef.current = currentIds
-      return () => window.clearTimeout(timer)
+      return () => {
+        window.clearTimeout(timer)
+        window.clearTimeout(msgTimer)
+      }
     }
     previousHistoryIdsRef.current = currentIds
     return undefined
@@ -87,7 +97,7 @@ const FortuneHistoryListModern = ({ roomId, membersById, className }: FortuneHis
       return {
         id: entry.id,
         winnerName: entry.winnerName,
-        winnerHue: member?.hue ?? 200,
+        winnerColor: member?.color ?? 'oklch(78% 0.10 200)',
         spunAt: dayjs(entry.createdAt).format('MMM D · h:mm A'),
         timeAgo: dayjs(entry.createdAt).fromNow(),
       }
@@ -96,26 +106,27 @@ const FortuneHistoryListModern = ({ roomId, membersById, className }: FortuneHis
 
   if (!loading && !error && history.length === 0) {
     return (
-      <Container className={className}>
+      <ScrollArea className={className}>
         <FortuneHistoryDataBoundary loading={loading} error={error} onRetry={retry} showSkeleton={true}>
           <EmptyState
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
-            No spins yet. Press the wheel to get started.
+            No spins yet. Spin the wheel to record your first result.
           </EmptyState>
         </FortuneHistoryDataBoundary>
-      </Container>
+      </ScrollArea>
     )
   }
 
   return (
-    <Container className={className}>
+    <ScrollArea className={className}>
       <FortuneHistoryDataBoundary loading={loading} error={error} onRetry={retry} showSkeleton={true}>
         <HistoryListModern entries={rows} highlightId={highlightId} />
       </FortuneHistoryDataBoundary>
-    </Container>
+      <LiveRegion message={liveMessage} politeness="polite" />
+    </ScrollArea>
   )
 }
 

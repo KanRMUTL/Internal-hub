@@ -33,18 +33,21 @@ src/features/room-management/
 │   ├── RoomManagement.tsx       # Home page composition
 │   ├── RoomList.tsx             # Grid of RoomItems + AddRoomCard
 │   ├── RoomGrid.tsx             # Responsive grid wrapper
-│   ├── RoomItem.tsx (→ [[Module: room-management]] for the modern version)
+│   ├── RoomItem.tsx             # Card primitive (default + 'add' variant); now lives here, not in entities/room
 │   ├── RoomCardSkeleton.tsx     # Loading state
 │   ├── RoomModal.tsx            # Create-room form
 │   ├── AddRoomCard.tsx          # "New room" CTA
-│   └── ModalConfirmRemoveRoom.tsx
+│   ├── ModalConfirmRemoveRoom.tsx
+│   └── ModernEmptyState.tsx
 ├── hooks/                       # useActiveRooms, useRoomManagement, useRemoveRoom
 └── index.ts
 ```
 
 ## Public API
 
-`RoomManagement`, `RoomList`, `RoomGrid`, `RoomItem`, `RoomModal`, `AddRoomCard`, `useActiveRooms`, `useRoomManagement`, `useRemoveRoom`
+`RoomManagement`, `RoomList`, `RoomGrid`, `RoomModal`, `AddRoomCard`, `useActiveRooms`, `useRoomManagement`, `useRemoveRoom`
+
+`RoomItem` is feature-local (not exported from the feature barrel); only `RoomList` and `AddRoomCard` consume it.
 
 ## Data Model
 

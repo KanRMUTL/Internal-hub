@@ -1,7 +1,16 @@
+import { useEffect } from 'react'
 import { RoomManagement } from 'features/room-management'
-import { Container, SkipLinks } from 'shared/ui'
+import { SkipLinks } from 'shared/ui'
+import { usePageHeader } from 'widgets/Layout'
 
 const Home = () => {
+  const { setSlots, clearSlots } = usePageHeader()
+
+  useEffect(() => {
+    setSlots({})
+    return clearSlots
+  }, [setSlots, clearSlots])
+
   return (
     <>
       <SkipLinks
@@ -11,13 +20,11 @@ const Home = () => {
         ]}
       />
 
-      <Container $maxWidth="1200px" $centered $px="lg">
-        <main id="main-content" role="main">
-          <section id="room-management" aria-labelledby="room-management-heading">
-            <RoomManagement />
-          </section>
-        </main>
-      </Container>
+      <main id="main-content" role="main">
+        <section id="room-management" aria-labelledby="room-management-heading">
+          <RoomManagement />
+        </section>
+      </main>
     </>
   )
 }

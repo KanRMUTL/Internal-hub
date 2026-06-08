@@ -1,10 +1,11 @@
-import { motion } from 'motion/react'
 import styled from 'styled-components'
+import { MotionWrapper } from 'shared/ui/MotionWrapper'
+import { memberAvatarText } from 'entities/member'
 
 export interface HistoryRow {
   id: string
   winnerName: string
-  winnerHue: number
+  winnerColor: string
   spunAt: string
   timeAgo: string
 }
@@ -22,7 +23,14 @@ const List = styled.ul`
   flex-direction: column;
 `
 
-const Row = styled(motion.li)<{ $highlighted: boolean }>`
+const EmptyState = styled.div`
+  padding: ${({ theme }) => theme.spacing.xl} ${({ theme }) => theme.spacing.md};
+  text-align: center;
+  color: ${({ theme }) => theme.colors.grey[500]};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+`
+
+const Row = styled(MotionWrapper).attrs({ as: 'li' })<{ $highlighted: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
@@ -45,16 +53,16 @@ const Row = styled(motion.li)<{ $highlighted: boolean }>`
   `}
 `
 
-const Avatar = styled.span<{ $hue: number }>`
+const Avatar = styled.span<{ $color: string; $textColor: string }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: ${({ $hue }) => `oklch(78% 0.10 ${$hue})`};
-  color: ${({ $hue }) => `oklch(30% 0.08 ${$hue})`};
-  font-size: 13px;
+  background: ${({ $color }) => $color};
+  color: ${({ $textColor }) => $textColor};
+  font-size: ${({ theme }) => theme.fontSizes.chip};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
   flex-shrink: 0;
 `
@@ -84,18 +92,7 @@ const Time = styled.span`
 
 const HistoryListModern = ({ entries, highlightId }: HistoryListModernProps) => {
   if (entries.length === 0) {
-    return (
-      <div
-        style={{
-          padding: '24px 12px',
-          textAlign: 'center',
-          fontSize: 13,
-          color: 'var(--grey-500, #6b7280)',
-        }}
-      >
-        No spins yet. Press the wheel to get started.
-      </div>
-    )
+    return <EmptyState>No spins yet. Spin the wheel to record your first result.</EmptyState>
   }
   return (
     <List>
@@ -109,14 +106,12 @@ const HistoryListModern = ({ entries, highlightId }: HistoryListModernProps) => 
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.04, duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
           >
-            <Avatar $hue={row.winnerHue} aria-hidden="true">
+            <Avatar $color={row.winnerColor} $textColor={memberAvatarText(row.winnerName)} aria-hidden="true">
               {initial}
             </Avatar>
             <Body>
               <Name>{row.winnerName}</Name>
-              <Time>
-                {row.spunAt} · {row.timeAgo}
-              </Time>
+              <Time>{row.timeAgo}</Time>
             </Body>
           </Row>
         )

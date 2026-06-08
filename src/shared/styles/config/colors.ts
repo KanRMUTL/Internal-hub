@@ -39,4 +39,11 @@ export const colors: Color = {
   // Accessibility
   focusVisible: 'oklch(48% 0.18 178)',
   skipLink: 'oklch(48% 0.18 230)',
+
+  // Interactive ink: darker teal for buttons, accent text, and any primary
+  // surface that carries readable content. Lighter `primary` is reserved for
+  // decorative accents (borders, hover tints, wheel segments) where it never
+  // sits behind text. `primary` alone fails WCAG AA on white; `interactive`
+  // passes 4.5:1.
+  interactive: 'oklch(48% 0.18 178)',
 }

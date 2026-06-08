@@ -38,6 +38,8 @@ Master catalog for the `internal-hub` project wiki. **Multi-agent context hub** 
 - [[Decisions Index]]
 - [[ADR-001: Direction 7 Design]] — the modern design language
 - [[ADR-002: FSD Architecture]] — feature-sliced design adoption
+- [[ADR-003: App shell unifies the top bar]] — `widgets/Layout` is the single source of nav/brand/theme
+- [[ADR-004: Motion Wrapper Consolidation]] — shared `MotionWrapper` for flourishes; `motion` reserved for primary animation
 
 ## Dependencies
 
@@ -62,6 +64,12 @@ Master catalog for the `internal-hub` project wiki. **Multi-agent context hub** 
 ## Open Questions
 
 - [[Questions Index]]
+
+## Meta (sessions, dashboards, conventions)
+
+- [[Meta Index]]
+- [[2026-06-06 — Direction 7 + Wiki Documentation Complete]] — the major session that shipped the redesign
+- [[2026-06-07 — Fortune Critique + Polish Pass]] — `/impeccable critique` + 5-issue sweep (1 P0, 3 P1, 1 P2) on the wheel + winner modal + history
 
 ## Directions & Tasks (multi-agent coordination)
 

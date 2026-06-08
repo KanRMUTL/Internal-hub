@@ -1,10 +1,11 @@
 import { motion } from 'motion/react'
 import styled, { css } from 'styled-components'
 import { EyeOff, Sparkles } from 'lucide-react'
+import { memberAvatarText } from 'entities/member'
 
 interface MemberChipModernProps {
   name: string
-  hue: number
+  color: string
   isHighlighted?: boolean
   isActive?: boolean
   delay?: number
@@ -15,9 +16,6 @@ const Chip = styled(motion.div)<{ $highlighted: boolean; $inactive: boolean }>`
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xs};
   padding: 6px 12px 6px 6px;
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  background: ${({ theme, $highlighted }) => ($highlighted ? theme.colors.focus : theme.background.surface)};
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
   color: ${({ theme }) => theme.text};
   font-size: ${({ theme }) => theme.fontSizes.sm};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
@@ -40,21 +38,21 @@ const Chip = styled(motion.div)<{ $highlighted: boolean; $inactive: boolean }>`
     `}
 `
 
-const Avatar = styled.span<{ $hue: number }>`
+const Avatar = styled.span<{ $color: string; $textColor: string }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: ${({ $hue }) => `oklch(78% 0.10 ${$hue})`};
-  color: ${({ $hue }) => `oklch(30% 0.08 ${$hue})`};
-  font-size: 11px;
+  background: ${({ $color }) => $color};
+  color: ${({ $textColor }) => $textColor};
+  font-size: ${({ theme }) => theme.fontSizes.micro};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
   flex-shrink: 0;
 `
 
-const MemberChipModern = ({ name, hue, isHighlighted = false, isActive = true, delay = 0 }: MemberChipModernProps) => {
+const MemberChipModern = ({ name, color, isHighlighted = false, isActive = true, delay = 0 }: MemberChipModernProps) => {
   const initial = name.trim().charAt(0).toUpperCase() || '?'
   return (
     <Chip
@@ -64,7 +62,7 @@ const MemberChipModern = ({ name, hue, isHighlighted = false, isActive = true, d
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
     >
-      <Avatar $hue={hue} aria-hidden="true">
+      <Avatar $color={color} $textColor={memberAvatarText(name)} aria-hidden="true">
         {initial}
       </Avatar>
       <span className="chip-name">{name}</span>

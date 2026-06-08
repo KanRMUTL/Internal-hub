@@ -1,6 +1,5 @@
-import { ModalConfirm, Button, Typography } from 'shared/ui'
+import { ModalConfirm, Button, Typography, MotionWrapper } from 'shared/ui'
 import { Room } from 'entities/room'
-import { withMotion } from 'shared/ui'
 
 interface ModalConfirmRemoveMemberProps {
   room: Room
@@ -24,20 +23,24 @@ const ModalConfirmRemoveMember = ({ room, isOpen, onConfirm, onCancel }: ModalCo
     description="This action cannot be undone❗️"
     onConfirm={onConfirm}
     onCancel={onCancel}
-    confirmSection={withMotion(
-      <Button $size="md" $variant="info" onClick={onCancel}>
-        <Typography $size="base" $weight="semibold" $color="white" $pointer>
-          Not Sure
-        </Typography>
-      </Button>
-    )}
-    cancelSection={withMotion(
-      <Button $size="md" $variant="danger" onClick={onConfirm}>
-        <Typography $size="base" $weight="semibold" $color="white" $pointer>
-          Remove
-        </Typography>
-      </Button>
-    )}
+    confirmSection={
+      <MotionWrapper>
+        <Button $size="md" $variant="info" onClick={onCancel}>
+          <Typography $size="base" $weight="semibold" $color="white" $pointer>
+            Not Sure
+          </Typography>
+        </Button>
+      </MotionWrapper>
+    }
+    cancelSection={
+      <MotionWrapper>
+        <Button $size="md" $variant="danger" onClick={onConfirm}>
+          <Typography $size="base" $weight="semibold" $color="white" $pointer>
+            Remove
+          </Typography>
+        </Button>
+      </MotionWrapper>
+    }
   />
 )
 

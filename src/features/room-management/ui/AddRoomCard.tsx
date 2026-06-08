@@ -1,4 +1,4 @@
-import { RoomItem } from 'entities/room'
+import RoomItem from './RoomItem'
 
 interface AddRoomCardProps {
   onClick: () => void

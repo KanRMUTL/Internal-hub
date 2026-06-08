@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom'
-import { Room, RoomItem } from 'entities/room'
+import type { Room } from 'entities/room'
 import { AnimatePresence } from 'motion/react'
 import RoomGrid from './RoomGrid'
 import RoomCardSkeleton from './RoomCardSkeleton'
 import AddRoomCard from './AddRoomCard'
 import ModernEmptyState from './ModernEmptyState'
+import RoomItem from './RoomItem'
 
 interface RoomListProps {
   rooms: Room[]
