@@ -2,3 +2,7 @@
 node_modules
 build
 coverage
+
+# QA skill templates use {{placeholder}} syntax in YAML frontmatter
+# that prettier mangles (treats as flow mapping). Don't reformat.
+.opencode/skills/manual-qa-testing/templates/

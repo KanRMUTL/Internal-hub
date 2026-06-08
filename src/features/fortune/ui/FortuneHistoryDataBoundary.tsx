@@ -115,11 +115,6 @@ const FortuneHistorySkeleton = () => (
     transition={{ duration: 0.3 }}
   >
     <SkeletonContainer>
-      <SkeletonHeader>
-        <SkeletonCell $width="60px" />
-        <SkeletonCell $width="120px" />
-        <SkeletonCell $width="180px" />
-      </SkeletonHeader>
       {Array.from({ length: 5 }).map((_, index) => (
         <motion.div
           key={index}
@@ -128,9 +123,11 @@ const FortuneHistorySkeleton = () => (
           transition={{ duration: 0.3, delay: index * 0.1 }}
         >
           <SkeletonRow>
-            <SkeletonCell $width="60px" />
-            <SkeletonCell $width="120px" />
-            <SkeletonCell $width="180px" />
+            <SkeletonAvatar />
+            <SkeletonBody>
+              <SkeletonBar $width="55%" $height="13px" />
+              <SkeletonBar $width="35%" $height="11px" />
+            </SkeletonBody>
           </SkeletonRow>
         </motion.div>
       ))}
@@ -173,59 +170,58 @@ const ErrorState = styled(Box)`
   padding: ${({ theme }) => theme.spacing.lg};
 `
 
+/**
+ * Visual boundary (border, background, border-radius) is owned by the
+ * parent SideCard — drawing it here produced a 3-deep nested card stack
+ * (SideCard → ScrollArea → SkeletonContainer) during loading.
+ */
 const SkeletonContainer = styled.div`
   width: 100%;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  background: ${({ theme }) => theme.background.surface};
   overflow: hidden;
-  box-shadow: ${({ theme }) => theme.shadow.sm};
-`
-
-const SkeletonHeader = styled.div`
-  display: flex;
-  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme }) => theme.background.elevated};
-  border-bottom: 2px solid ${({ theme }) => theme.colors.grey[300]};
-  gap: ${({ theme }) => theme.spacing.lg};
-  box-shadow: 0 1px 0 ${({ theme }) => theme.colors.grey[200]};
 `
 
 const SkeletonRow = styled.div`
   display: flex;
-  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  gap: ${({ theme }) => theme.spacing.lg};
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background: ${({ theme }) => theme.background.elevated};
-  }
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.sm} 0;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[100]};
 
   &:last-child {
-    border-bottom: none;
+    border-bottom: 0;
   }
 `
 
-const SkeletonCell = styled.div<{ $width: string }>`
+const SkeletonAvatar = styled.div`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: ${({ theme }) => theme.colors.grey[200]};
+  flex-shrink: 0;
+`
+
+const SkeletonBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+`
+
+const SkeletonBar = styled.div<{ $width: string; $height: string }>`
   width: ${({ $width }) => $width};
-  height: 20px;
-  background: linear-gradient(
-    90deg,
-    ${({ theme }) => theme.background.elevated} 25%,
-    ${({ theme }) => theme.colors.grey} 50%,
-    ${({ theme }) => theme.background.elevated} 75%
-  );
-  background-size: 200% 100%;
+  height: ${({ $height }) => $height};
+  background: ${({ theme }) => theme.colors.grey[200]};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 1.5s ease-in-out infinite;
 
   @keyframes shimmer {
-    0% {
-      background-position: -200% 0;
-    }
+    0%,
     100% {
-      background-position: 200% 0;
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
     }
   }
 `

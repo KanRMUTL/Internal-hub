@@ -11,7 +11,8 @@
       "pages/*": ["./src/pages/*"],
       "features/*": ["./src/features/*"],
       "entities/*": ["./src/entities/*"],
-      "shared/*": ["./src/shared/*"]
+      "shared/*": ["./src/shared/*"],
+      "qa-skill/*": [".opencode/skills/manual-qa-testing/*"]
     }
   }
 }

@@ -1,11 +1,15 @@
-import { MemberModal, useCreateNewMember } from 'features/member-management'
+import { useEffect } from 'react'
 import { RoomManagement } from 'features/room-management'
-import { useState } from 'react'
-import { FlashAlert, Container, SkipLinks } from 'shared/ui'
+import { SkipLinks } from 'shared/ui'
+import { usePageHeader } from 'widgets/Layout'
 
 const Home = () => {
-  const [room, setRoom] = useState({ id: '', name: '' })
-  const { modalNewMember, flashAlert, flashState, handleCreateMember } = useCreateNewMember()
+  const { setSlots, clearSlots } = usePageHeader()
+
+  useEffect(() => {
+    setSlots({})
+    return clearSlots
+  }, [setSlots, clearSlots])
 
   return (
     <>
@@ -16,37 +20,11 @@ const Home = () => {
         ]}
       />
 
-      <Container $maxWidth="1200px" $centered $px="lg">
-        {/* Main content */}
-        <main id="main-content" role="main">
-          <section id="room-management" aria-labelledby="room-management-heading">
-            <RoomManagement
-              onClickAddItem={(id, name) => {
-                setRoom({ id, name })
-                modalNewMember.open()
-              }}
-            />
-          </section>
-        </main>
-
-        {/* Modals */}
-        <MemberModal
-          isOpen={modalNewMember.isOpen}
-          defaultValues={{ name: '' }}
-          onClose={modalNewMember.close}
-          onSubmit={(data) => {
-            handleCreateMember(room.id, data.name)
-          }}
-        />
-
-        {/* Flash alerts */}
-        <FlashAlert
-          type={flashState.state.type}
-          message={flashState.state.message}
-          visible={flashAlert.isOpen}
-          onClose={flashAlert.close}
-        />
-      </Container>
+      <main id="main-content" role="main">
+        <section id="room-management" aria-labelledby="room-management-heading">
+          <RoomManagement />
+        </section>
+      </main>
     </>
   )
 }

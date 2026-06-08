@@ -45,6 +45,7 @@ const RoomModal = ({ isOpen, onClose, onSubmit, defaultValues, title = 'New Room
               placeholder="Enter room name..."
               error={errors.name?.message}
               autoFocus
+              data-testid="room-modal-name-input"
               {...register('name', {
                 required: { value: true, message: "Don't forget to enter name" },
                 maxLength: { value: 20, message: 'Name must not exceed 20 characters' },
@@ -57,7 +58,9 @@ const RoomModal = ({ isOpen, onClose, onSubmit, defaultValues, title = 'New Room
                 maxLength: { value: 30, message: 'Description must not exceed 30 characters' },
               })}
             />
-            <Button type="submit">Save</Button>
+            <Button type="submit" data-testid="room-modal-submit">
+              Save
+            </Button>
           </Box>
         </form>
       </Box>

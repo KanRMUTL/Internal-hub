@@ -1,4 +1,2 @@
-export { default as MemberManagement } from './MemberManagementV2'
-export { default as MemberItem } from './MemberItem'
-export { default as MemberList } from './MemberList'
-export { ModalConfirmRemoveMember, MemberModal } from './modals'
+export { default as MemberChipModern } from './MemberChipModern'
+export { default as MemberManagementModalModern, type MemberManagementMember } from './MemberManagementModalModern'

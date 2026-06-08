@@ -8,6 +8,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   helperText?: string
   $floatingLabel?: boolean
   $variant?: 'default' | 'filled'
+  'data-testid'?: string
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -45,6 +46,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       <InputWrapper>
         <InputContainer $variant={$variant}>
           <StyledInput
+            data-testid={rest['data-testid']}
             id={finalId}
             name={name}
             $hasError={!!error}
@@ -257,7 +259,7 @@ const Label = styled.label<{
           pointer-events: none;
           z-index: 1;
           background-color: ${theme.background.surface};
-          padding: 0 ${theme.spacing.xxs};
+          padding: 0 ${theme.spacing['3xs']};
 
           ${$floated
             ? css`
@@ -307,7 +309,7 @@ const ErrorMessage = styled.span`
   margin-top: ${({ theme }) => theme.spacing.xs};
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.xxs};
+  gap: ${({ theme }) => theme.spacing['3xs']};
 
   &::before {
     content: '⚠';

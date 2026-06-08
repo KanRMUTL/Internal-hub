@@ -33,6 +33,7 @@ export interface Color {
   disabled: string
   focusVisible: string
   skipLink: string
+  interactive: string
 }
 
 export type ColorKeys = keyof Color
@@ -47,20 +48,27 @@ export interface Breakpoints {
 export type BreakpointsKeys = keyof Breakpoints
 
 export interface Spacing {
-  xxs: string
+  '3xs': string
+  '2xs': string
   xs: string
   sm: string
   md: string
   lg: string
   xl: string
-  xxl: string
+  '2xl': string
+  '3xl': string
+  '4xl': string
+  '5xl': string
+  '6xl': string
 }
 
 export type SpacingKeys = keyof Spacing
 
 export interface FontSize {
+  micro: string
   xs: string
   caption: string
+  chip: string
   sm: string
   base: string
   lg: string
@@ -94,6 +102,10 @@ export interface Shadow {
   focus: string
   focusVisible: string
   hover: string
+  menu: string
+  modal: string
+  popover: string
+  pointer: string
 }
 
 export type ShadowKeys = keyof Shadow

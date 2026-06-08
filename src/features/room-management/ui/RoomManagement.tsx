@@ -1,45 +1,38 @@
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Alert, FlashAlert, useFlashAlert } from 'shared/ui'
 import { useActiveRooms, useRoomManagement, useRemoveRoom } from 'features/room-management/hooks'
 import { ModalConfirmRemoveRoom, RoomList, RoomModal } from 'features/room-management/ui'
+import { Room } from 'entities/room'
 
-interface RoomManagementProps {
-  onClickAddItem: (id: string, name: string) => void
-}
-
-const RoomManagement = ({ onClickAddItem }: RoomManagementProps) => {
+const RoomManagement = () => {
   const { data: rooms, loading, error } = useActiveRooms()
-  const navigate = useNavigate()
   const { roomModal, handleCreateRoom } = useRoomManagement()
   const { selectedRoom, setSelectedRoom, modalRemoveRoom, removedIds, handleConfirmRemoveRoom } = useRemoveRoom()
 
-  // Flash alert state
   const flashState = useFlashAlert()
   const [flashVisible, setFlashVisible] = useState(false)
+  const gridRef = useRef<HTMLDivElement | null>(null)
 
-  const handleOpenModal = (id: string) => {
-    const findRoom = rooms.find((room) => room.id === id)
-    if (!findRoom) return
+  const visibleRooms = useMemo(() => rooms.filter((r) => !removedIds.includes(r.id)), [rooms, removedIds])
 
-    setSelectedRoom(findRoom)
+  const sortedRooms = useMemo<Room[]>(
+    () => [...visibleRooms].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()),
+    [visibleRooms]
+  )
+
+  const handleOpenRemove = (room: Room) => {
+    setSelectedRoom(room)
     modalRemoveRoom.open()
   }
 
   const handleCreateRoomWithFeedback = async (data: { name: string; description: string }) => {
     try {
       await handleCreateRoom(data)
-      flashState.set({
-        type: 'success',
-        message: 'Room created successfully!',
-      })
+      flashState.set({ type: 'success', message: 'Room created.' })
       setFlashVisible(true)
     } catch (error) {
       console.log(`Error: handleCreateRoomWithFeedback => ${error}`)
-      flashState.set({
-        type: 'danger',
-        message: 'Failed to create room. Please try again.',
-      })
+      flashState.set({ type: 'danger', message: 'Failed to create room.' })
       setFlashVisible(true)
     }
   }
@@ -47,54 +40,71 @@ const RoomManagement = ({ onClickAddItem }: RoomManagementProps) => {
   const handleRemoveRoomWithFeedback = async () => {
     try {
       await handleConfirmRemoveRoom()
-      flashState.set({
-        type: 'success',
-        message: 'Room removed successfully!',
-      })
+      flashState.set({ type: 'success', message: 'Room removed.' })
       setFlashVisible(true)
     } catch (error) {
       console.log(`Error: handleRemoveRoomWithFeedback => ${error}`)
-      flashState.set({
-        type: 'danger',
-        message: 'Failed to remove room. Please try again.',
-      })
+      flashState.set({ type: 'danger', message: 'Failed to remove room.' })
       setFlashVisible(true)
     }
   }
 
+  useEffect(() => {
+    if (loading) return
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return
+      if (e.key === 'n' || e.key === 'N') {
+        e.preventDefault()
+        roomModal.open()
+      } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        if (sortedRooms.length === 0) return
+        e.preventDefault()
+        const grid = gridRef.current
+        if (!grid) return
+        const buttons = Array.from(grid.querySelectorAll<HTMLButtonElement>('button'))
+        const focused = document.activeElement as HTMLElement | null
+        const currentIdx = focused ? buttons.indexOf(focused as HTMLButtonElement) : -1
+        const next = e.key === 'ArrowDown' ? Math.min(currentIdx + 1, buttons.length - 1) : Math.max(currentIdx - 1, 0)
+        buttons[next]?.focus()
+      } else if (e.key === 'Enter') {
+        const target = e.target as HTMLElement | null
+        if (target && target.tagName === 'BUTTON' && target.closest('[data-room-grid]')) {
+          target.click()
+        }
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [loading, sortedRooms, roomModal])
+
   if (error) {
     return (
       <Box $flex $justify="center" $align="center" $p="xl">
-        <Alert $type="danger">Failed to load rooms. Please try again.</Alert>
+        <Alert $type="danger">Failed to load rooms.</Alert>
       </Box>
     )
   }
 
   return (
-    <Box $flex $direction="column" $align="center" $gap="xl" $p="lg" $minHeight="100vh">
-      {/* Flash alert */}
+    <>
       <FlashAlert
         type={flashState.state.type}
         message={flashState.state.message}
         visible={flashVisible}
         onClose={() => setFlashVisible(false)}
       />
-      {/* Main content area */}
-      <Box $flex $justify="center" $align="center" $gap="lg">
+
+      <div data-room-grid ref={gridRef}>
         <RoomList
-          rooms={rooms}
+          rooms={sortedRooms}
           removedIds={removedIds}
           loading={loading}
-          onClickRoom={(id) => navigate(`/room/${id}`)}
-          onClickAdd={onClickAddItem}
-          onClickRemove={handleOpenModal}
           onCreateRoom={roomModal.open}
+          onRemove={handleOpenRemove}
         />
-      </Box>
+      </div>
 
-      {/* Floating action button - positioned better for mobile */}
-
-      {/* Modals */}
       <RoomModal isOpen={roomModal.isOpen} onClose={roomModal.close} onSubmit={handleCreateRoomWithFeedback} />
       {selectedRoom && (
         <ModalConfirmRemoveRoom
@@ -104,7 +114,7 @@ const RoomManagement = ({ onClickAddItem }: RoomManagementProps) => {
           onCancel={modalRemoveRoom.close}
         />
       )}
-    </Box>
+    </>
   )
 }
 

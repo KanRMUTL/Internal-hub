@@ -1,11 +1,11 @@
-export { WheelOfFortune, LuckyModal, FortuneHistoryTable } from './ui'
-export { useFortuneHistory } from './hooks'
+export { WheelOfFortuneModern } from './ui'
+export { WinnerModalModern } from './ui'
+export { HistoryListModern, FortuneHistoryListModern, type HistoryRow } from './ui'
+export { pickWinnerIndex, computeNextRotation, MODERN_SPIN_DURATION_MS } from './ui'
+export type { ModernWheelMember } from './ui'
+export { useFortuneHistory, useWheelSpin } from './hooks'
 export { getFortuneHistoryQuery, createFortuneHistoryEntry, clearFortuneHistory, getNextSpinNumber } from './services'
 export {
-  WHEEL_COLORS,
-  SPIN_DURATION,
-  RADIUS,
-  CENTER,
   FORTUNE_HISTORY_COLLECTION,
   FORTUNE_HISTORY_QUERY_LIMIT,
   FORTUNE_HISTORY_ORDER_BY,

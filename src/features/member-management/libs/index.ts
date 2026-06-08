@@ -1,1 +1,0 @@
-export { createMemberColumns } from './memberTable'

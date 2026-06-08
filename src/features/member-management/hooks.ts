@@ -1,1 +1,1 @@
-export { useCreateNewMember, useMemberCollection, useMemberManagement } from './hooks/index'
+export { useCreateNewMember, useMemberCollection, useMemberToggleOptimistic } from './hooks/index'
