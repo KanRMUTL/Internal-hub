@@ -1,17 +1,21 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import styled from 'styled-components'
-import { Check, X, Dices } from 'lucide-react'
+import { Check, Dices, X } from 'lucide-react'
+import { MotionWrapper } from 'shared/ui/MotionWrapper'
+import { FocusTrap, LiveRegion } from 'shared/ui'
+import { useBodyScrollLock } from 'shared/hooks'
+import { memberAvatarText } from 'entities/member'
 
 interface WinnerModalModernProps {
   open: boolean
-  winner: { id: string; name: string; hue: number } | null
+  winner: { id: string; name: string; color: string } | null
   onSave: () => void
   onDiscard: () => void
   onSpinAgain: () => void
 }
 
-const Backdrop = styled(motion.div)`
+const Backdrop = styled(MotionWrapper).attrs({ as: 'div' })`
   position: fixed;
   inset: 0;
   z-index: 50;
@@ -23,15 +27,27 @@ const Backdrop = styled(motion.div)`
   backdrop-filter: blur(8px);
 `
 
-const Dialog = styled(motion.div)`
+const Dialog = styled(MotionWrapper).attrs({ as: 'div' })`
   position: relative;
   width: 100%;
   max-width: 420px;
-  padding: ${({ theme }) => theme.spacing.xxl} ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.lg};
+  /* The project default is box-sizing: content-box. Without border-box, the
+     max-height would only cap the content area, and the dialog's visible box
+     (content + 80px top + 32px bottom + 2px border) would still overflow the
+     backdrop on short viewports. See FortuneHistoryListModern for the same
+     pattern. */
+  box-sizing: border-box;
+  /* Constrain to the viewport minus the Backdrop's padding so the dialog
+     can scroll internally on short viewports (mobile landscape, devtools
+     open, etc.) instead of being clipped by the flex-centered backdrop. */
+  max-height: calc(100vh - ${({ theme }) => theme.spacing.lg} * 2);
+  min-height: 0;
+  overflow-y: auto;
+  padding: ${({ theme }) => theme.spacing['5xl']} ${({ theme }) => theme.spacing.lg}
+    ${({ theme }) => theme.spacing['2xl']};
   background: ${({ theme }) => theme.background.surface};
   border: 1px solid ${({ theme }) => theme.colors.grey[100]};
   border-radius: ${({ theme }) => theme.borderRadius.xl};
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -66,30 +82,17 @@ const CloseBtn = styled(motion.button)`
   }
 `
 
-const AvatarFrame = styled(motion.div)`
+const AvatarFrame = styled(MotionWrapper).attrs({ as: 'div' })`
   position: relative;
   width: 96px;
   height: 96px;
-  margin-top: ${({ theme }) => theme.spacing.sm};
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
-const AvatarGlow = styled(motion.div)`
-  position: absolute;
-  inset: -10px;
-  border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    ${({ theme }) => theme.colors.primary},
-    ${({ theme }) => theme.colors.secondary},
-    ${({ theme }) => theme.colors.success},
-    ${({ theme }) => theme.colors.primary}
-  );
-  opacity: 0.35;
-  filter: blur(10px);
-  z-index: 0;
-`
-
-const Avatar = styled.div<{ $hue: number }>`
+const Avatar = styled.div<{ $color: string; $textColor: string }>`
   position: relative;
   width: 96px;
   height: 96px;
@@ -99,40 +102,26 @@ const Avatar = styled.div<{ $hue: number }>`
   justify-content: center;
   font-size: 38px;
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
-  color: ${({ $hue }) => `oklch(30% 0.08 ${$hue})`};
-  background: ${({ $hue }) => `oklch(82% 0.10 ${$hue})`};
+  color: ${({ $textColor }) => $textColor};
+  background: ${({ $color }) => $color};
   border: 2px solid ${({ theme }) => theme.background.surface};
   z-index: 1;
 `
 
-const CheckBadge = styled(motion.div)`
+const CheckBadge = styled(MotionWrapper).attrs({ as: 'div' })`
   position: absolute;
-  right: -2px;
-  bottom: -2px;
+  right: 0;
+  bottom: 0;
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.interactive};
   color: ${({ theme }) => theme.colors.white};
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid ${({ theme }) => theme.background.surface};
   z-index: 2;
-`
-
-const Eyebrow = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  font-size: 11px;
-  font-weight: ${({ theme }) => theme.fontWeight.semibold};
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.primary};
-  background: ${({ theme }) => theme.colors.focus};
-  border-radius: ${({ theme }) => theme.borderRadius.full};
 `
 
 const Name = styled.h2`
@@ -145,24 +134,16 @@ const Name = styled.h2`
   text-wrap: balance;
 `
 
-const Sub = styled.p`
-  margin: 0;
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  line-height: 1.5;
-  color: ${({ theme }) => theme.colors.grey[500]};
-  max-width: 30ch;
-`
-
 const Actions = styled.div`
   display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.xs};
+  flex-direction: column;
+  align-items: stretch;
+  gap: ${({ theme }) => theme.spacing.sm};
   width: 100%;
-  margin-top: ${({ theme }) => theme.spacing.sm};
 `
 
 const PrimaryBtn = styled(motion.button)`
-  flex: 1;
+  width: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -171,19 +152,17 @@ const PrimaryBtn = styled(motion.button)`
   padding: 0 ${({ theme }) => theme.spacing.md};
   border: 0;
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.interactive};
   color: ${({ theme }) => theme.colors.white};
   font-family: inherit;
   font-size: ${({ theme }) => theme.fontSizes.sm};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
   letter-spacing: -0.005em;
   cursor: pointer;
-  transition:
-    background-color 180ms ${({ theme }) => theme.motion.easing.easeOut},
-    box-shadow 180ms ${({ theme }) => theme.motion.easing.easeOut};
+  transition: background-color 180ms ${({ theme }) => theme.motion.easing.easeOut};
 
   &:hover:not(:disabled) {
-    box-shadow: 0 6px 16px ${({ theme }) => theme.colors.focusRing};
+    filter: brightness(0.95);
   }
 
   &:focus-visible {
@@ -192,27 +171,32 @@ const PrimaryBtn = styled(motion.button)`
   }
 `
 
-const GhostBtn = styled(motion.button)`
+const SecondaryBtn = styled(motion.button)`
+  width: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   height: 44px;
   padding: 0 ${({ theme }) => theme.spacing.md};
   border: 1px solid ${({ theme }) => theme.colors.grey[200]};
   border-radius: ${({ theme }) => theme.borderRadius.md};
   background: ${({ theme }) => theme.background.surface};
-  color: ${({ theme }) => theme.text};
+  color: ${({ theme }) => theme.colors.grey[600]};
   font-family: inherit;
   font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  letter-spacing: -0.005em;
   cursor: pointer;
   transition:
     background-color 180ms ${({ theme }) => theme.motion.easing.easeOut},
-    border-color 180ms ${({ theme }) => theme.motion.easing.easeOut};
+    border-color 180ms ${({ theme }) => theme.motion.easing.easeOut},
+    color 180ms ${({ theme }) => theme.motion.easing.easeOut};
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: ${({ theme }) => theme.colors.hover};
     border-color: ${({ theme }) => theme.colors.grey[300]};
+    color: ${({ theme }) => theme.text};
   }
 
   &:focus-visible {
@@ -234,6 +218,7 @@ const SpinAgainBtn = styled(motion.button)`
   font-family: inherit;
   cursor: pointer;
   flex-shrink: 0;
+  align-self: center;
   transition:
     background-color 180ms ${({ theme }) => theme.motion.easing.easeOut},
     border-color 180ms ${({ theme }) => theme.motion.easing.easeOut};
@@ -254,7 +239,6 @@ const Shortcuts = styled.div`
   align-items: center;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.md};
-  margin-top: ${({ theme }) => theme.spacing.xs};
   font-size: ${({ theme }) => theme.fontSizes.caption};
   color: ${({ theme }) => theme.colors.grey[500]};
 `
@@ -278,19 +262,16 @@ const Kbd = styled.kbd`
 `
 
 const WinnerModalModern = ({ open, winner, onSave, onDiscard, onSpinAgain }: WinnerModalModernProps) => {
-  const saveRef = useRef<HTMLButtonElement>(null)
-
-  useEffect(() => {
-    if (open) {
-      const t = window.setTimeout(() => saveRef.current?.focus(), 60)
-      return () => window.clearTimeout(t)
-    }
-    return undefined
-  }, [open])
+  // The dialog is aria-modal but lives in a portal-less tree, so the page
+  // behind it would still scroll. Lock body scroll while the modal is open.
+  useBodyScrollLock(open)
 
   useEffect(() => {
     if (!open) return undefined
     const onKey = (e: KeyboardEvent) => {
+      // Don't hijack typing in any input/textarea/contenteditable on the page.
+      const t = e.target as HTMLElement | null
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return
       if (e.key === 'Escape') {
         e.preventDefault()
         onDiscard()
@@ -327,74 +308,78 @@ const WinnerModalModern = ({ open, winner, onSave, onDiscard, onSpinAgain }: Win
             aria-modal="true"
             aria-labelledby="winner-name"
           >
-            <CloseBtn type="button" onClick={onDiscard} aria-label="Close" whileTap={{ scale: 0.92 }}>
-              <X size={16} strokeWidth={2} aria-hidden="true" />
-            </CloseBtn>
-
-            <AvatarFrame
-              initial={{ scale: 0.7, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.12, duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
+            <FocusTrap
+              isActive={open}
+              initialFocus="[data-testid='winner-modal-save']"
+              style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
             >
-              <AvatarGlow
-                animate={{ rotate: 360 }}
-                transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
-                aria-hidden="true"
-              />
-              <Avatar $hue={winner.hue} aria-hidden="true">
-                {winner.name.charAt(0).toUpperCase()}
-              </Avatar>
-              <CheckBadge
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.4, type: 'spring', stiffness: 400, damping: 18 }}
-                aria-hidden="true"
-              >
-                <Check size={16} strokeWidth={2.5} />
-              </CheckBadge>
-            </AvatarFrame>
+              <CloseBtn type="button" onClick={onDiscard} aria-label="Close" whileTap={{ scale: 0.92 }}>
+                <X size={24} strokeWidth={2} aria-hidden="true" />
+              </CloseBtn>
 
-            <Eyebrow>You're up</Eyebrow>
-            <Name id="winner-name">{winner.name}</Name>
-            <Sub>Time to take the wheel. Save the result or spin for someone else.</Sub>
-
-            <Actions>
-              <PrimaryBtn
-                ref={saveRef}
-                type="button"
-                onClick={onSave}
-                data-testid="winner-modal-save"
-                whileTap={{ scale: 0.97 }}
-                whileHover={{ scale: 1.01 }}
+              <AvatarFrame
+                initial={{ scale: 0.7, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.12, duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
               >
-                Save to history
-              </PrimaryBtn>
-              <GhostBtn type="button" onClick={onDiscard} data-testid="winner-modal-discard" whileTap={{ scale: 0.97 }}>
-                Discard
-              </GhostBtn>
-              <SpinAgainBtn
-                type="button"
-                onClick={onSpinAgain}
-                data-testid="winner-modal-spin-again"
-                aria-label="Spin again"
-                whileTap={{ scale: 0.94 }}
-                whileHover={{ rotate: 90 }}
-              >
-                <Dices size={16} strokeWidth={1.75} aria-hidden="true" />
-              </SpinAgainBtn>
-            </Actions>
+                <Avatar $color={winner.color} $textColor={memberAvatarText(winner.name)} aria-hidden="true">
+                  {winner.name.charAt(0).toUpperCase()}
+                </Avatar>
+                <CheckBadge
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.4, type: 'spring', stiffness: 400, damping: 18 }}
+                  aria-hidden="true"
+                >
+                  <Check size={16} strokeWidth={2.5} />
+                </CheckBadge>
+              </AvatarFrame>
 
-            <Shortcuts>
-              <span>
-                <Kbd>⏎</Kbd>save
-              </span>
-              <span>
-                <Kbd>S</Kbd>spin again
-              </span>
-              <span>
-                <Kbd>Esc</Kbd>discard
-              </span>
-            </Shortcuts>
+              <Name id="winner-name">{winner.name}</Name>
+
+              <Actions>
+                <PrimaryBtn
+                  type="button"
+                  onClick={onSave}
+                  data-testid="winner-modal-save"
+                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ scale: 1.01 }}
+                >
+                  Save to history
+                </PrimaryBtn>
+                <SecondaryBtn
+                  type="button"
+                  onClick={onDiscard}
+                  data-testid="winner-modal-discard"
+                  whileTap={{ scale: 0.97 }}
+                >
+                  Discard
+                </SecondaryBtn>
+                <SpinAgainBtn
+                  type="button"
+                  onClick={onSpinAgain}
+                  data-testid="winner-modal-spin-again"
+                  aria-label="Spin again"
+                  whileTap={{ scale: 0.94 }}
+                  whileHover={{ rotate: 90 }}
+                >
+                  <Dices size={16} strokeWidth={1.75} aria-hidden="true" />
+                </SpinAgainBtn>
+              </Actions>
+
+              <Shortcuts>
+                <span>
+                  <Kbd>⏎</Kbd>save
+                </span>
+                <span>
+                  <Kbd>S</Kbd>spin again
+                </span>
+                <span>
+                  <Kbd>Esc</Kbd>discard
+                </span>
+              </Shortcuts>
+            </FocusTrap>
+            <LiveRegion message={open ? `${winner.name} is up` : ''} politeness="polite" />
           </Dialog>
         </Backdrop>
       )}
